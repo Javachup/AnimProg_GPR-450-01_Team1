@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
-
+#include "_animation/a3_KeyframeAnimationController.h"
 
 //-----------------------------------------------------------------------------
 
@@ -157,8 +157,11 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 					proj_camera_main[1];
 			};
 		};
-	};
 
+		a3_ClipController clipCtrl;
+		a3_ClipPool clipPool;
+		a3_KeyframePool keyPool;
+	};
 
 //-----------------------------------------------------------------------------
 
