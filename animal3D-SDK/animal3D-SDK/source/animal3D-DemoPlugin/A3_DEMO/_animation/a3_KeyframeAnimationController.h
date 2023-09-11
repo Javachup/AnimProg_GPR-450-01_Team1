@@ -48,7 +48,7 @@ struct a3_ClipController
 {
 	a3byte name[a3keyframeAnimation_nameLenMax];
 
-	a3_ClipPool* clipPool;
+	const a3_ClipPool* clipPool;
 	a3ui32 clipIndex;
 	a3real clipTime;
 	a3real clipParameter;
