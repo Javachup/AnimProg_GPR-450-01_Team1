@@ -56,7 +56,7 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
 	for (a3ui32 i = 0; i < keyframePool->count; i++)
 	{
-		//settign back to default?
+		//setting back to default?
 		keyframePool->keyframe[i].duration = 1;
 		keyframePool->keyframe[i].invDuration = 1;
 		keyframePool->keyframe[i].data = 0;
