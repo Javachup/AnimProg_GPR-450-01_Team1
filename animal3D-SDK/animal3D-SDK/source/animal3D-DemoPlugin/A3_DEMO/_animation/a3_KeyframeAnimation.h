@@ -57,7 +57,7 @@ struct a3_Keyframe
 {
 	a3real duration;
 	a3real invDuration;
-	a3ui32 data;
+	a3integer data;
 
 	// index in keyframe pool
 	a3ui32 index;

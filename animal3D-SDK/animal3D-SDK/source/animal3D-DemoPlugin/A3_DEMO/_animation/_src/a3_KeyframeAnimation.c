@@ -40,13 +40,16 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 {
 	keyframePool_out->count = count; //dont know if I should be doing this honestly
 
+	keyframePool_out->keyframe = (a3_Keyframe*)malloc(sizeof(a3_Keyframe) * count);
+
+
 	//Don't know if I am actually creating multiple keyframes
 	for (a3ui32 i = 0; i < count; i++)
 	{
-		keyframePool_out->keyframe->index = i;
-		keyframePool_out->keyframe->duration = 1.0;
-		keyframePool_out->keyframe->invDuration = 1.0;
-		keyframePool_out->keyframe->data = 0;
+		keyframePool_out->keyframe[i].index = i;
+		keyframePool_out->keyframe[i].duration = 1.0;
+		keyframePool_out->keyframe[i].invDuration = 1.0;
+		keyframePool_out->keyframe[i].data = 0;
 	}
 	return -1;
 }
@@ -54,13 +57,14 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
+	if (!keyframePool)
+	{
+		return -1;
+	}
+
 	for (a3ui32 i = 0; i < keyframePool->count; i++)
 	{
-		//setting back to default?
-		keyframePool->keyframe[i].duration = 1;
-		keyframePool->keyframe[i].invDuration = 1;
-		keyframePool->keyframe[i].data = 0;
-		keyframePool->keyframe[i].index = 0;
+		free(keyframePool->keyframe);
 	}
 	return -1;
 }
@@ -91,9 +95,9 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
-	strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //I might be doing the name wrong?
+	//strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //I might be doing the name wrong?
 
-	clip_out->keyframePool = keyframePool;
+	//clip_out->keyframePool = keyframePool;
 	clip_out->firstKeyIndex = firstKeyframeIndex;
 	clip_out->lastKeyIndex = finalKeyframeIndex;
 
