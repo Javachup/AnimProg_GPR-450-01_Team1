@@ -51,11 +51,14 @@ enum
 	a3keyframeAnimation_nameLenMax = 32,
 };
 
-
 // description of single keyframe
 // metaphor: moment
 struct a3_Keyframe
 {
+	a3real duration;
+	a3real inverseDuration;
+	a3ui32 data;
+
 	// index in keyframe pool
 	a3ui32 index;
 };
@@ -64,23 +67,46 @@ struct a3_Keyframe
 struct a3_KeyframePool
 {
 	// array of keyframes
-	a3_Keyframe *keyframe;
+	a3_Keyframe *keyframe; //how is this an array?
 
 	// number of keyframes
 	a3ui32 count;
 };
 
-
 // allocate keyframe pool
-a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count);
+a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
+{
+	keyframePool_out->count = count; //dont know if I should be doing this honestly
+
+	//Don't know if I am actually creating multiple keyframes
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		keyframePool_out->keyframe->index = i;
+		keyframePool_out->keyframe->duration = 1.0;
+		keyframePool_out->keyframe->inverseDuration = 1.0;
+		keyframePool_out->keyframe->data = 0;
+	}
+}
 
 // release keyframe pool
-a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool);
+a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
+{
+	for (a3ui32 i = 0; i < keyframePool->count; i++)
+	{
+		//keyframePool->keyframe = NULL;
+		//keyframePool->keyframe[i] = NULL; //trying make sure I am clearing each one
+		//keyframePool->keyframe[i].duration = NULL; could go through all pieces since its a struct?
+		keyframePool->keyframe[i];
+	}
+}
 
 // initialize keyframe
-a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x);
-
-
+a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
+{
+	keyframe_out->duration = duration;
+	keyframe_out->inverseDuration = (1/duration);
+	keyframe_out->data = value_x; //Assuming data is the info we give the keyframe?
+}
 //-----------------------------------------------------------------------------
 
 // description of single clip
