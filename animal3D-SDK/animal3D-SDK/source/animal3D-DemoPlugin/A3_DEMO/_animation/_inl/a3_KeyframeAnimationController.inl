@@ -36,6 +36,10 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
 {
+	// --== Error Checking ==--
+	if (!clipCtrl) // maybe have a clipCtrl->init
+		return -1;
+
 	// TODO: Get the current clips and their important values 
 
 	// NOTE: abs(clipCtrl->playbackDirection) > 1 could lead to unintended behaviors
@@ -47,23 +51,28 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->keyTime += dt * clipCtrl->playbackDirection;
 
 	// --== Resolution ==--
+
+	// a3boolean resolved = clipCtrl->playbackDirection == 0; // If stopped then it is resolved
+	// while (!resolved)
+
 	// If clip is moving forwards
 	if (clipCtrl->playbackDirection > 0)
 	{
 		// Case: Forward Skip
-		// if (keyTime >= key->duration)
+		// while (keyTime >= key->duration)
 		// {
-		//		keyTime -= key->duration;
-		//		keyIndex++;
-		// }
+		//	keyTime -= key->duration;
+		//	keyIndex++;
 		// 
-		// Case: Forward Terminus
-		// if (clipTime >= clip->duration)
-		// {
+		//	Case: Forward Terminus
+		//	while (clipTime >= clip->duration)
+		//	{
 		//		// Loop back to start
 		//		keyIndex = clip->firstKeyframe;
 		//		clipTime -= clip->duration; // Don't lose the extra time 
+		//	}
 		// }
+		// 
 		//
 	}
 
@@ -71,27 +80,27 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	if (clipCtrl->playbackDirection < 0)
 	{
 		// // Case: Reverse Skip
-		// if (keyTime < 0)
+		// while (keyTime < 0)
 		// {
-		//		keyTime += key->duration;
-		//		keyIndex--;
-		// }
+		//	keyIndex--; // this needs to happen first
+		//	keyTime += key->duration;
 		// 
-		// // Case: Reverse Terminus
-		// if (clipTime < 0)
-		// {
+		//	// Case: Reverse Terminus
+		//	while (clipTime < 0)
+		//	{
 		//		// Loop back to end
 		//		keyIndex = clip->lastKeyframe;
 		//		clipTime += clip->duration;
+		//	}
 		// }
 		//
 	}
 
 	// --== Post-resolution ==--
-	//clipCtrl->clipParameter = clipCtrl->clipTime / clip->durataion;
-	//clipCtrl->keyParameter = clipCtrl->keyTime / key->durataion;
+	//clipCtrl->clipParameter = clipCtrl->clipTime * clip->inverseDurataion;
+	//clipCtrl->keyParameter = clipCtrl->keyTime * key->inverseDurataion;
 
-	return -1;
+	return 0;
 }
 
 // set clip to play

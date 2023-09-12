@@ -32,7 +32,9 @@
 // initialize clip controller
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool)
 {
-	// TODO: Ask: Would I not malloc in a3clipControllerInit? If I do, when would I release ?
+	strncpy(clipCtrl_out, ctrlName, a3keyframeAnimation_nameLenMax);
+
+	clipCtrl_out->clipPool = clipPool;
 	return -1;
 }
 

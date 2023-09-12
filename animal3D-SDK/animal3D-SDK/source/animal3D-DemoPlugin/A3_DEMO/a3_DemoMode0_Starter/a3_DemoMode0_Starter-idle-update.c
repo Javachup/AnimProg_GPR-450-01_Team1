@@ -35,6 +35,8 @@
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 // UPDATE
@@ -85,6 +87,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
+
+	printf(demoMode->clipCtrl.name);
 }
 
 
