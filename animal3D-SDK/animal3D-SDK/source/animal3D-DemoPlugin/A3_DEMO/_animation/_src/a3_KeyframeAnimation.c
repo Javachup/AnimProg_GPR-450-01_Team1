@@ -38,18 +38,53 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
+	keyframePool_out->count = count;
+
+	keyframePool_out->keyframe = (a3_Keyframe*)malloc(sizeof(a3_Keyframe) * count);
+
+	if (!keyframePool_out->keyframe)
+	{
+		return -1;
+	}
+
+	//Don't know if I am actually creating multiple keyframes
+	for (a3ui32 i = 0; i < count; i++)
+	{
+		(keyframePool_out->keyframe + i)->index = i;
+		(keyframePool_out->keyframe + i)->duration = 1.0;
+		(keyframePool_out->keyframe + i)->invDuration = 1.0;
+		(keyframePool_out->keyframe + i)->data = 0;
+	}
 	return -1;
 }
 
 // release keyframe pool
 a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 {
+	if (!keyframePool)
+	{
+		return -1;
+	}
+
+	for (a3ui32 i = 0; i < keyframePool->count; i++)
+	{
+		if (!keyframePool->keyframe + i)
+		{
+			return -1;
+		}
+
+		free(keyframePool->keyframe + i);	
+	}
 	return -1;
 }
 
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x)
 {
+	keyframe_out->duration = duration;
+	keyframe_out->invDuration = (1 / duration);
+	keyframe_out->data = value_x; //Assuming data is the info we give the keyframe?
+
 	return -1;
 }
 
@@ -69,12 +104,28 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 // initialize clip with first and last indices
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
+	//strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //I might be doing the name wrong?
+
+	//clip_out->keyframePool = keyframePool;
+	clip_out->firstKeyIndex = firstKeyframeIndex;
+	clip_out->lastKeyIndex = finalKeyframeIndex;
+
 	return -1;
 }
 
 // get clip index from pool
 a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3keyframeAnimation_nameLenMax])
 {
+	for (a3ui32 i = 0; i < clipPool->count; i++)
+	{
+		a3_ClipPool temp = clipPool[i];
+
+		if (temp.clip->name == clipName)
+		{
+			return temp.clip->index;
+		}
+	}
+
 	return -1;
 }
 
