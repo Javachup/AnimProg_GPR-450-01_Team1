@@ -38,18 +38,22 @@
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count)
 {
-	keyframePool_out->count = count; //dont know if I should be doing this honestly
+	keyframePool_out->count = count;
 
 	keyframePool_out->keyframe = (a3_Keyframe*)malloc(sizeof(a3_Keyframe) * count);
 
+	if (!keyframePool_out->keyframe)
+	{
+		return -1;
+	}
 
 	//Don't know if I am actually creating multiple keyframes
 	for (a3ui32 i = 0; i < count; i++)
 	{
-		keyframePool_out->keyframe[i].index = i;
-		keyframePool_out->keyframe[i].duration = 1.0;
-		keyframePool_out->keyframe[i].invDuration = 1.0;
-		keyframePool_out->keyframe[i].data = 0;
+		(keyframePool_out->keyframe + i)->index = i;
+		(keyframePool_out->keyframe + i)->duration = 1.0;
+		(keyframePool_out->keyframe + i)->invDuration = 1.0;
+		(keyframePool_out->keyframe + i)->data = 0;
 	}
 	return -1;
 }
@@ -64,7 +68,12 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 
 	for (a3ui32 i = 0; i < keyframePool->count; i++)
 	{
-		free(keyframePool->keyframe);
+		if (!keyframePool->keyframe + i)
+		{
+			return -1;
+		}
+
+		free(keyframePool->keyframe + i);	
 	}
 	return -1;
 }
