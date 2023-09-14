@@ -24,6 +24,9 @@
 	********************************************
 	*** THIS IS ONE DEMO MODE'S HEADER FILE  ***
 	********************************************
+	
+	Ananda Shumock-Bailey
+	Added booleans for play/pause, first/last, flip playback direction, and slow-motion
 */
 
 #ifndef __ANIMAL3D_DEMOMODE0_STARTER_H
@@ -158,9 +161,23 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 			};
 		};
 
-		a3_ClipController clipCtrl;
+		// code added in class
+		a3_ClipController clipCtrlZero;
+		a3_ClipController clipCtrlOne;
+		a3_ClipController clipCtrlTwo;
 		a3_ClipPool clipPool;
 		a3_KeyframePool keyPool;
+
+		// Booleans for controls
+		a3boolean isPlay;
+		a3boolean isFirstFrame;
+		a3boolean isForwardDir;
+		a3boolean isNormalTime;
+
+		// Numbers for clip controllers and clips
+		a3integer clipCtrlIndex;
+		a3integer clipIndex;
+
 	};
 
 //-----------------------------------------------------------------------------

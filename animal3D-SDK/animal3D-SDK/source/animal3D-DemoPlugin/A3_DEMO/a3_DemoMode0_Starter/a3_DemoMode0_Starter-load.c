@@ -24,6 +24,9 @@
 	********************************************
 	*** LOADING FOR STARTER SCENE MODE       ***
 	********************************************
+	 
+	Ananda Shumock-Bailey
+	Creating the keyframe pool, clip pool, and clip controllers
 */
 
 //-----------------------------------------------------------------------------
@@ -166,11 +169,26 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
 	demoMode->targetCount[starter_passComposite] = 1;
 
-	a3keyframePoolCreate(&demoMode->keyPool, 4);
-	// init individual key frames here
-	a3clipPoolCreate(&demoMode->clipPool, 1);
-	// init individual clips here
-	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
+	// init keyframe pool which creates 20 keyframes
+	a3keyframePoolCreate(&demoMode->keyPool, 20);
+
+	// init clip pool which creates 5 clips
+	a3clipPoolCreate(&demoMode->clipPool, 5);
+
+	// init clip controllers
+	a3clipControllerInit(&demoMode->clipCtrlZero, "zeroCtrl", &demoMode->clipPool, 0);
+	a3clipControllerInit(&demoMode->clipCtrlOne, "oneCtrl", &demoMode->clipPool, 1);
+	a3clipControllerInit(&demoMode->clipCtrlTwo, "twoCtrl", &demoMode->clipPool, 2);
+
+	// booleans for menu
+	demoMode->isPlay = a3true;
+	demoMode->isFirstFrame = a3true;
+	demoMode->isForwardDir = a3true;
+	demoMode->isNormalTime = a3true;
+
+	// indices for which clip ctrl and clip to edit
+	a3integer clipCtrlIndex = 0;
+	a3integer clipIndex = 0;
 }
 
 

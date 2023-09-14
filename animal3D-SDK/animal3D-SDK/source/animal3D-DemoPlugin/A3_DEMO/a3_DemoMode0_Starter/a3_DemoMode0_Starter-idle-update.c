@@ -86,7 +86,122 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
+	a3clipControllerUpdate(&demoMode->clipCtrlZero, (a3real)dt);
+	a3clipControllerUpdate(&demoMode->clipCtrlOne, (a3real)dt);
+	a3clipControllerUpdate(&demoMode->clipCtrlTwo, (a3real)dt);
+}
+
+// function to handle the input bullet point of step #4
+void a3demo_input_keyPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
+{
+	// determines which clip controller we are currently on
+	// for when the user wants to change which clip to control
+	a3_ClipController temp;
+	switch (demoMode->clipCtrlIndex)
+	{
+	case 0: temp = demoMode->clipCtrlZero; break;
+	case 1: temp = demoMode->clipCtrlOne; break;
+	case 2: temp = demoMode->clipCtrlTwo; break;
+	}
+
+	// select clip controller to edit using A, S, and D keys
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_A) == 1)
+	{
+		demoMode->clipCtrlIndex = 0;
+		a3clipControllerUpdate(&demoMode->clipCtrlZero, (a3real)60);
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_S) == 1)
+	{
+		demoMode->clipCtrlIndex = 1;
+		a3clipControllerUpdate(&demoMode->clipCtrlOne, (a3real)60);
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_D) == 1)
+	{
+		demoMode->clipCtrlIndex = 2;
+		a3clipControllerUpdate(&demoMode->clipCtrlTwo, (a3real)60);
+	}
+
+	// home key plays/pauses the controller playback
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_home) == 1)
+	{
+		if (demoMode->isPlay)
+		{
+			demoMode->isPlay = a3false;
+			temp.playbackDirection = 0;
+		}
+		else
+		{
+			demoMode->isPlay = a3true;
+			temp.playbackDirection = 1;
+		}
+	}
+	// end key sets to first/last frame in current clip
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_end) == 1)
+	{
+		if (demoMode->isFirstFrame)
+		{
+			demoMode->isFirstFrame = a3false;
+			temp.keyIndex = temp.clipPool->clip->lastKeyIndex;
+		}
+		else
+		{
+			demoMode->isFirstFrame = a3true;
+			temp.keyIndex = temp.clipPool->clip->firstKeyIndex;
+		}
+	}
+
+	//  changes clip to control using the number row
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_1) == 1)
+	{
+		temp.clipIndex = (a3integer)0;
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_2) == 2)
+	{
+		temp.clipIndex = (a3integer)1;
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_3) == 3)
+	{
+		temp.clipIndex = (a3integer)2;
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_4) == 4)
+	{
+		temp.clipIndex = (a3integer)3;
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_5) == 5)
+	{
+		temp.clipIndex = (a3integer)4;
+	}
+
+	// page up flips playback direction
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_pageup) == 1)
+	{
+		if (demoMode->isForwardDir)
+		{
+			demoMode->isForwardDir = a3false;
+			temp.playbackDirection = -1;
+		}
+		else
+		{
+			demoMode->isForwardDir = a3true;
+			temp.playbackDirection = 1;
+		}
+	}
+	// page down switches to slow motion
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_pagedown) == 1)
+	{
+		if (demoMode->isNormalTime)
+		{
+			demoMode->isNormalTime = a3false;
+			temp.clipTime = 30;
+		}
+		else
+		{
+			demoMode->isNormalTime = a3true;
+			temp.clipTime = 60;
+		}
+	}
+
+	a3starter_update(demoState, demoMode, dt);
 }
 
 
