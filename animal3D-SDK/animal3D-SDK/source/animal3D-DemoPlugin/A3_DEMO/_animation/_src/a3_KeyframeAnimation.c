@@ -126,8 +126,8 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
 	//I CAN NOT FIGURE THESE TWO OUT
-	//strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //I might be doing the name wrong?
-	//clip_out->keyframePool = keyframePool;
+	//strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //
+	//clip_out->keyframePool = keyframePool; //happens because the pinter points to a const but clip_out->keyframePool is not a const
 	clip_out->firstKeyIndex = firstKeyframeIndex;
 	clip_out->lastKeyIndex = finalKeyframeIndex;
 
