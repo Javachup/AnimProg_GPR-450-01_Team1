@@ -87,6 +87,8 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
+
+	printf("Clip Time: %f\tKey Time: %f\n", demoMode->clipCtrl.clipTime, demoMode->clipCtrl.keyTime);
 }
 
 
