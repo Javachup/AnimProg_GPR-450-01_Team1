@@ -50,12 +50,12 @@ struct a3_ClipController
 
 	const a3_ClipPool* clipPool;
 	a3ui32 clipIndex;
-	a3real clipTime;
-	a3real clipParameter;
+	a3f64 clipTime;
+	a3f64 clipParameter;
 
 	a3ui32 keyIndex;
-	a3real keyTime;
-	a3real keyParameter;
+	a3f64 keyTime;
+	a3f64 keyParameter;
 
 	a3i16 playbackDirection; // 1 = forward, 0 = paused, -1 = reverse
 };
@@ -67,7 +67,7 @@ struct a3_ClipController
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
 // update clip controller
-a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt);
+a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt);
 
 // set clip to play
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);

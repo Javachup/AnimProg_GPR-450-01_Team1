@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 
 // update clip controller
-inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt)
+inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 {
 	// --== Error Checking ==--
 	if (!clipCtrl) // maybe have a clipCtrl->init
