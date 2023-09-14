@@ -96,19 +96,18 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 			// Case: Reverse Skip
 			while (clipCtrl->keyTime < 0)
 			{
-				clipCtrl->keyIndex--; // this needs to happen first
-				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
-				clipCtrl->keyTime += currKey->duration;
-
 				// Case: Reverse Terminus
 				while (clipCtrl->clipTime < 0)
 				{
 					// Loop back to end
-					clipCtrl->keyIndex = currClip->lastKeyIndex;
+					clipCtrl->keyIndex = currClip->lastKeyIndex + 1; // this gets subtracted to be back in range later 
 					clipCtrl->clipTime += currClip->duration;
 				}
+
+				clipCtrl->keyIndex--; // this needs to happen first
+				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
+				clipCtrl->keyTime += currKey->duration;
 			}
-			
 		}
 	}
 

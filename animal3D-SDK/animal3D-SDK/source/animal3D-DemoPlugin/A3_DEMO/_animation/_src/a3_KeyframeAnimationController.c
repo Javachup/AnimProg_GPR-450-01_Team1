@@ -44,7 +44,7 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 	clipCtrl_out->keyTime = 0;
 	clipCtrl_out->keyParameter = 0;
 
-	clipCtrl_out->playbackDirection = 1;
+	clipCtrl_out->playbackDirection = -1;
 
 	return 0;
 }
