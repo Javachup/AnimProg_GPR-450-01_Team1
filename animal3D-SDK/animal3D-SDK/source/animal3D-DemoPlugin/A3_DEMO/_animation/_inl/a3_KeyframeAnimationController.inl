@@ -36,6 +36,9 @@
 // update clip controller
 inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 {
+	// NOTE: abs(clipCtrl->playbackDirection) > 1 could lead to unintended behaviors
+	//		 Time alteration (slow mo/fast forward) should be applied to dt outside of this function
+
 	// --== Error Checking ==--
 	if (!clipCtrl) // maybe have a clipCtrl->init
 		return -1;
@@ -51,10 +54,6 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 		!clipCtrl->clipPool->clip->keyframePool->keyframe ||
 		clipCtrl->clipPool->clip->keyframePool->count < 0)
 		return -1;
-
-	// TODO: Get the current clips and their important values 
-
-	// NOTE: abs(clipCtrl->playbackDirection) > 1 could lead to unintended behaviors
 
 	// --== Pre-resolution ==--
 	// Integrate time for current clip and keyframe

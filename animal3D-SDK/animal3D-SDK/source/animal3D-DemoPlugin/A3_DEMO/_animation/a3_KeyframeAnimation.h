@@ -98,7 +98,7 @@ struct a3_Clip
 	a3ui32 firstKeyIndex; //index of first keyframe
 	a3ui32 lastKeyIndex; //index of final keyframe
 
-	const a3_KeyframePool *keyframePool; //Clip references a set of keyframes the exist elsewhere (keyframePool)
+	a3_KeyframePool *keyframePool; //Clip references a set of keyframes the exist elsewhere (keyframePool)
 
 	// index in clip pool
 	a3ui32 index;

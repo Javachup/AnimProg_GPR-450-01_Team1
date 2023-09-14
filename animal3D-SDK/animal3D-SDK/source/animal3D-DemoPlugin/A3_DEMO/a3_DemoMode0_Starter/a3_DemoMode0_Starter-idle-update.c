@@ -86,10 +86,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	a3clipControllerUpdate(&demoMode->clipCtrl, dt);
-
-	printf("Clip Time: %f\tKey Time: %f\n", demoMode->clipCtrl.clipTime, demoMode->clipCtrl.keyTime);
-	// NOTE: Sometimes this prints 1.00000 but real value is 0.999999999999...
+	a3clipControllerUpdate(&demoMode->clipCtrl, (a3real)dt);
 }
 
 

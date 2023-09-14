@@ -169,14 +169,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3keyframePoolCreate(&demoMode->keyPool, 4);
 	// init individual key frames here
 	a3clipPoolCreate(&demoMode->clipPool, 1);
-	
-	demoMode->clipPool.clip->keyframePool = &demoMode->keyPool;
-	demoMode->clipPool.clip->duration = 4;
-	demoMode->clipPool.clip->invDuration = 0.25;
-	demoMode->clipPool.clip->keyCount = 4;
-	demoMode->clipPool.clip->firstKeyIndex = 0;
-	demoMode->clipPool.clip->lastKeyIndex = 3;
-
+	// init individual clips here
 	a3clipControllerInit(&demoMode->clipCtrl, "testCtrl", &demoMode->clipPool, 0);
 }
 
