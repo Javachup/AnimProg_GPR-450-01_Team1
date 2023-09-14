@@ -40,6 +40,18 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	if (!clipCtrl) // maybe have a clipCtrl->init
 		return -1;
 
+	// Make sure we have a clip pool that has at least 1 clip 
+	if (!clipCtrl->clipPool || 
+		!clipCtrl->clipPool->clip || 
+		clipCtrl->clipPool->count < 0)
+		return -1;
+
+	// Make sure we have a key pool that has at least 1 key frame 
+	if (!clipCtrl->clipPool->clip->keyframePool ||
+		!clipCtrl->clipPool->clip->keyframePool->keyframe ||
+		clipCtrl->clipPool->clip->keyframePool->count < 0)
+		return -1;
+
 	// TODO: Get the current clips and their important values 
 
 	// NOTE: abs(clipCtrl->playbackDirection) > 1 could lead to unintended behaviors
@@ -51,54 +63,58 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3real dt
 	clipCtrl->keyTime += dt * clipCtrl->playbackDirection;
 
 	// --== Resolution ==--
+	const a3_Clip* currClip = clipCtrl->clipPool->clip + clipCtrl->clipIndex;
+	const a3_Keyframe* currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
 
-	// a3boolean resolved = clipCtrl->playbackDirection == 0; // If stopped then it is resolved
-	// while (!resolved)
-
-	// If clip is moving forwards
-	if (clipCtrl->playbackDirection > 0)
+	//a3boolean resolved = clipCtrl->playbackDirection == 0; // If stopped then it is resolved
+	//while (!resolved)
 	{
-		// Case: Forward Skip
-		// while (keyTime >= key->duration)
-		// {
-		//	keyTime -= key->duration;
-		//	keyIndex++;
-		// 
-		//	Case: Forward Terminus
-		//	while (clipTime >= clip->duration)
-		//	{
-		//		// Loop back to start
-		//		keyIndex = clip->firstKeyframe;
-		//		clipTime -= clip->duration; // Don't lose the extra time 
-		//	}
-		// }
-		// 
-		//
-	}
+		// If clip is moving forwards
+		if (clipCtrl->playbackDirection > 0)
+		{
+			// Case: Forward Skip
+			while (clipCtrl->keyTime >= currKey->duration)
+			{
+				clipCtrl->keyTime -= currKey->duration;
+				clipCtrl->keyIndex++;
 
-	// If clip is moving backwards
-	if (clipCtrl->playbackDirection < 0)
-	{
-		// // Case: Reverse Skip
-		// while (keyTime < 0)
-		// {
-		//	keyIndex--; // this needs to happen first
-		//	keyTime += key->duration;
-		// 
-		//	// Case: Reverse Terminus
-		//	while (clipTime < 0)
-		//	{
-		//		// Loop back to end
-		//		keyIndex = clip->lastKeyframe;
-		//		clipTime += clip->duration;
-		//	}
-		// }
-		//
+				// Case: Forward Terminus
+				while (clipCtrl->clipTime >= currClip->duration)
+				{
+					// Loop back to start
+					clipCtrl->keyIndex = currClip->firstKeyIndex;
+					clipCtrl->clipTime -= currClip->duration; // Don't lose the extra time 
+				}
+
+				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
+			}
+		}
+
+		// If clip is moving backwards
+		if (clipCtrl->playbackDirection < 0)
+		{
+			// Case: Reverse Skip
+			while (clipCtrl->keyTime < 0)
+			{
+				clipCtrl->keyIndex--; // this needs to happen first
+				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
+				clipCtrl->keyTime += currKey->duration;
+
+				// Case: Reverse Terminus
+				while (clipCtrl->clipTime < 0)
+				{
+					// Loop back to end
+					clipCtrl->keyIndex = currClip->lastKeyIndex;
+					clipCtrl->clipTime += currClip->duration;
+				}
+			}
+			
+		}
 	}
 
 	// --== Post-resolution ==--
-	//clipCtrl->clipParameter = clipCtrl->clipTime * clip->inverseDurataion;
-	//clipCtrl->keyParameter = clipCtrl->keyTime * key->inverseDurataion;
+	clipCtrl->clipParameter = clipCtrl->clipTime * currClip->invDuration;
+	clipCtrl->keyParameter = clipCtrl->keyTime * currKey->invDuration;
 
 	return 0;
 }
