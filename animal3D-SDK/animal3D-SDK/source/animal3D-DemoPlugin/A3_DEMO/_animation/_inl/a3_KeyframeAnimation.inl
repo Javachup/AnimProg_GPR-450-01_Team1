@@ -33,16 +33,17 @@
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
 	a3real sumDur = 0.0;
-	a3real sumInvDur = 0.0;
+	//a3real sumInvDur = 0.0;
 
+	//Suming up all keyframes referenced's durations and invDurations
 	for (a3ui32 i = 0; i < clip->keyCount; i++)
 	{
 		sumDur += (clip->keyframePool->keyframe + i)->duration;
-		sumInvDur += (clip->keyframePool->keyframe + i)->invDuration;
+		//sumInvDur += (clip->keyframePool->keyframe + i)->invDuration;
 	}
 
 	clip->duration = sumDur;
-	clip->invDuration = sumInvDur;
+	clip->invDuration = 1/ sumDur;
 
 	return -1;
 }

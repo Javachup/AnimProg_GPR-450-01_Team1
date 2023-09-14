@@ -40,14 +40,14 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 {
 	keyframePool_out->count = count;
 
-	keyframePool_out->keyframe = (a3_Keyframe*)malloc(sizeof(a3_Keyframe) * count);
+	keyframePool_out->keyframe = (a3_Keyframe*)malloc(sizeof(a3_Keyframe) * count);//allocating memory size
 
-	if (!keyframePool_out->keyframe)
+	if (!(keyframePool_out->keyframe))
 	{
 		return -1;
 	}
 
-	//Don't know if I am actually creating multiple keyframes
+	//default values for keyframe variables
 	for (a3ui32 i = 0; i < count; i++)
 	{
 		(keyframePool_out->keyframe + i)->index = i;
@@ -68,13 +68,14 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 
 	for (a3ui32 i = 0; i < keyframePool->count; i++)
 	{
-		if (!keyframePool->keyframe + i)
+		if (!(keyframePool->keyframe + i))
 		{
 			return -1;
 		}
-
-		free(keyframePool->keyframe + i);	
 	}
+
+	free(keyframePool->keyframe); //C version of freeing memory
+
 	return -1;
 }
 
@@ -91,10 +92,18 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	clipPool_out->count = count;
+	clipPool_out->clip = (a3_Clip*)malloc(sizeof(a3_Clip) * count);//allocating memory size
 
+	clipPool_out->count = count; 
+
+	//default values for all clip variables
 	for (a3ui32 i = 0; i < clipPool_out->count; i++)
 	{
+		if (!(clipPool_out->clip + i))
+		{
+			return -1;
+		}
+
 		(clipPool_out->clip + i)->duration = 0.0;
 		(clipPool_out->clip + i)->invDuration = 0.0;
 		(clipPool_out->clip + i)->keyCount = 0;
@@ -112,13 +121,16 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
 	for (a3ui32 i = 0; i < clipPool->count; i++)
 	{
-		if (!clipPool->clip + i)
+		if (!(clipPool->clip + i))
 		{
 			return -1;
 		}
 
-		free(clipPool->clip + i);
+		
 	}
+
+	free(clipPool->clip);
+
 	return -1;
 }
 
@@ -149,6 +161,4 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 
 	return -1;
 }
-
-
 //-----------------------------------------------------------------------------
