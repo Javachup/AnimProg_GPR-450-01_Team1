@@ -106,19 +106,19 @@ void a3demo_input_keyPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* 
 	case 2: temp = demoMode->clipCtrlTwo; break;
 	}
 
-	// select clip controller to edit using A, S, and D keys
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_A) == 1)
+	// select clip controller to edit using the number row
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_8) == 1)
 	{
 		demoMode->clipCtrlIndex = 0;
-		printf("key A was pressed");
+		printf("key number 8 was pressed");
 		a3clipControllerUpdate(&demoMode->clipCtrlZero, 60);
 	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_S) == 1)
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_9) == 1)
 	{
 		demoMode->clipCtrlIndex = 1;
 		a3clipControllerUpdate(&demoMode->clipCtrlOne, 60);
 	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_D) == 1)
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_0) == 1)
 	{
 		demoMode->clipCtrlIndex = 2;
 		a3clipControllerUpdate(&demoMode->clipCtrlTwo, 60);
