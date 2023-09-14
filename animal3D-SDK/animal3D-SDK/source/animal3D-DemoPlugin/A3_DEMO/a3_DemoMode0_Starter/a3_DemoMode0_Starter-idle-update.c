@@ -86,9 +86,11 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	a3clipControllerUpdate(&demoMode->clipCtrlZero, (a3real)dt);
-	a3clipControllerUpdate(&demoMode->clipCtrlOne, (a3real)dt);
-	a3clipControllerUpdate(&demoMode->clipCtrlTwo, (a3real)dt);
+	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.5;
+
+	a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier);
+	a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
+	a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
 }
 
 // function to handle the input bullet point of step #4
@@ -108,17 +110,18 @@ void a3demo_input_keyPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* 
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_A) == 1)
 	{
 		demoMode->clipCtrlIndex = 0;
-		a3clipControllerUpdate(&demoMode->clipCtrlZero, (a3real)60);
+		printf("key A was pressed");
+		a3clipControllerUpdate(&demoMode->clipCtrlZero, 60);
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_S) == 1)
 	{
 		demoMode->clipCtrlIndex = 1;
-		a3clipControllerUpdate(&demoMode->clipCtrlOne, (a3real)60);
+		a3clipControllerUpdate(&demoMode->clipCtrlOne, 60);
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_D) == 1)
 	{
 		demoMode->clipCtrlIndex = 2;
-		a3clipControllerUpdate(&demoMode->clipCtrlTwo, (a3real)60);
+		a3clipControllerUpdate(&demoMode->clipCtrlTwo, 60);
 	}
 
 	// home key plays/pauses the controller playback
@@ -153,23 +156,23 @@ void a3demo_input_keyPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* 
 	//  changes clip to control using the number row
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_1) == 1)
 	{
-		temp.clipIndex = (a3integer)0;
+		temp.clipIndex = 0;
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_2) == 2)
 	{
-		temp.clipIndex = (a3integer)1;
+		temp.clipIndex = 1;
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_3) == 3)
 	{
-		temp.clipIndex = (a3integer)2;
+		temp.clipIndex = 2;
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_4) == 4)
 	{
-		temp.clipIndex = (a3integer)3;
+		temp.clipIndex = 3;
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_5) == 5)
 	{
-		temp.clipIndex = (a3integer)4;
+		temp.clipIndex = 4;
 	}
 
 	// page up flips playback direction
@@ -192,16 +195,12 @@ void a3demo_input_keyPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* 
 		if (demoMode->isNormalTime)
 		{
 			demoMode->isNormalTime = a3false;
-			temp.clipTime = 30;
 		}
 		else
 		{
 			demoMode->isNormalTime = a3true;
-			temp.clipTime = 60;
 		}
 	}
-
-	a3starter_update(demoState, demoMode, dt);
 }
 
 
