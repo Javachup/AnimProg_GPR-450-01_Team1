@@ -67,7 +67,7 @@ struct a3_Keyframe
 struct a3_KeyframePool
 {
 	// array of keyframes
-	a3_Keyframe *keyframe; //how is this an array?
+	a3_Keyframe *keyframe;
 
 	// number of keyframes
 	a3ui32 count;
