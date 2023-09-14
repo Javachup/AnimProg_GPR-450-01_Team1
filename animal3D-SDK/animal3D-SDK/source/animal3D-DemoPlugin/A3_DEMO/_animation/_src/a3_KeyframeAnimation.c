@@ -72,9 +72,10 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 		{
 			return -1;
 		}
-
-		free(keyframePool->keyframe + i); //C version of freeing memory
 	}
+
+	free(keyframePool->keyframe); //C version of freeing memory
+
 	return -1;
 }
 
@@ -91,11 +92,18 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
-	clipPool_out->count = count;
+	clipPool_out->clip = (a3_Clip*)malloc(sizeof(a3_Clip) * count);//allocating memory size
+
+	clipPool_out->count = count; 
 
 	//default values for all clip variables
 	for (a3ui32 i = 0; i < clipPool_out->count; i++)
 	{
+		if (!(clipPool_out->clip + i))
+		{
+			return -1;
+		}
+
 		(clipPool_out->clip + i)->duration = 0.0;
 		(clipPool_out->clip + i)->invDuration = 0.0;
 		(clipPool_out->clip + i)->keyCount = 0;
@@ -118,8 +126,11 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 			return -1;
 		}
 
-		free(clipPool->clip + i);
+		
 	}
+
+	free(clipPool->clip);
+
 	return -1;
 }
 
