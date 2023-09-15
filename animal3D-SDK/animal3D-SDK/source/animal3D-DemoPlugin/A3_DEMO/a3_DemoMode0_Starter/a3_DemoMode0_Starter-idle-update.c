@@ -87,6 +87,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
+	// Multiply dt by less than 1 for slowmo 
 	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.5;
 
 	a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier);
