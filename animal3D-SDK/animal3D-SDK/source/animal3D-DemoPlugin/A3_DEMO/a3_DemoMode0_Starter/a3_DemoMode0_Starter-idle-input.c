@@ -143,6 +143,11 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// play or pause controller based on bool (0 pause, 1 play)
 	temp->playbackDirection = demoMode->isPlay;
 
+	if (demoMode->isPlay)
+		temp->playbackDirection = demoMode->isForwardDir ? 1 : -1;
+	else
+		temp->playbackDirection = 0;
+
 	// the keys O and P set to first/last frame in current clip
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_O) == 1)
 	{
@@ -165,6 +170,18 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 		temp->keyParameter = 0;
 		temp->clipTime = 0;
 		temp->clipParameter = 0;
+	}
+
+	if (temp->clipIndex != demoMode->clipIndex)
+	{
+		temp->clipIndex = demoMode->clipIndex;
+
+		// Reset all the data bc things break otherwise 
+		temp->clipTime = 0;
+		temp->clipParameter = 0;
+		temp->keyIndex = 0;
+		temp->keyTime = 0;
+		temp->keyParameter = 0;
 	}
 
 
