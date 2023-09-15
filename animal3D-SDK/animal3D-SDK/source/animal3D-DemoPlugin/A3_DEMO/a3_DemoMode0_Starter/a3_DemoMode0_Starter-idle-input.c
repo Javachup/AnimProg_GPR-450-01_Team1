@@ -73,11 +73,11 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		// toggle play and pause
 		a3demoCtrlCaseToggle(demoMode->isPlay, '3');
 
-		// toggle first and last frame
-		a3demoCtrlCaseToggle(demoMode->isFirstFrame, '4');
-
 		// toggle clip
 		a3demoCtrlCasesLoop(demoMode->clipIndex, 5, '6', '5');
+
+		//toggle playback direction
+		a3demoCtrlCaseToggle(demoMode->isForwardDir, '7');
 
 		// toggle slow motion
 		a3demoCtrlCaseToggle(demoMode->isNormalTime, '8');
@@ -143,19 +143,14 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// play or pause controller based on bool (0 pause, 1 play)
 	temp->playbackDirection = demoMode->isPlay;
 
-	// key 7 sets to first/last frame in current clip
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_7) == 1)
+	// key 4 sets to first/last frame in current clip
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_leftControl) == 1)
 	{
-		if (demoMode->isFirstFrame)
-		{
-			demoMode->isFirstFrame = a3false;
-			temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
-		}
-		else
-		{
-			demoMode->isFirstFrame = a3true;
-			temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
-		}
+		temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
+	}
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_rightControl) == 1)
+	{
+		temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
 	}
 
 

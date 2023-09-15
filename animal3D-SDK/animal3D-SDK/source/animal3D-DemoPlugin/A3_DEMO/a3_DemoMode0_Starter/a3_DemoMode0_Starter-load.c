@@ -199,7 +199,6 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// booleans for menu
 	demoMode->isPlay = a3true;
-	demoMode->isFirstFrame = a3true;
 	demoMode->isForwardDir = a3true;
 	demoMode->isNormalTime = a3true;
 

@@ -170,7 +170,6 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 
 		// Booleans for controls
 		a3boolean isPlay;
-		a3boolean isFirstFrame;
 		a3boolean isForwardDir;
 		a3boolean isNormalTime;
 
