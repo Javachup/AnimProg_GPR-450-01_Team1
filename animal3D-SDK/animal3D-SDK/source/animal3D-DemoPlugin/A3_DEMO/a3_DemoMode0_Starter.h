@@ -26,7 +26,7 @@
 	********************************************
 	
 	Ananda Shumock-Bailey
-	Added booleans for play/pause, first/last, flip playback direction, and slow-motion
+	Added booleans for menu and variables for indices
 */
 
 #ifndef __ANIMAL3D_DEMOMODE0_STARTER_H

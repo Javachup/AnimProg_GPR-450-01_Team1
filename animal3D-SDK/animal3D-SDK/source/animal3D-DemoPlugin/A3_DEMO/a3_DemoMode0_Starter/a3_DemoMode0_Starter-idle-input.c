@@ -24,6 +24,9 @@
 	********************************************
 	*** INPUT FOR STARTER SCENE MODE         ***
 	********************************************
+	 
+	Ananda Shumock-Bailey
+	Implemented the basic testing interface
 */
 
 //-----------------------------------------------------------------------------
@@ -62,6 +65,25 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+
+		/* input controls for basic testing interface */
+		// toggle clip controller
+		a3demoCtrlCasesLoop(demoMode->clipCtrlIndex, 3, '2', '1');
+
+		// toggle play and pause
+		a3demoCtrlCaseToggle(demoMode->isPlay, '3');
+
+		// toggle first and last frame
+		a3demoCtrlCaseToggle(demoMode->isFirstFrame, '4');
+
+		// toggle clip
+		a3demoCtrlCasesLoop(demoMode->clipIndex, 5, '6', '5');
+
+		// toggle playback direction
+		a3demoCtrlCaseToggle(demoMode->isForwardDir, '7');
+
+		// toggle slow motion
+		a3demoCtrlCaseToggle(demoMode->isNormalTime, '8');
 	}
 }
 
@@ -82,6 +104,8 @@ void a3demo_input_controlProjector(
 
 void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
 {
+	static a3integer frameCount = 0;
+	frameCount++;
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
 	// right click to ray pick
@@ -111,7 +135,6 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 
 	/* CODE FOR CLASS */
 	// determines which clip controller we are currently on
-	// for when the user wants to change which clip to control
 	a3_ClipController temp;
 	switch (demoMode->clipCtrlIndex)
 	{
@@ -120,100 +143,122 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	case 2: temp = demoMode->clipCtrlTwo; break;
 	}
 
-	// select clip controller to edit using the number row
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_8) == 1)
+	// play or pause controller based on bool (0 pause, 1 play)
+	temp.playbackDirection = demoMode->isPlay;
+
+	// set to first/last frame in current clip based on bool
+	if (demoMode->isFirstFrame)
 	{
-		demoMode->clipCtrlIndex = 0;
-		printf("key number 8 was pressed");
-		a3clipControllerUpdate(&demoMode->clipCtrlZero, 60);
+		temp.keyIndex = temp.clipPool->clip->firstKeyIndex;
 	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_9) == 1)
+	else
 	{
-		demoMode->clipCtrlIndex = 1;
-		a3clipControllerUpdate(&demoMode->clipCtrlOne, 60);
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_0) == 1)
-	{
-		demoMode->clipCtrlIndex = 2;
-		a3clipControllerUpdate(&demoMode->clipCtrlTwo, 60);
+		temp.keyIndex = temp.clipPool->clip->lastKeyIndex;
 	}
 
-	// home key plays/pauses the controller playback
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_home) == 1)
+	// flips playback direction based on bool
+	if (demoMode->isForwardDir)
 	{
-		if (demoMode->isPlay)
-		{
-			demoMode->isPlay = a3false;
-			temp.playbackDirection = 0;
-		}
-		else
-		{
-			demoMode->isPlay = a3true;
-			temp.playbackDirection = 1;
-		}
+		temp.playbackDirection = 1;
 	}
-	// end key sets to first/last frame in current clip
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_end) == 1)
+	else
 	{
-		if (demoMode->isFirstFrame)
-		{
-			demoMode->isFirstFrame = a3false;
-			temp.keyIndex = temp.clipPool->clip->lastKeyIndex;
-		}
-		else
-		{
-			demoMode->isFirstFrame = a3true;
-			temp.keyIndex = temp.clipPool->clip->firstKeyIndex;
-		}
+		temp.playbackDirection = -1;
 	}
 
-	//  changes clip to control using the number row
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_1) == 1)
+	if (frameCount == 20)
 	{
-		temp.clipIndex = 0;
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_2) == 2)
-	{
-		temp.clipIndex = 1;
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_3) == 3)
-	{
-		temp.clipIndex = 2;
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_4) == 4)
-	{
-		temp.clipIndex = 3;
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_5) == 5)
-	{
-		temp.clipIndex = 4;
-	}
+		frameCount = 0;
 
-	// page up flips playback direction
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_pageup) == 1)
-	{
-		if (demoMode->isForwardDir)
-		{
-			demoMode->isForwardDir = a3false;
-			temp.playbackDirection = -1;
-		}
-		else
-		{
-			demoMode->isForwardDir = a3true;
-			temp.playbackDirection = 1;
-		}
-	}
-	// page down switches to slow motion
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_pagedown) == 1)
-	{
-		if (demoMode->isNormalTime)
-		{
-			demoMode->isNormalTime = a3false;
-		}
-		else
-		{
-			demoMode->isNormalTime = a3true;
-		}
+		printf("ccindex: %d, ", demoMode->clipCtrlIndex);
+
+		// toggle play and pause
+		printf("isplay: %d, ", demoMode->isPlay);
+
+		// toggle first and last frame
+		printf("whatframe: %d, ", demoMode->isFirstFrame);
+
+		// toggle clip
+		printf("clipindex: %d, ", demoMode->clipIndex);
+
+		// toggle playback direction
+		printf("forward: %d, ", demoMode->isForwardDir);
+
+		// toggle slow motion
+		printf("time: %d\n", demoMode->isNormalTime);
+
+		//// display menu for controls
+		//printf("\n\n\n____________MENU CONTROLS____________\n");
+		//printf("Press keys 1 and 2 to select clip controller.\n");
+		//printf("	1 is previous and 2 is next.\n");
+		//printf("Press key 3 to play/pause controller playback.\n");
+		//printf("Press key 4 to set first/last frame in current clip.\n");
+		//printf("Press keys 5 and 6 to change which clip is being controlled.\n");
+		//printf("	5 is previous and 6 is next.\n");
+		//printf("Press key 7 to flip playback direction.\n");
+		//printf("Press key 8 to toggle slow-motion on and off.\n\n\n\n");
+
+		//// display clip controllers and their information
+		//if (demoMode->clipCtrlIndex == 0)
+		//{
+		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		//}
+		//else if (demoMode->clipCtrlIndex == 1)
+		//{
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+
+		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		//}
+		//else if (demoMode->clipCtrlIndex == 2)
+		//{
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+
+		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+
+		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		//}
 	}
 }
 

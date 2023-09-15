@@ -26,7 +26,8 @@
 	********************************************
 	 
 	Ananda Shumock-Bailey
-	Creating the keyframe pool, clip pool, and clip controllers
+	Created the keyframe pool, clip pool, and clip controllers
+	Created booleans for menu system and index variables
 */
 
 //-----------------------------------------------------------------------------
