@@ -146,11 +146,25 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// key 4 sets to first/last frame in current clip
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_leftControl) == 1)
 	{
-		temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
+		a3_Clip* currClip = (temp->clipPool->clip + temp->clipIndex);
+		temp->keyIndex = currClip->lastKeyIndex;
+
+		// Reset all of the times to the the end too 
+		temp->keyTime = (currClip->keyframePool->keyframe + currClip->lastKeyIndex)->duration;
+		temp->keyParameter = 1;
+		temp->clipTime = currClip->duration;
+		temp->clipParameter = 1;
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_rightControl) == 1)
 	{
-		temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
+		a3_Clip* currClip = (temp->clipPool->clip + temp->clipIndex);
+		temp->keyIndex = currClip->firstKeyIndex;
+
+		// Reset all of the times to the the start too 
+		temp->keyTime = 0;
+		temp->keyParameter = 0;
+		temp->clipTime = 0;
+		temp->clipParameter = 0;
 	}
 
 
