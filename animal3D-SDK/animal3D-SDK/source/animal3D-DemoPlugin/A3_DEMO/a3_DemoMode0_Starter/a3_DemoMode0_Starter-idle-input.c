@@ -79,9 +79,6 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 		// toggle clip
 		a3demoCtrlCasesLoop(demoMode->clipIndex, 5, '6', '5');
 
-		// toggle playback direction
-		a3demoCtrlCaseToggle(demoMode->isForwardDir, '7');
-
 		// toggle slow motion
 		a3demoCtrlCaseToggle(demoMode->isNormalTime, '8');
 	}
@@ -156,15 +153,21 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 		temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
 	}
 
-	// flips playback direction based on bool
-	if (demoMode->isForwardDir)
+	// key 7 sets to first/last frame in current clip
+	if (a3keyboardIsPressed(demoState->keyboard, a3key_7) == 1)
 	{
-		temp->playbackDirection = 1;
+		if (demoMode->isFirstFrame)
+		{
+			demoMode->isFirstFrame = a3false;
+			temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
+		}
+		else
+		{
+			demoMode->isFirstFrame = a3true;
+			temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
+		}
 	}
-	else
-	{
-		temp->playbackDirection = -1;
-	}
+
 
 	if (frameCount == 20)
 	{
