@@ -171,9 +171,9 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->targetCount[starter_passComposite] = 1;
 
 	// init keyframe pool which creates 20 keyframes
-	a3keyframePoolCreate(&demoMode->keyPool, 20);
+	a3keyframePoolCreate(&demoMode->keyPool, 25);
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 25; i++)
 	{
 		// The data for each keyframe will be -(i^2)
 		// Just so that the data is different from the index

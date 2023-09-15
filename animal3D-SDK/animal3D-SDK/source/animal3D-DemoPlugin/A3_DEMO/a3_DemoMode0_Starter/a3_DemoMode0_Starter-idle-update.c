@@ -88,11 +88,11 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	}
 
 	// Multiply dt by less than 1 for slowmo 
-	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.5;
+	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.1;
 
 	a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier);
-	//a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
-	//a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
+	a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
+	a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
 }
 
 

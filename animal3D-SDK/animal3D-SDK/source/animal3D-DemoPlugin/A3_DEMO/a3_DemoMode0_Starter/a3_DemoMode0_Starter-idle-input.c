@@ -172,6 +172,18 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 		temp->clipParameter = 0;
 	}
 
+	if (temp->clipIndex != demoMode->clipIndex)
+	{
+		temp->clipIndex = demoMode->clipIndex;
+
+		// Reset all the data bc things break otherwise 
+		temp->clipTime = 0;
+		temp->clipParameter = 0;
+		temp->keyIndex = 0;
+		temp->keyTime = 0;
+		temp->keyParameter = 0;
+	}
+
 
 	if (frameCount == 20)
 	{
