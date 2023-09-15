@@ -143,16 +143,6 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// play or pause controller based on bool (0 pause, 1 play)
 	temp->playbackDirection = demoMode->isPlay;
 
-	// set to first/last frame in current clip based on bool
-	if (demoMode->isFirstFrame)
-	{
-		temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
-	}
-	else
-	{
-		temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
-	}
-
 	// key 7 sets to first/last frame in current clip
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_7) == 1)
 	{
