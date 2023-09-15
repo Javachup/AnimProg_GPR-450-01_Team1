@@ -63,9 +63,6 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 	clipCtrl->keyTime += dt * clipCtrl->playbackDirection;
 
 	// --== Resolution ==--
-	const a3_Clip* currClip = clipCtrl->clipPool->clip + clipCtrl->clipIndex;
-	const a3_Keyframe* currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
-
 	//a3boolean resolved = clipCtrl->playbackDirection == 0; // If stopped then it is resolved
 	//while (!resolved)
 	{
@@ -73,20 +70,18 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 		if (clipCtrl->playbackDirection > 0)
 		{
 			// Case: Forward Skip
-			while (clipCtrl->keyTime >= currKey->duration)
+			while (clipCtrl->keyTime >= getCurrentKeyframe(clipCtrl)->duration)
 			{
-				clipCtrl->keyTime -= currKey->duration;
+				clipCtrl->keyTime -= getCurrentKeyframe(clipCtrl)->duration;
 				clipCtrl->keyIndex++;
 
 				// Case: Forward Terminus
-				while (clipCtrl->clipTime >= currClip->duration)
+				while (clipCtrl->clipTime >= getCurrentClip(clipCtrl)->duration)
 				{
 					// Loop back to start
-					clipCtrl->keyIndex = currClip->firstKeyIndex;
-					clipCtrl->clipTime -= currClip->duration; // Don't lose the extra time 
+					clipCtrl->keyIndex = getCurrentClip(clipCtrl)->firstKeyIndex;
+					clipCtrl->clipTime -= getCurrentClip(clipCtrl)->duration; // Don't lose the extra time 
 				}
-
-				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
 			}
 		}
 
@@ -100,20 +95,19 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 				while (clipCtrl->clipTime < 0)
 				{
 					// Loop back to end
-					clipCtrl->keyIndex = currClip->lastKeyIndex + 1; // this gets subtracted to be back in range later 
-					clipCtrl->clipTime += currClip->duration;
+					clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex + 1; // this gets subtracted to be back in range later 
+					clipCtrl->clipTime += getCurrentClip(clipCtrl)->duration;
 				}
 
 				clipCtrl->keyIndex--; // this needs to happen first
-				currKey = currClip->keyframePool->keyframe + clipCtrl->keyIndex;
-				clipCtrl->keyTime += currKey->duration;
+				clipCtrl->keyTime += getCurrentKeyframe(clipCtrl)->duration;
 			}
 		}
 	}
 
 	// --== Post-resolution ==--
-	clipCtrl->clipParameter = clipCtrl->clipTime * currClip->invDuration;
-	clipCtrl->keyParameter = clipCtrl->keyTime * currKey->invDuration;
+	clipCtrl->clipParameter = clipCtrl->clipTime * getCurrentClip(clipCtrl)->invDuration;
+	clipCtrl->keyParameter = clipCtrl->keyTime * getCurrentKeyframe(clipCtrl)->invDuration;
 
 	return 0;
 }
