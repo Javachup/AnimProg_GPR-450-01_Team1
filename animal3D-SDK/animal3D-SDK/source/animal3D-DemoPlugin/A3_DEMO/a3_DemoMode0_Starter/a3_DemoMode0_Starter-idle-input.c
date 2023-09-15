@@ -132,16 +132,14 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 
 	/* CODE FOR CLASS */
 	// determines which clip controller we are currently on
-	a3_ClipController* temp;
+	a3_ClipController* temp = NULL;
 	switch (demoMode->clipCtrlIndex)
 	{
 	case 0: temp = &demoMode->clipCtrlZero; break;
 	case 1: temp = &demoMode->clipCtrlOne; break;
 	case 2: temp = &demoMode->clipCtrlTwo; break;
+	default: printf("clipCtrlIndex out of bounds!"); return;
 	}
-
-	// play or pause controller based on bool (0 pause, 1 play)
-	temp->playbackDirection = demoMode->isPlay;
 
 	if (demoMode->isPlay)
 		temp->playbackDirection = demoMode->isForwardDir ? 1 : -1;
@@ -151,37 +149,16 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// the keys O and P set to first/last frame in current clip
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_O) == 1)
 	{
-		a3_Clip* currClip = (temp->clipPool->clip + temp->clipIndex);
-		temp->keyIndex = currClip->lastKeyIndex;
-
-		// Reset all of the times to the the end too 
-		temp->keyTime = (currClip->keyframePool->keyframe + currClip->lastKeyIndex)->duration;
-		temp->keyParameter = 1;
-		temp->clipTime = currClip->duration;
-		temp->clipParameter = 1;
+		a3clipControllerSetKeyframe(temp, getCurrentClip(temp)->firstKeyIndex, a3false);
 	}
 	if (a3keyboardIsPressed(demoState->keyboard, a3key_P) == 1)
 	{
-		a3_Clip* currClip = (temp->clipPool->clip + temp->clipIndex);
-		temp->keyIndex = currClip->firstKeyIndex;
-
-		// Reset all of the times to the the start too 
-		temp->keyTime = 0;
-		temp->keyParameter = 0;
-		temp->clipTime = 0;
-		temp->clipParameter = 0;
+		a3clipControllerSetKeyframe(temp, getCurrentClip(temp)->lastKeyIndex, a3true);
 	}
 
 	if (temp->clipIndex != demoMode->clipIndex)
 	{
-		temp->clipIndex = demoMode->clipIndex;
-
-		// Reset all the data bc things break otherwise 
-		temp->clipTime = 0;
-		temp->clipParameter = 0;
-		temp->keyIndex = 0;
-		temp->keyTime = 0;
-		temp->keyParameter = 0;
+		a3clipControllerSetClip(temp, temp->clipPool, demoMode->clipIndex);
 	}
 
 
@@ -212,7 +189,7 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 		printf("	1 is previous and 2 is next.\n");
 		printf("Press key 3 to play/pause controller playback.\n");
 		printf("Press keys O and P to set first/last frame in current clip.\n");
-		printf("	O is last frame and P is first frame.\n");
+		printf("	O is first frame and P is last frame.\n");
 		printf("Press keys 5 and 6 to change which clip is being controlled.\n");
 		printf("	5 is previous and 6 is next.\n");
 		printf("Press key 7 to flip playback direction.\n");

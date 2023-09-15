@@ -60,6 +60,11 @@ struct a3_ClipController
 	a3i16 playbackDirection; // 1 = forward, 0 = paused, -1 = reverse
 };
 
+//-----------------------------------------------------------------------------
+
+// Macros for ease of use 
+#define getCurrentClip(clipCtrl) (clipCtrl->clipPool->clip + clipCtrl->clipIndex)
+#define getCurrentKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframePool->keyframe + clipCtrl->keyIndex)
 
 //-----------------------------------------------------------------------------
 
@@ -72,6 +77,8 @@ a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt);
 // set clip to play
 a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
 
+// set current keyframe
+a3ret a3clipControllerSetKeyframe(a3_ClipController* clipCtrl, a3ui32 keyIndex, a3boolean setToEndOfKey);
 
 //-----------------------------------------------------------------------------
 

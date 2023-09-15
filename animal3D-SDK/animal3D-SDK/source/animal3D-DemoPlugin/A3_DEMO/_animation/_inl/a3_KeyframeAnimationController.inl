@@ -1,3 +1,4 @@
+#include "a3_KeyframeAnimationController.h"
 /*
 	Copyright 2011-2020 Daniel S. Buckstein
 
@@ -122,6 +123,38 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 {
 	clipCtrl->clipPool = clipPool;
 	clipCtrl->clipIndex = clipIndex_pool;
+
+	// Set to the first keyframe of the clip (resets all time values) 
+	a3clipControllerSetKeyframe(clipCtrl, getCurrentClip(clipCtrl)->firstKeyIndex, a3false);
+
+	return 0;
+}
+
+inline a3ret a3clipControllerSetKeyframe(a3_ClipController* clipCtrl, a3ui32 keyIndex, a3boolean setToEndOfKey)
+{
+	// Make sure the keyframe index is in bounds 
+	if (keyIndex < getCurrentClip(clipCtrl)->firstKeyIndex &&
+		keyIndex > getCurrentClip(clipCtrl)->firstKeyIndex)
+		return -1;
+
+	clipCtrl->keyIndex = keyIndex;
+
+	// Reset all of the times to the the start/end 
+	if (setToEndOfKey)
+	{
+		clipCtrl->keyTime = getCurrentKeyframe(clipCtrl)->duration;
+		clipCtrl->keyParameter = 1;
+		clipCtrl->clipTime = getCurrentClip(clipCtrl)->duration;
+		clipCtrl->clipParameter = 1;
+	}
+	else
+	{
+		clipCtrl->keyTime = 0;
+		clipCtrl->keyParameter = 0;
+		clipCtrl->clipTime = 0;
+		clipCtrl->clipParameter = 0;
+	}
+
 	return 0;
 }
 
