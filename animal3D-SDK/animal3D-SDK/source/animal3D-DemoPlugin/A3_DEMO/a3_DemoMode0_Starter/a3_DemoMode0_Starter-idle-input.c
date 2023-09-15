@@ -135,130 +135,130 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 
 	/* CODE FOR CLASS */
 	// determines which clip controller we are currently on
-	a3_ClipController temp;
+	a3_ClipController* temp;
 	switch (demoMode->clipCtrlIndex)
 	{
-	case 0: temp = demoMode->clipCtrlZero; break;
-	case 1: temp = demoMode->clipCtrlOne; break;
-	case 2: temp = demoMode->clipCtrlTwo; break;
+	case 0: temp = &demoMode->clipCtrlZero; break;
+	case 1: temp = &demoMode->clipCtrlOne; break;
+	case 2: temp = &demoMode->clipCtrlTwo; break;
 	}
 
 	// play or pause controller based on bool (0 pause, 1 play)
-	temp.playbackDirection = demoMode->isPlay;
+	temp->playbackDirection = demoMode->isPlay;
 
 	// set to first/last frame in current clip based on bool
 	if (demoMode->isFirstFrame)
 	{
-		temp.keyIndex = temp.clipPool->clip->firstKeyIndex;
+		temp->keyIndex = temp->clipPool->clip->firstKeyIndex;
 	}
 	else
 	{
-		temp.keyIndex = temp.clipPool->clip->lastKeyIndex;
+		temp->keyIndex = temp->clipPool->clip->lastKeyIndex;
 	}
 
 	// flips playback direction based on bool
 	if (demoMode->isForwardDir)
 	{
-		temp.playbackDirection = 1;
+		temp->playbackDirection = 1;
 	}
 	else
 	{
-		temp.playbackDirection = -1;
+		temp->playbackDirection = -1;
 	}
 
 	if (frameCount == 20)
 	{
 		frameCount = 0;
 
-		printf("ccindex: %d, ", demoMode->clipCtrlIndex);
+		//printf("ccindex: %d, ", demoMode->clipCtrlIndex);
 
-		// toggle play and pause
-		printf("isplay: %d, ", demoMode->isPlay);
+		//// toggle play and pause
+		//printf("isplay: %d, ", demoMode->isPlay);
 
-		// toggle first and last frame
-		printf("whatframe: %d, ", demoMode->isFirstFrame);
+		//// toggle first and last frame
+		//printf("whatframe: %d, ", demoMode->isFirstFrame);
 
-		// toggle clip
-		printf("clipindex: %d, ", demoMode->clipIndex);
+		//// toggle clip
+		//printf("clipindex: %d, ", demoMode->clipIndex);
 
-		// toggle playback direction
-		printf("forward: %d, ", demoMode->isForwardDir);
+		//// toggle playback direction
+		//printf("forward: %d, ", demoMode->isForwardDir);
 
-		// toggle slow motion
-		printf("time: %d\n", demoMode->isNormalTime);
+		//// toggle slow motion
+		//printf("time: %d\n", demoMode->isNormalTime);
 
-		//// display menu for controls
-		//printf("\n\n\n____________MENU CONTROLS____________\n");
-		//printf("Press keys 1 and 2 to select clip controller.\n");
-		//printf("	1 is previous and 2 is next.\n");
-		//printf("Press key 3 to play/pause controller playback.\n");
-		//printf("Press key 4 to set first/last frame in current clip.\n");
-		//printf("Press keys 5 and 6 to change which clip is being controlled.\n");
-		//printf("	5 is previous and 6 is next.\n");
-		//printf("Press key 7 to flip playback direction.\n");
-		//printf("Press key 8 to toggle slow-motion on and off.\n\n\n\n");
+		// display menu for controls
+		printf("\n\n\n____________MENU CONTROLS____________\n");
+		printf("Press keys 1 and 2 to select clip controller.\n");
+		printf("	1 is previous and 2 is next.\n");
+		printf("Press key 3 to play/pause controller playback.\n");
+		printf("Press key 4 to set first/last frame in current clip.\n");
+		printf("Press keys 5 and 6 to change which clip is being controlled.\n");
+		printf("	5 is previous and 6 is next.\n");
+		printf("Press key 7 to flip playback direction.\n");
+		printf("Press key 8 to toggle slow-motion on and off.\n\n\n\n");
 
-		//// display clip controllers and their information
-		//if (demoMode->clipCtrlIndex == 0)
-		//{
-		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
-		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
-		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+		// display clip controllers and their information
+		if (demoMode->clipCtrlIndex == 0)
+		{
+			printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+				demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+				demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
 
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
-		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
-		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+				demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+				demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
 
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
-		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
-		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
-		//}
-		//else if (demoMode->clipCtrlIndex == 1)
-		//{
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
-		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
-		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+				demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+				demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		}
+		else if (demoMode->clipCtrlIndex == 1)
+		{
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+				demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+				demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
 
-		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
-		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
-		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+			printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+				demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+				demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
 
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
-		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
-		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
-		//}
-		//else if (demoMode->clipCtrlIndex == 2)
-		//{
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
-		//		demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
-		//		demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+				demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+				demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		}
+		else if (demoMode->clipCtrlIndex == 2)
+		{
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlZero.name, demoMode->clipCtrlZero.clipPool, demoMode->clipCtrlZero.clipIndex,
+				demoMode->clipCtrlZero.clipTime, demoMode->clipCtrlZero.clipParameter, demoMode->clipCtrlZero.keyIndex,
+				demoMode->clipCtrlZero.keyTime, demoMode->clipCtrlZero.keyParameter, demoMode->clipCtrlZero.playbackDirection);
 
-		//	printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
-		//		demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
-		//		demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
+			printf("%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlOne.name, demoMode->clipCtrlOne.clipPool, demoMode->clipCtrlOne.clipIndex,
+				demoMode->clipCtrlOne.clipTime, demoMode->clipCtrlOne.clipParameter, demoMode->clipCtrlOne.keyIndex,
+				demoMode->clipCtrlOne.keyTime, demoMode->clipCtrlOne.keyParameter, demoMode->clipCtrlOne.playbackDirection);
 
-		//	printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
-		//		"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
-		//		demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
-		//		demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
-		//		demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
-		//}
+			printf(">>>%s: clipPool - %p, clipIndex - %d, clipTime - %f, clipParameter - %f"
+				"\nkeyIndex - %d, keyTime - %f, keyParameter - %f, playbackDirection - %d\n\n",
+				demoMode->clipCtrlTwo.name, demoMode->clipCtrlTwo.clipPool, demoMode->clipCtrlTwo.clipIndex,
+				demoMode->clipCtrlTwo.clipTime, demoMode->clipCtrlTwo.clipParameter, demoMode->clipCtrlTwo.keyIndex,
+				demoMode->clipCtrlTwo.keyTime, demoMode->clipCtrlTwo.keyParameter, demoMode->clipCtrlTwo.playbackDirection);
+		}
 	}
 }
 

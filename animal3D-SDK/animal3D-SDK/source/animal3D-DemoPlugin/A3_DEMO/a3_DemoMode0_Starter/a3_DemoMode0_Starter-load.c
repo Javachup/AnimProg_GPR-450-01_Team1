@@ -173,8 +173,24 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// init keyframe pool which creates 20 keyframes
 	a3keyframePoolCreate(&demoMode->keyPool, 20);
 
+	for (int i = 0; i < 20; i++)
+	{
+		// The data for each keyframe will be -(i^2)
+		// Just so that the data is different from the index
+		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, -i * i);
+	}
+
 	// init clip pool which creates 5 clips
 	a3clipPoolCreate(&demoMode->clipPool, 5);
+
+	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4", "Clip 5" };
+
+	for (int i = 0; i < 5; i++)
+	{
+		// Each clip will have 5 of the 20 keyframes in the keyframe pool
+		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * 5, i * 5 + 4);
+		a3clipCalculateDuration(demoMode->clipPool.clip + i);
+	}
 
 	// init clip controllers
 	a3clipControllerInit(&demoMode->clipCtrlZero, "zeroCtrl", &demoMode->clipPool, 0);

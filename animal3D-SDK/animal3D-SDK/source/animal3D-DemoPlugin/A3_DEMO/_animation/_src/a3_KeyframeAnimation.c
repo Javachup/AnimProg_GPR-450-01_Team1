@@ -144,6 +144,7 @@ a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_na
 	clip_out->keyframePool = keyframePool; //happens because the pinter points to a const but clip_out->keyframePool is not a const
 	clip_out->firstKeyIndex = firstKeyframeIndex;
 	clip_out->lastKeyIndex = finalKeyframeIndex;
+	clip_out->keyCount = finalKeyframeIndex - firstKeyframeIndex + 1;
 
 	return -1;
 }
