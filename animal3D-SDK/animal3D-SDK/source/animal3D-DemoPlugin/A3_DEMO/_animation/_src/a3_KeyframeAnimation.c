@@ -135,11 +135,13 @@ a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 }
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
 	//I CAN NOT FIGURE THESE TWO OUT
-	//strncopy(clip_out->name,clipName, a3keyframeAnimation_nameLenMax); //
-	//clip_out->keyframePool = keyframePool; //happens because the pinter points to a const but clip_out->keyframePool is not a const
+	//strcopy(clip_out->name,clipName); kept saying it was an int and not a char* so info was passed wrong?
+
+	memcpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax); //https://www.geeksforgeeks.org/different-ways-to-copy-a-string-in-c-c/#
+	clip_out->keyframePool = keyframePool; //happens because the pinter points to a const but clip_out->keyframePool is not a const
 	clip_out->firstKeyIndex = firstKeyframeIndex;
 	clip_out->lastKeyIndex = finalKeyframeIndex;
 
