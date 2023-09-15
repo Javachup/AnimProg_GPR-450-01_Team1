@@ -119,16 +119,14 @@ inline a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipP
 	clipCtrl->clipIndex = clipIndex_pool;
 
 	// Set to the first keyframe of the clip (resets all time values) 
-	a3clipControllerSetKeyframe(clipCtrl, getCurrentClip(clipCtrl)->firstKeyIndex, a3false);
-
-	return 0;
+	return a3clipControllerSetKeyframe(clipCtrl, getCurrentClip(clipCtrl)->firstKeyIndex, a3false);
 }
 
 inline a3ret a3clipControllerSetKeyframe(a3_ClipController* clipCtrl, a3ui32 keyIndex, a3boolean setToEndOfKey)
 {
 	// Make sure the keyframe index is in bounds 
 	if (keyIndex < getCurrentClip(clipCtrl)->firstKeyIndex &&
-		keyIndex > getCurrentClip(clipCtrl)->firstKeyIndex)
+		keyIndex > getCurrentClip(clipCtrl)->lastKeyIndex)
 		return -1;
 
 	clipCtrl->keyIndex = keyIndex;
