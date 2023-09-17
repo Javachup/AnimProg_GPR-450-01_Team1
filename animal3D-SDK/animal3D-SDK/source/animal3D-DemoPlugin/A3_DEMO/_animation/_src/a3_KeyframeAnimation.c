@@ -55,7 +55,7 @@ a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count
 		(keyframePool_out->keyframe + i)->invDuration = 1.0;
 		(keyframePool_out->keyframe + i)->data = 0;
 	}
-	return -1;
+	return 0;
 }
 
 // release keyframe pool
@@ -66,17 +66,9 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool)
 		return -1;
 	}
 
-	for (a3ui32 i = 0; i < keyframePool->count; i++)
-	{
-		if (!(keyframePool->keyframe + i))
-		{
-			return -1;
-		}
-	}
-
 	free(keyframePool->keyframe); //C version of freeing memory
 
-	return -1;
+	return 0;
 }
 
 // initialize keyframe
@@ -84,69 +76,71 @@ a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3u
 {
 	keyframe_out->duration = duration;
 	keyframe_out->invDuration = (1 / duration);
-	keyframe_out->data = value_x; //Assuming data is the info we give the keyframe?
+	keyframe_out->data = value_x;
 
-	return -1;
+	return 0;
 }
 
 // allocate clip pool
 a3i32 a3clipPoolCreate(a3_ClipPool* clipPool_out, const a3ui32 count)
 {
 	clipPool_out->clip = (a3_Clip*)malloc(sizeof(a3_Clip) * count);//allocating memory size
+	// Check if allocation worked
+	if (clipPool_out->clip == NULL)
+		return -1;
 
 	clipPool_out->count = count; 
 
 	//default values for all clip variables
 	for (a3ui32 i = 0; i < clipPool_out->count; i++)
 	{
-		if (!(clipPool_out->clip + i))
-		{
-			return -1;
-		}
-
 		(clipPool_out->clip + i)->duration = 0.0;
 		(clipPool_out->clip + i)->invDuration = 0.0;
 		(clipPool_out->clip + i)->keyCount = 0;
 		(clipPool_out->clip + i)->firstKeyIndex = 0;
 		(clipPool_out->clip + i)->lastKeyIndex = 0;
-		(clipPool_out->clip + i)->keyframePool = NULL;
+		(clipPool_out->clip + i)->keyframes = NULL;
 		(clipPool_out->clip + i)->index = i;
 	}
 
-	return -1;
+	return 0;
 }
 
 // release clip pool
 a3i32 a3clipPoolRelease(a3_ClipPool* clipPool)
 {
-	for (a3ui32 i = 0; i < clipPool->count; i++)
-	{
-		if (!(clipPool->clip + i))
-		{
-			return -1;
-		}
-
-		
-	}
+	if (clipPool == NULL)
+		return -1;
 
 	free(clipPool->clip);
 
-	return -1;
+	return 0;
 }
 
 // initialize clip with first and last indices
-a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
+a3i32 a3clipInit(a3_Clip* clip_out, const a3byte clipName[a3keyframeAnimation_nameLenMax], const a3_KeyframePool* keyframePool, const a3ui32 firstKeyframeIndex, const a3ui32 finalKeyframeIndex)
 {
-	//I CAN NOT FIGURE THESE TWO OUT
-	//strcopy(clip_out->name,clipName); kept saying it was an int and not a char* so info was passed wrong?
+	// Error Checking
+	// Null ptr
+	if (keyframePool == NULL)
+		return -1;
+
+	// Uninitialized pool
+	if (keyframePool->keyframe == NULL)
+		return -1;
+
+	// Out of bounds
+	if (firstKeyframeIndex < 0 ||
+		finalKeyframeIndex >= keyframePool->count)
+		return -1;
 
 	memcpy(clip_out->name, clipName, a3keyframeAnimation_nameLenMax); //https://www.geeksforgeeks.org/different-ways-to-copy-a-string-in-c-c/#
-	clip_out->keyframePool = keyframePool; //happens because the pinter points to a const but clip_out->keyframePool is not a const
+	clip_out->keyframes = keyframePool->keyframe;
 	clip_out->firstKeyIndex = firstKeyframeIndex;
 	clip_out->lastKeyIndex = finalKeyframeIndex;
 	clip_out->keyCount = finalKeyframeIndex - firstKeyframeIndex + 1;
 
-	return -1;
+	return 0;
 }
 
 // get clip index from pool

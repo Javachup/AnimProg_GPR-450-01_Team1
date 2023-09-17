@@ -64,7 +64,7 @@ struct a3_ClipController
 
 // Macros for ease of use 
 #define getCurrentClip(clipCtrl) (clipCtrl->clipPool->clip + clipCtrl->clipIndex)
-#define getCurrentKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframePool->keyframe + clipCtrl->keyIndex)
+#define getCurrentKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframes + clipCtrl->keyIndex)
 
 //-----------------------------------------------------------------------------
 

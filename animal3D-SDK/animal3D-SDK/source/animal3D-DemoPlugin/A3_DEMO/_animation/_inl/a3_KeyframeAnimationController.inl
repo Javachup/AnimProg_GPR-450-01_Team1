@@ -51,9 +51,8 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 		return -1;
 
 	// Make sure we have a key pool that has at least 1 key frame 
-	if (!clipCtrl->clipPool->clip->keyframePool ||
-		!clipCtrl->clipPool->clip->keyframePool->keyframe ||
-		clipCtrl->clipPool->clip->keyframePool->count < 0)
+	if (!clipCtrl->clipPool->clip->keyframes ||
+		!clipCtrl->clipPool->clip->keyCount < 0)
 		return -1;
 
 	// --== Pre-resolution ==--

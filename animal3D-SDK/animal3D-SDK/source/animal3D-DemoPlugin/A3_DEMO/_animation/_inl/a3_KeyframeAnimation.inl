@@ -38,7 +38,7 @@ inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 	//Suming up all keyframes referenced's durations and invDurations
 	for (a3ui32 i = 0; i < clip->keyCount; i++)
 	{
-		sumDur += (clip->keyframePool->keyframe + clip->firstKeyIndex + i)->duration;
+		sumDur += (clip->keyframes + clip->firstKeyIndex + i)->duration;
 		//sumInvDur += (clip->keyframePool->keyframe + i)->invDuration;
 	}
 
@@ -53,8 +53,10 @@ inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuratio
 {
 	for (a3ui32 i = 0; i < clip->keyCount; i++)
 	{
-		(clip->keyframePool->keyframe + i)->duration = newClipDuration;
-		(clip->keyframePool->keyframe + i)->invDuration = 1 / newClipDuration;
+		// clip->keyframes is const but we need to edit them here so we cast to a non-const pointer
+		// Not risky as long as we only do this in internal functions like this one
+		((a3_Keyframe*)(clip->keyframes + i))->duration = newClipDuration;
+		((a3_Keyframe*)(clip->keyframes + i))->invDuration = 1 / newClipDuration;
 	}
 
 	return -1;
