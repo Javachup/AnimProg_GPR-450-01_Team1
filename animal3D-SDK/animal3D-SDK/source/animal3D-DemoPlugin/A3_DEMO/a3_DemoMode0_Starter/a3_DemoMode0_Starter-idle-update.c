@@ -38,6 +38,7 @@
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 // UPDATE
@@ -90,9 +91,16 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// Multiply dt by less than 1 for slowmo 
 	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.1;
 
-	a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier);
-	a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
-	a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
+	if (a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier) < 0)
+		printf("\n========== ERROR UPDATING (%d, %s) ==========\n\n", __LINE__, __FILE__);
+	//a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
+	//a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
+
+	// TEMP TO GET THE INPUT TO WORK
+	demoMode->isPlay = demoMode->clipCtrlZero.playbackDirection != 0;
+	if (demoMode->clipCtrlZero.playbackDirection != 0)
+		demoMode->isForwardDir = demoMode->clipCtrlZero.playbackDirection > 0;
+
 }
 
 

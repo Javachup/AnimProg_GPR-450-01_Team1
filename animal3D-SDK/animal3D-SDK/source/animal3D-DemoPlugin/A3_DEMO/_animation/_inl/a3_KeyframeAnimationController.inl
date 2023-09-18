@@ -69,17 +69,17 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 		if (clipCtrl->playbackDirection > 0)
 		{
 			// Case: Forward Skip
-			while (clipCtrl->keyTime >= getCurrentKeyframe(clipCtrl)->duration)
+			while (clipCtrl->keyTime > getCurrentKeyframe(clipCtrl)->duration) // TODO: Should this still be >=? That messes up the stop terminus
 			{
 				clipCtrl->keyTime -= getCurrentKeyframe(clipCtrl)->duration;
 				clipCtrl->keyIndex++;
 
 				// Case: Forward Terminus
-				while (clipCtrl->clipTime >= getCurrentClip(clipCtrl)->duration)
+				while (clipCtrl->clipTime > getCurrentClip(clipCtrl)->duration) // TODO: Should this still be >=? That messes up the stop terminus
 				{
-					// Loop back to start
-					clipCtrl->keyIndex = getCurrentClip(clipCtrl)->firstKeyIndex;
-					clipCtrl->clipTime -= getCurrentClip(clipCtrl)->duration; // Don't lose the extra time 
+					a3f64 leftOverTime = clipCtrl->clipTime - getCurrentClip(clipCtrl)->duration;
+					a3ret ret = clipCtrl->forwardTerminus(clipCtrl, leftOverTime);
+					if (ret < 0) return ret; // Make sure that call did not fail
 				}
 			}
 		}
@@ -90,15 +90,26 @@ inline a3i32 a3clipControllerUpdate(a3_ClipController* clipCtrl, const a3f64 dt)
 			// Case: Reverse Skip
 			while (clipCtrl->keyTime < 0)
 			{
+				clipCtrl->keyIndex--; // this needs to happen first
+
 				// Case: Reverse Terminus
+				// This need to set the proper keyIndex otherwise we will get errors later
 				while (clipCtrl->clipTime < 0)
 				{
-					// Loop back to end
-					clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex + 1; // this gets subtracted to be back in range later 
-					clipCtrl->clipTime += getCurrentClip(clipCtrl)->duration;
+					a3f64 leftOverTime = -clipCtrl->clipTime;
+					a3ret ret = clipCtrl->reverseTerminus(clipCtrl, leftOverTime);
+					if (ret < 0) return ret; // Make sure that call did not fail
+
+					// Check to make sure reverseTerminus set things properly
+					if (clipCtrl->clipTime < 0 || clipCtrl->clipTime > getCurrentClip(clipCtrl)->duration)
+						return -1;
+
+					if (clipCtrl->keyIndex < getCurrentClip(clipCtrl)->firstKeyIndex ||
+						clipCtrl->keyIndex > getCurrentClip(clipCtrl)->lastKeyIndex)
+						return -1;
 				}
 
-				clipCtrl->keyIndex--; // this needs to happen first
+				// TODO: This will mess up and time the reverseTerminus sets for keyTime :/
 				clipCtrl->keyTime += getCurrentKeyframe(clipCtrl)->duration;
 			}
 		}
@@ -149,6 +160,49 @@ inline a3ret a3clipControllerSetKeyframe(a3_ClipController* clipCtrl, a3ui32 key
 	return 0;
 }
 
+//-----------------------------------------------------------------------------
+
+inline a3ret forwardLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime)
+{
+	// Loop back to start
+	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->firstKeyIndex;
+	clipCtrl->clipTime = leftOverTime; // Don't lose the extra time
+
+	return 0;
+}
+
+inline a3ret reverseLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime)
+{
+	// Loop back to end
+	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex;
+	clipCtrl->clipTime = getCurrentClip(clipCtrl)->duration - leftOverTime;
+
+	return 0;
+}
+
+inline a3ret forwardStop(a3_ClipController* clipCtrl, a3f64 leftOverTime)
+{
+	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex;
+	clipCtrl->clipTime = getCurrentClip(clipCtrl)->duration;
+
+	clipCtrl->keyTime = getCurrentKeyframe(clipCtrl)->duration;
+
+	clipCtrl->playbackDirection = 0; // Pause
+
+	return 0;
+}
+
+inline a3ret forwardPingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime)
+{
+	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex;
+	clipCtrl->clipTime = getCurrentClip(clipCtrl)->duration - leftOverTime;
+
+	clipCtrl->keyTime = getCurrentKeyframe(clipCtrl)->duration - leftOverTime;
+
+	clipCtrl->playbackDirection = -1;
+
+	return 0;
+}
 
 //-----------------------------------------------------------------------------
 

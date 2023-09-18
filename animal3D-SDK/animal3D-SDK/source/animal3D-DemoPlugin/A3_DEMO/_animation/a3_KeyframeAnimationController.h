@@ -42,6 +42,13 @@ typedef struct a3_ClipController			a3_ClipController;
 
 //-----------------------------------------------------------------------------
 
+// Function pointer for a function that takes a clipCtrl and left over time
+// Both for forward terminus and reverse terminus
+typedef a3ret(*ForwardTerminusFunc)(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+typedef a3ret(*ReverseTerminusFunc)(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+
+//-----------------------------------------------------------------------------
+// 
 // clip controller
 // metaphor: playhead
 struct a3_ClipController
@@ -57,16 +64,29 @@ struct a3_ClipController
 	a3f64 keyTime;
 	a3f64 keyParameter;
 
-	a3i16 playbackDirection; // 1 = forward, 0 = paused, -1 = reverse
-};
+	// Terminus Functions MUST set:
+	//		* clipTime
+	//		* keyIndex
+	// Terminus Functions CAN set:
+	//		* clipIndex
+	//		* keyTime (TODO: issue with reverse terminus rn)
+	//		* playbackDirection
+	//		* clipPool (TODO: untested)
+	// Terminus Functions CAN NOT set:
+	//		* name
+	//		* clipParameter
+	//		* keyParameter
+	ForwardTerminusFunc forwardTerminus;
+	ReverseTerminusFunc reverseTerminus;
 
-//-----------------------------------------------------------------------------
+	a3i16 playbackDirection; // 1 = forward, 0 = paused, -1 = reverse
+
+	
+};
 
 // Macros for ease of use 
 #define getCurrentClip(clipCtrl) (clipCtrl->clipPool->clip + clipCtrl->clipIndex)
 #define getCurrentKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframes + clipCtrl->keyIndex)
-
-//-----------------------------------------------------------------------------
 
 // initialize clip controller
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
@@ -79,6 +99,15 @@ a3i32 a3clipControllerSetClip(a3_ClipController* clipCtrl, const a3_ClipPool* cl
 
 // set current keyframe
 a3ret a3clipControllerSetKeyframe(a3_ClipController* clipCtrl, a3ui32 keyIndex, a3boolean setToEndOfKey);
+
+//-----------------------------------------------------------------------------
+
+a3ret forwardLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+a3ret reverseLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+
+a3ret forwardStop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+
+a3ret forwardPingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime);
 
 //-----------------------------------------------------------------------------
 
