@@ -166,23 +166,6 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	{
 		frameCount = 0;
 
-		//printf("ccindex: %d, ", demoMode->clipCtrlIndex);
-
-		//// toggle play and pause
-		//printf("isplay: %d, ", demoMode->isPlay);
-
-		//// toggle first and last frame
-		//printf("whatframe: %d, ", demoMode->isFirstFrame);
-
-		//// toggle clip
-		//printf("clipindex: %d, ", demoMode->clipIndex);
-
-		//// toggle playback direction
-		//printf("forward: %d, ", demoMode->isForwardDir);
-
-		//// toggle slow motion
-		//printf("time: %d\n", demoMode->isNormalTime);
-
 		// display menu for controls
 		printf("\n\n\n____________MENU CONTROLS____________\n");
 		printf("Press keys 1 and 2 to select clip controller.\n");
