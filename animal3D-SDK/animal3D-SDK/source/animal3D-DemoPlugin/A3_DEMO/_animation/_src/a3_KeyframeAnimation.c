@@ -156,6 +156,6 @@ a3i32 a3clipGetIndexInPool(const a3_ClipPool* clipPool, const a3byte clipName[a3
 		}
 	}
 
-	return -1;
+	return 0;
 }
 //-----------------------------------------------------------------------------
