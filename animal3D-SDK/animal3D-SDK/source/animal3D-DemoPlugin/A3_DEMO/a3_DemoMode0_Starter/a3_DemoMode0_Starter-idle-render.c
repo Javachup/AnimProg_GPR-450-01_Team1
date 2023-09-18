@@ -189,7 +189,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	// temp drawable pointers
 	const a3_VertexDrawable* drawable[] = {
 		demoState->draw_unit_box,		// skybox
-		demoState->draw_unit_plane_z,
+		demoState->draw_unit_plane_z, //PUT SPRITES ON THIS PLANE
 		demoState->draw_unit_box,
 		demoState->draw_unit_sphere,
 		demoState->draw_unit_cylinder,
@@ -201,7 +201,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
 		demoState->tex_checker,
-		demoState->tex_checker,
+		demoState->tex_checker, //<- associated with plane_z
 		demoState->tex_checker,
 		demoState->tex_checker,
 		demoState->tex_checker,
