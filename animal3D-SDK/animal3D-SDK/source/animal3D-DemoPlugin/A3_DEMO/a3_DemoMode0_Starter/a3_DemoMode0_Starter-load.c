@@ -174,7 +174,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3keyframePoolCreate(&demoMode->keyPool, 64);
 	
 	// set atlas texture and create even cells
-	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, demoState->tex_testsprite);
+	a3_DemoState demoStateCopy = *demoState;
+	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, demoStateCopy.tex_testsprite);
 	a3textureAtlasAllocateEvenCells(&demoMode->spriteTestAtlas, 8, 8);
 
 	// allocate sprite cell index to each keyframe
