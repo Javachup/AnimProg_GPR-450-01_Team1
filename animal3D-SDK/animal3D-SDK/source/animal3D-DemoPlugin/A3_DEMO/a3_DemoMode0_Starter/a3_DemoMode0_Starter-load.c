@@ -195,7 +195,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	for (int i = 0; i < clipPoolSize; i++)
 	{
 		// Each clip will have 8 of the 64 keyframes in the keyframe pool
-		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * clipPoolSize, i * clipPoolSize + 4);
+		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * clipPoolSize, i * clipPoolSize + 7);
 		a3clipCalculateDuration(demoMode->clipPool.clip + i);
 	}
 
