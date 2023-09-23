@@ -37,6 +37,7 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 #include "_animation/a3_KeyframeAnimationController.h"
+#include "animal3D-A3DG/a3graphics/A3_TEXTUREATLAS.H"
 
 //-----------------------------------------------------------------------------
 
@@ -177,6 +178,8 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		a3integer clipCtrlIndex;
 		a3integer clipIndex;
 
+		// Texture atlas for sprites
+		a3_TextureAtlas spriteTestAtlas;
 	};
 
 //-----------------------------------------------------------------------------

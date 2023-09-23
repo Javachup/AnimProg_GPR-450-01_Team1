@@ -173,24 +173,12 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// init keyframe pool which creates 64 keyframes
 	a3keyframePoolCreate(&demoMode->keyPool, 64);
 
-	for (int i = 0; i < 64; i++)
+	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, &demoState->tex_testsprite);
+	a3textureAtlasAllocateEvenCells(&demoMode->spriteTestAtlas, 8, 8);
+
+	for (a3ui32 i = 0; i < demoMode->spriteTestAtlas.numCells; i++)
 	{
-		 //int sprite_width = demoState->tex_testsprite->width / 8;
-		 //int sprite_height = demoState->tex_testsprite->height / 8;
-		 // 
-		 //// Split the tex_testsprite into each square (row + column)
-		 //for (int r = 1; r <= 8; r++)
-		 //{
-			//	// finding the pixel size
-			//	r *= sprite_width;
-			//	for (int c = 1; c <= 8; c++)
-			//	{
-			//		// Finding the pixel size
-			//		c *= sprite_height;
-			//		// Set keyframe to sprite_width, sprite_height of texture
-			//	}
-		 //}
-		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, -i * i); //data is an int (Error)
+		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, &demoMode->spriteTestAtlas.cells[i]);
 	}
 
 	// init clip pool which creates 8 clips (for each row)
