@@ -64,12 +64,11 @@ struct a3_ClipController
 	a3f64 keyTime;
 	a3f64 keyParameter;
 
-	// Terminus Functions MUST set:
+	// Terminus Functions CAN set:
 	//		* clipTime
 	//		* keyIndex
-	// Terminus Functions CAN set:
 	//		* clipIndex
-	//		* keyTime (TODO: issue with reverse terminus rn)
+	//		* keyTime
 	//		* playbackDirection
 	//		* clipPool (TODO: untested)
 	// Terminus Functions CAN NOT set:
@@ -106,8 +105,10 @@ a3ret forwardLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
 a3ret reverseLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
 
 a3ret forwardStop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+a3ret reverseStop(a3_ClipController* clipCtrl, a3f64 leftOverTime);
 
 a3ret forwardPingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime);
+a3ret reversePingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime);
 
 //-----------------------------------------------------------------------------
 

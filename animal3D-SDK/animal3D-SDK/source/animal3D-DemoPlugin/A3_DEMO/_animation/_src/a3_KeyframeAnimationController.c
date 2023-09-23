@@ -36,8 +36,8 @@ a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlNam
 
 	clipCtrl_out->playbackDirection = 1;
 
-	clipCtrl_out->forwardTerminus = forwardStop;
-	clipCtrl_out->reverseTerminus = reverseLoop;
+	clipCtrl_out->forwardTerminus = forwardPingPong;
+	clipCtrl_out->reverseTerminus = reversePingPong;
 
 	return a3clipControllerSetClip(clipCtrl_out, clipPool, clipIndex_pool);
 }
