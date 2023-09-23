@@ -170,25 +170,41 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
 	demoMode->targetCount[starter_passComposite] = 1;
 
-	// init keyframe pool which creates 20 keyframes
-	a3keyframePoolCreate(&demoMode->keyPool, 25);
+	// init keyframe pool which creates 64 keyframes
+	a3keyframePoolCreate(&demoMode->keyPool, 64);
 
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 64; i++)
 	{
-		// The data for each keyframe will be -(i^2)
-		// Just so that the data is different from the index
-		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, -i * i);
+		 //int sprite_width = demoState->tex_testsprite->width / 8;
+		 //int sprite_height = demoState->tex_testsprite->height / 8;
+		 // 
+		 //// Split the tex_testsprite into each square (row + column)
+		 //for (int r = 1; r <= 8; r++)
+		 //{
+			//	// finding the pixel size
+			//	r *= sprite_width;
+			//	for (int c = 1; c <= 8; c++)
+			//	{
+			//		// Finding the pixel size
+			//		c *= sprite_height;
+			//		// Set keyframe to sprite_width, sprite_height of texture
+			//	}
+		 //}
+		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, -i * i); //data is an int (Error)
 	}
 
-	// init clip pool which creates 5 clips
-	a3clipPoolCreate(&demoMode->clipPool, 5);
+	// init clip pool which creates 8 clips (for each row)
+	a3clipPoolCreate(&demoMode->clipPool, 8);
 
-	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4", "Clip 5" };
+	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4",
+							"Clip 5", "Clip 6", "Clip 7", "Clip 8"};
 
-	for (int i = 0; i < 5; i++)
+	int clipPoolSize = sizeof(names) / sizeof(names[0]);
+
+	for (int i = 0; i < clipPoolSize; i++)
 	{
-		// Each clip will have 5 of the 20 keyframes in the keyframe pool
-		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * 5, i * 5 + 4);
+		// Each clip will have 8 of the 64 keyframes in the keyframe pool
+		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * clipPoolSize, i * clipPoolSize + 4);
 		a3clipCalculateDuration(demoMode->clipPool.clip + i);
 	}
 
