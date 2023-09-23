@@ -201,7 +201,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
 		demoState->tex_checker,
-		demoState->tex_checker, //<- associated with plane_z
+		demoState->tex_testsprite, //<- associated with plane_z
 		demoState->tex_checker,
 		demoState->tex_checker,
 		demoState->tex_checker,
