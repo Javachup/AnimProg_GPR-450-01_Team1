@@ -172,20 +172,22 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// init keyframe pool which creates 64 keyframes
 	a3keyframePoolCreate(&demoMode->keyPool, 64);
-
-	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, &demoState->tex_testsprite);
+	
+	// set atlas texture and create even cells
+	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, demoState->tex_testsprite);
 	a3textureAtlasAllocateEvenCells(&demoMode->spriteTestAtlas, 8, 8);
 
+	// allocate sprite cell index to each keyframe
 	for (a3ui32 i = 0; i < demoMode->spriteTestAtlas.numCells; i++)
 	{
-		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, &demoMode->spriteTestAtlas.cells[i]);
+		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, i);
 	}
 
 	// init clip pool which creates 8 clips (for each row)
 	a3clipPoolCreate(&demoMode->clipPool, 8);
 
 	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4",
-							"Clip 5", "Clip 6", "Clip 7", "Clip 8"};
+							"Clip 5", "Clip 6", "Clip 7", "Clip 8" };
 
 	int clipPoolSize = sizeof(names) / sizeof(names[0]);
 

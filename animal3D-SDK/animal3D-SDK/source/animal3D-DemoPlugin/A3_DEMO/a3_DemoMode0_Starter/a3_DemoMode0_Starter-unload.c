@@ -45,7 +45,7 @@ void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoM
 {
 	a3clipPoolRelease(&demoMode->clipPool);
 	a3keyframePoolRelease(&demoMode->keyPool);
-	//a3textureAtlasRelease(&demoMode->spriteTestAtlas);
+	a3textureAtlasRelease(&demoMode->spriteTestAtlas);
 }
 
 
