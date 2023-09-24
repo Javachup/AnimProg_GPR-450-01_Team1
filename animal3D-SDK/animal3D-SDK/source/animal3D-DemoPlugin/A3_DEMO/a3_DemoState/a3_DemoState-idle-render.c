@@ -176,10 +176,17 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"FORWARDS",
 	};
 
-	// Playback direction text
+	// Playback speed text
 	a3byte const playbackSpeedText[2][7] = {
 		"SLOWMO",
 		"NORMAL",
+	};
+
+	// Terminus action text
+	a3byte const terminusText[3][10] = {
+		"LOOP     ",
+		"STOP     ",
+		"PING PONG",
 	};
 
 	const a3f32 textIndentOffset = 0.8f;
@@ -217,6 +224,18 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"    Current Key Time: %f", currCtrl->keyTime);
 	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"Key Parameter: %f", currCtrl->keyParameter);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Terminus Actions: ['z' | 'Z'] LOOP, ['x' | 'X'] STOP, ['c' | 'C'] PONG PONG");
+
+	textOffset += textOffsetDelta;
+	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"    Forward Terminus: %s", terminusText[demoState->demoMode0_starter->forwardAction]);
+	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Reverse Terminus: %s", terminusText[demoState->demoMode0_starter->reverseAction]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    First Keyframe: %u    Last Keyframe: %u", getCurrentClip(currCtrl)->firstKeyIndex, getCurrentClip(currCtrl)->lastKeyIndex);
 
 	// global controls
 	textOffset = -0.8f;

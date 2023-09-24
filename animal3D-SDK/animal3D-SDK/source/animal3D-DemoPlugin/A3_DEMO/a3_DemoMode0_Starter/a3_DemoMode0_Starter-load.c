@@ -201,6 +201,16 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	// values for menu
 	demoMode->isNormalTime = a3true;
+
+	// Terminus Actions
+	demoMode->forwardTerminusActions[starter_loop] = forwardLoop;
+	demoMode->reverseTerminusActions[starter_loop] = reverseLoop;
+
+	demoMode->forwardTerminusActions[starter_stop] = forwardStop;
+	demoMode->reverseTerminusActions[starter_stop] = reverseStop;
+
+	demoMode->forwardTerminusActions[starter_pingPong] = forwardPingPong;
+	demoMode->reverseTerminusActions[starter_pingPong] = reversePingPong;
 }
 
 

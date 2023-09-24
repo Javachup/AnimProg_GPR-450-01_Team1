@@ -116,6 +116,15 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_target_scene_max,
 	};
 
+	enum a3_DemoMode0_Starter_TerminusActions
+	{
+		starter_loop,
+		starter_stop,
+		starter_pingPong,
+
+		starter_terminusActions_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -188,6 +197,10 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		// Numbers for clip controllers and clips
 		a3integer clipCtrlIndex;
 
+		// Terminus Actions
+		ForwardTerminusFunc forwardTerminusActions[starter_terminusActions_max];
+		ReverseTerminusFunc reverseTerminusActions[starter_terminusActions_max];
+		a3ui32 forwardAction, reverseAction;
 	};
 
 //-----------------------------------------------------------------------------

@@ -81,6 +81,33 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 			a3clipControllerSetKeyframe(currCtrl, getCurrentClip(currCtrl)->lastKeyIndex, true);
 			break;
 
+		case 'z':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_loop];
+			demoMode->forwardAction = starter_loop;
+			break;
+		case 'Z':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_loop];
+			demoMode->reverseAction = starter_loop;
+			break;
+
+		case 'x':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_stop];
+			demoMode->forwardAction = starter_stop;
+			break;
+		case 'X':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_stop];
+			demoMode->reverseAction = starter_stop;
+			break;
+
+		case 'c':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_pingPong];
+			demoMode->forwardAction = starter_pingPong;
+			break;
+		case 'C':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_pingPong];
+			demoMode->reverseAction = starter_pingPong;
+			break;
+
 			// toggle slow motion
 			a3demoCtrlCaseToggle(demoMode->isNormalTime, 'n');
 		}
