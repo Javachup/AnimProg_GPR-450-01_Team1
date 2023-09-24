@@ -171,6 +171,7 @@ inline a3ret forwardLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime)
 	// Loop back to start
 	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->firstKeyIndex;
 	clipCtrl->clipTime = leftOverTime; // Don't lose the extra time
+	clipCtrl->keyTime = leftOverTime;
 
 	return 0;
 }
@@ -180,6 +181,7 @@ inline a3ret reverseLoop(a3_ClipController* clipCtrl, a3f64 leftOverTime)
 	// Loop back to end
 	clipCtrl->keyIndex = getCurrentClip(clipCtrl)->lastKeyIndex;
 	clipCtrl->clipTime = getCurrentClip(clipCtrl)->duration - leftOverTime;
+	clipCtrl->keyTime = getCurrentKeyframe(clipCtrl)->duration - leftOverTime;
 
 	return 0;
 }
