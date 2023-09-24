@@ -61,10 +61,10 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 			// Toggles from 0 (paused) to 1 (forwards)
 			// Can not unpause into the reverse direction
-			a3demoCtrlCaseToggle(currCtrl->playbackDirection, ' ');
+			a3demoCtrlCaseToggle(currCtrl->playbackDirection, ',');
 
 			// Reverse
-		case ',':
+		case 'm':
 			currCtrl->playbackDirection = -1;
 			break;
 
@@ -82,7 +82,7 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 			break;
 
 			// toggle slow motion
-			a3demoCtrlCaseToggle(demoMode->isNormalTime, 's');
+			a3demoCtrlCaseToggle(demoMode->isNormalTime, 'n');
 		}
 
 		// Update new values

@@ -176,23 +176,35 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"FORWARDS",
 	};
 
+	// Playback direction text
+	a3byte const playbackSpeedText[2][7] = {
+		"SLOWMO",
+		"NORMAL",
+	};
+
 	const a3f32 textIndentOffset = 0.8f;
 
 	const a3_ClipController* currCtrl = &demoState->demoMode0_starter->clipCtrls[demoState->demoMode0_starter->clipCtrlIndex];
 
 	// display some general data
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Current Clip Controller (%u/%u): %s", 
+		"Current Clip Controller (%u/%u) ['1' | '2']: %s", 
 		demoState->demoMode0_starter->clipCtrlIndex + 1, starterMaxCount_clipCtrl, currCtrl->name);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Current Playback Direction: %s", playbackDirText[currCtrl->playbackDirection + 1]);
+		"    Current Playback Speed ['n']: %s", playbackSpeedText[demoState->demoMode0_starter->isNormalTime]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Clip Index ['[' | ']']: %u", currCtrl->clipIndex);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Playback Direction ['m' | ',' | '.']: %s", playbackDirText[currCtrl->playbackDirection + 1]);
 
 	textOffset += textOffsetDelta;
 	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"    Current Clip Index: %u", currCtrl->clipIndex);
+		"    Current Key Index : % u", currCtrl->keyIndex);
 	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
-		"Current Key Index : % u", currCtrl->keyIndex);
+		"Key Data: %i", getCurrentKeyframe(currCtrl)->data);
 
 	textOffset += textOffsetDelta;
 	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
@@ -205,9 +217,6 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"    Current Key Time: %f", currCtrl->keyTime);
 	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
 		"Key Parameter: %f", currCtrl->keyParameter);
-
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Key Data: %i", getCurrentKeyframe(currCtrl)->data);
 
 	// global controls
 	textOffset = -0.8f;
