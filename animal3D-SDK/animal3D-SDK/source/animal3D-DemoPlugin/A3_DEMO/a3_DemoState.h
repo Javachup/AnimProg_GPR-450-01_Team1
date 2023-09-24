@@ -73,6 +73,7 @@ enum a3_DemoState_ModeName
 // text mode names
 enum a3_DemoState_TextDisplayName
 {
+	demoState_clipCtrl,				// display clip ctrl data
 	demoState_textDisabled,			// no text overlay
 	demoState_textControls,			// display controls
 	demoState_textControls_gen,		// display general controls

@@ -68,7 +68,7 @@ void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_St
 
 		/* input controls for basic testing interface */
 		// toggle clip controller
-		a3demoCtrlCasesLoop(demoMode->clipCtrlIndex, 3, '2', '1');
+		a3demoCtrlCasesLoop(demoMode->clipCtrlIndex, starterMaxCount_clipCtrl, '2', '1');
 
 		// toggle play and pause
 		a3demoCtrlCaseToggle(demoMode->isPlay, '3');

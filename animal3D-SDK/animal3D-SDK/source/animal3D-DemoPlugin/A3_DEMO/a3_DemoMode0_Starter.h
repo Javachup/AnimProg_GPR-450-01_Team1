@@ -62,6 +62,7 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starterMaxCount_sceneObject = 8,
 		starterMaxCount_cameraObject = 1,
 		starterMaxCount_projector = 1,
+		starterMaxCount_clipCtrl = 1,
 	};
 
 	// scene object rendering program names
@@ -158,6 +159,19 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 			struct {
 				a3_DemoProjector
 					proj_camera_main[1];
+			};
+		};
+
+		// A collection of all the clip controllers
+		// In this pattern so that we can update them all in a loop 
+		// but also access them individually
+		union
+		{
+			a3_ClipController clipCtrls[starterMaxCount_clipCtrl];
+			struct
+			{
+				a3_ClipController
+					clipCtrl_sprite[1];
 			};
 		};
 

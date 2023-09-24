@@ -197,6 +197,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	a3clipControllerInit(&demoMode->clipCtrlOne, "oneCtrl", &demoMode->clipPool, 1);
 	a3clipControllerInit(&demoMode->clipCtrlTwo, "twoCtrl", &demoMode->clipPool, 2);
 
+	a3clipControllerInit(demoMode->clipCtrl_sprite, "Sprite Controller", &demoMode->clipPool, 2);
+
 	// booleans for menu
 	demoMode->isPlay = a3true;
 	demoMode->isForwardDir = a3true;

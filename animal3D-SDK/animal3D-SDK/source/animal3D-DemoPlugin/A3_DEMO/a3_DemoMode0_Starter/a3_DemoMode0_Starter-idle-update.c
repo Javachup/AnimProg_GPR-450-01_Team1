@@ -96,6 +96,12 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	//a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
 	//a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
 
+	for (a3ui32 i = 0; i < starterMaxCount_clipCtrl; i++)
+	{
+		if (a3clipControllerUpdate(&demoMode->clipCtrls[i], dt * dtMultiplier) < 0)
+			printf("\n========== ERROR UPDATING CLIP CONTROLER: %s (%d, %s) ==========\n\n", demoMode->clipCtrls[i].name, __LINE__, __FILE__);
+	}
+
 	// TEMP TO GET THE INPUT TO WORK
 	demoMode->isPlay = demoMode->clipCtrlZero.playbackDirection != 0;
 	if (demoMode->clipCtrlZero.playbackDirection != 0)
