@@ -102,11 +102,6 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			printf("\n========== ERROR UPDATING CLIP CONTROLER: %s (%d, %s) ==========\n\n", demoMode->clipCtrls[i].name, __LINE__, __FILE__);
 	}
 
-	// TEMP TO GET THE INPUT TO WORK
-	demoMode->isPlay = demoMode->clipCtrlZero.playbackDirection != 0;
-	if (demoMode->clipCtrlZero.playbackDirection != 0)
-		demoMode->isForwardDir = demoMode->clipCtrlZero.playbackDirection > 0;
-
 }
 
 

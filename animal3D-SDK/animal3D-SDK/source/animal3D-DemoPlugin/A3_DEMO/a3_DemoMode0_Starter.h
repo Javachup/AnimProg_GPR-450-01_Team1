@@ -183,13 +183,10 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		a3_KeyframePool keyPool;
 
 		// Booleans for controls
-		a3boolean isPlay;
-		a3boolean isForwardDir;
 		a3boolean isNormalTime;
 
 		// Numbers for clip controllers and clips
 		a3integer clipCtrlIndex;
-		a3integer clipIndex;
 
 	};
 

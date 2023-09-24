@@ -161,37 +161,6 @@ void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3
 	// move camera
 	a3demo_input_controlProjector(demoState, projector,
 		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
-
-	/* CODE FOR CLASS */
-	// determines which clip controller we are currently on
-	a3_ClipController* temp = NULL;
-	switch (demoMode->clipCtrlIndex)
-	{
-	case 0: temp = &demoMode->clipCtrlZero; break;
-	case 1: temp = &demoMode->clipCtrlOne; break;
-	case 2: temp = &demoMode->clipCtrlTwo; break;
-	default: printf("clipCtrlIndex out of bounds!"); return;
-	}
-
-	if (demoMode->isPlay)
-		temp->playbackDirection = demoMode->isForwardDir ? 1 : -1;
-	else
-		temp->playbackDirection = 0;
-
-	// the keys O and P set to first/last frame in current clip
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_O) == 1)
-	{
-		a3clipControllerSetKeyframe(temp, getCurrentClip(temp)->firstKeyIndex, a3false);
-	}
-	if (a3keyboardIsPressed(demoState->keyboard, a3key_P) == 1)
-	{
-		a3clipControllerSetKeyframe(temp, getCurrentClip(temp)->lastKeyIndex, a3true);
-	}
-
-	if (temp->clipIndex != demoMode->clipIndex)
-	{
-		a3clipControllerSetClip(temp, temp->clipPool, demoMode->clipIndex);
-	}
 }
 
 

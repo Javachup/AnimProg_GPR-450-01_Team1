@@ -199,14 +199,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	a3clipControllerInit(demoMode->clipCtrl_sprite, "Sprite Controller", &demoMode->clipPool, 2);
 
-	// booleans for menu
-	demoMode->isPlay = a3true;
-	demoMode->isForwardDir = a3true;
+	// values for menu
 	demoMode->isNormalTime = a3true;
-
-	// indices for which clip ctrl and clip to edit
-	a3integer clipCtrlIndex = 0;
-	a3integer clipIndex = 0;
 }
 
 
