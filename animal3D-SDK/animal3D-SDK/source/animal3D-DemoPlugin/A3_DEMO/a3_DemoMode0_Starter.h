@@ -186,9 +186,6 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		};
 
 		// code added in class
-		a3_ClipController clipCtrlZero;
-		a3_ClipController clipCtrlOne;
-		a3_ClipController clipCtrlTwo;
 		a3_ClipPool clipPool;
 		a3_KeyframePool keyPool;
 

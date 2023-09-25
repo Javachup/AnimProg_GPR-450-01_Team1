@@ -91,11 +91,6 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 	// Multiply dt by less than 1 for slowmo 
 	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.1;
 
-	if (a3clipControllerUpdate(&demoMode->clipCtrlZero, dt * dtMultiplier) < 0)
-		printf("\n========== ERROR UPDATING (%d, %s) ==========\n\n", __LINE__, __FILE__);
-	//a3clipControllerUpdate(&demoMode->clipCtrlOne, dt * dtMultiplier);
-	//a3clipControllerUpdate(&demoMode->clipCtrlTwo, dt * dtMultiplier);
-
 	for (a3ui32 i = 0; i < starterMaxCount_clipCtrl; i++)
 	{
 		if (a3clipControllerUpdate(&demoMode->clipCtrls[i], dt * dtMultiplier) < 0)

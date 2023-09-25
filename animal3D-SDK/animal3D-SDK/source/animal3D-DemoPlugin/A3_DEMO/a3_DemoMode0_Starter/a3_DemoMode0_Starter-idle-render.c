@@ -211,7 +211,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	const a3mat4 textureAtlas[] =
 	{
 		a3mat4_identity,
-		a3_textureAtlas_getMatrix(&demoMode->spriteTestAtlas, getCurrentKeyframe((&demoMode->clipCtrlOne))->data), //associated with plane_z and test sprite
+		a3_textureAtlas_getMatrix(&demoMode->spriteTestAtlas, getCurrentKeyframe((demoMode->clipCtrl_sprite))->data), //associated with plane_z and test sprite
 		a3mat4_identity,
 		a3mat4_identity,
 		a3mat4_identity,
