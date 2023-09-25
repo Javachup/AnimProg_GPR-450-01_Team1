@@ -28,6 +28,8 @@
 	Ananda Shumock-Bailey
 	Created the keyframe pool, clip pool, and clip controllers
 	Created booleans for menu system and index variables
+	Created a texture atlas and assigned each index to a keyframe
+	Adjusted clip pool size to hold 8 clips with 8 keyframes
 */
 
 //-----------------------------------------------------------------------------
