@@ -199,6 +199,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		demoState->draw_teapot,
 	};
 
+	//************************************************************************
 	//MIGHT HELp if another array of matrices
 	//could update it in update with other arrays
 	const a3mat4 textureAtlas[] =
@@ -214,6 +215,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		a3mat4_identity,
 
 	};
+	//**********************************************************************
 
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
@@ -352,13 +354,15 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
 
 	//Matrix
+	//*************************************************
 	a3mat4 textureCoord = {//at the current keyframe
 	demoMode->spriteTestAtlas.cells[2].relativeSize[0], 0, 0, 0,
 	0, demoMode->spriteTestAtlas.cells[2].relativeSize[1], 0, 0,
 	0, 0, 1, 0,
 	demoMode->spriteTestAtlas.cells[2].relativeOffset[0], demoMode->spriteTestAtlas.cells[2].relativeOffset[1], 0, 1
 	}; // column major
-
+	//**********************************************************
+	
 	// select pipeline algorithm
 	glDisable(GL_BLEND);
 	switch (pipeline)
