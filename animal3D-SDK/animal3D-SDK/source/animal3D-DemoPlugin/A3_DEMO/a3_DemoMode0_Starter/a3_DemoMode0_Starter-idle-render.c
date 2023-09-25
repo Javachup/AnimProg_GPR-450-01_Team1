@@ -199,10 +199,26 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		demoState->draw_teapot,
 	};
 
+	//MIGHT HELp if another array of matrices
+	//could update it in update with other arrays
+	const a3mat4 textureAtlas[] =
+	{
+		a3mat4_identity,
+		//this one should be associated with plane_z and test sprite
+		//demoMode->testSpriteAtlas 
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+
+	};
+
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
 		demoState->tex_checker,
-		demoState->tex_testsprite, //<- associated with plane_z
+		demoState->tex_testsprite, //<- associated with plane_z 
 		demoState->tex_checker,
 		demoState->tex_checker,
 		demoState->tex_checker,
@@ -335,6 +351,14 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, hueCount, rgba4->v);
 	a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
 
+	//Matrix
+	a3mat4 textureCoord = {//at the current keyframe
+	demoMode->spriteTestAtlas.cells[2].relativeSize[0], 0, 0, 0,
+	0, demoMode->spriteTestAtlas.cells[2].relativeSize[1], 0, 0,
+	0, 0, 1, 0,
+	demoMode->spriteTestAtlas.cells[2].relativeOffset[0], demoMode->spriteTestAtlas.cells[2].relativeOffset[1], 0, 1
+	}; // column major
+
 	// select pipeline algorithm
 	glDisable(GL_BLEND);
 	switch (pipeline)
@@ -352,6 +376,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			//	- modelview
 			//	- modelview for normals
 			//	- per-object animation data
+
 			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_teapot,
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 				currentSceneObject <= endSceneObject;
@@ -361,6 +386,8 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				i = (j * 2 + 11) % hueCount;
 				currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
 				a3textureActivate(texture_dm[j], a3tex_unit00);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textureCoord.mm);
+
 				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m);
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
 				// color overlay - what makes the teapot red
