@@ -21,6 +21,9 @@
 	a3_KeyframeAnimationController.h
 	Keyframe animation clip controller. Basically a frame index manager. Very 
 	limited in what one can do with this; could potentially be so much more.
+
+	Joey Romanowski: 
+		Added Terminus Action Functions
 */
 
 #ifndef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H

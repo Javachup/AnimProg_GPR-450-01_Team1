@@ -25,6 +25,7 @@
 	Joey Romanowski: 
 		Implemented a3clipControllerUpdate(...)
 		Implemented a3clipControllerSetClip(...)
+		Implemented Terminus Action Functions
 */
 
 #ifdef __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
