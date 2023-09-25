@@ -37,6 +37,7 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 #include "_animation/a3_KeyframeAnimationController.h"
+#include "animal3D-A3DG/a3graphics/A3_TEXTUREATLAS.H"
 
 //-----------------------------------------------------------------------------
 
@@ -197,6 +198,9 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		// Numbers for clip controllers and clips
 		a3integer clipCtrlIndex;
 
+		// Texture atlas for sprites
+		a3_TextureAtlas spriteTestAtlas;
+        
 		// Terminus Actions
 		ForwardTerminusFunc forwardTerminusActions[starter_terminusActions_max];
 		ReverseTerminusFunc reverseTerminusActions[starter_terminusActions_max];

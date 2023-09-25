@@ -363,5 +363,18 @@ a3ret a3textureAtlasRelease(a3_TextureAtlas *textureAtlas)
 	return -1;
 }
 
+a3mat4 a3_textureAtlas_getMatrix(const a3_TextureAtlas* texAt, a3ui32 cellNum)
+{
+	//cellNum is keyframe data which holds cell index
+
+	a3mat4 textureAtlasMat4 = {
+	texAt->cells[cellNum].relativeSize[0], 0, 0, 0,
+	0, texAt->cells[cellNum].relativeSize[1], 0, 0,
+	0, 0, 1, 0,
+	texAt->cells[cellNum].relativeOffset[0], texAt->cells[cellNum].relativeOffset[1], 0, 1
+	};
+
+	return textureAtlasMat4;
+}
 
 //-----------------------------------------------------------------------------

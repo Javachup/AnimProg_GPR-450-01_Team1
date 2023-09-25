@@ -23,6 +23,8 @@
 		sprite-based animation.
 
 	**DO NOT MODIFY THIS FILE**
+	* Quincy Gomes-Cedeno
+	* created a3_textureAtlas_getMatrix
 */
 
 #ifndef __ANIMAL3D_TEXTUREATLAS_H
@@ -33,6 +35,7 @@
 #include "animal3D/a3/a3types_real.h"
 #include "animal3D/a3utility/a3_Stream.h"
 #include "animal3D-A3DG/a3graphics/a3_Texture.h"
+#include "animal3D-A3DM/a3math/a3matrix.h"
 
 
 #ifdef __cplusplus
@@ -185,6 +188,8 @@ extern "C"
 	//	return: 1 if success
 	//	return: -1 if invalid param
 	a3ret a3textureAtlasRelease(a3_TextureAtlas *textureAtlas);
+
+	a3mat4 a3_textureAtlas_getMatrix(const a3_TextureAtlas* texAt, a3ui32 cellNum);
 
 
 //-----------------------------------------------------------------------------

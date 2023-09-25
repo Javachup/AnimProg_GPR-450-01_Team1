@@ -27,6 +27,10 @@
 	
 	Joey Romanowski:
 		Adds text rendering to show off Terminus Actions
+	* 
+	* Quincy Gomes-Cedeno
+	* created textureAtlas mat4
+	* created ShaderSendFloat
 */
 
 //-----------------------------------------------------------------------------
@@ -170,6 +174,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		{ 1.00f, 0.00f, 0.75f, 1.00f },
 		{ 1.00f, 0.00f, 0.50f, 1.00f },	// rose
 		{ 1.00f, 0.00f, 0.25f, 1.00f },
+		{ 1.00f, 1.00f, 1.00f, 1.00f }, // white
 	};
 	const a3vec4 grey4[] = {
 		{ 0.5f, 0.5f, 0.5f, 1.0f },	// solid grey
@@ -179,7 +184,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		* const red = rgba4[0].v, * const orange = rgba4[2].v, * const yellow = rgba4[4].v, * const lime = rgba4[6].v,
 		* const green = rgba4[8].v, * const aqua = rgba4[10].v, * const cyan = rgba4[12].v, * const sky = rgba4[14].v,
 		* const blue = rgba4[16].v, * const purple = rgba4[18].v, * const magenta = rgba4[20].v, * const rose = rgba4[22].v,
-		* const grey = grey4[0].v, * const grey_t = grey4[1].v;
+		* const grey = grey4[0].v, * const grey_t = grey4[1].v, * const clear = rgba4[24].v;
 	const a3ui32 hueCount = sizeof(rgba4) / sizeof(*rgba4);
 
 	// camera used for drawing
@@ -201,10 +206,26 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 		demoState->draw_teapot,
 	};
 
+	//************************************************************************
+	//2D Sprite Matrix
+	const a3mat4 textureAtlas[] =
+	{
+		a3mat4_identity,
+		a3_textureAtlas_getMatrix(&demoMode->spriteTestAtlas, getCurrentKeyframe((&demoMode->clipCtrlOne))->data), //associated with plane_z and test sprite
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+		a3mat4_identity,
+
+	};
+	//**********************************************************************
+
 	// temp texture pointers
 	const a3_Texture* texture_dm[] = {
 		demoState->tex_checker,
-		demoState->tex_checker, //<- associated with plane_z
+		demoState->tex_testsprite, //<- associated with plane_z 
 		demoState->tex_checker,
 		demoState->tex_checker,
 		demoState->tex_checker,
@@ -354,6 +375,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 			//	- modelview
 			//	- modelview for normals
 			//	- per-object animation data
+
 			for (currentSceneObject = demoMode->obj_plane, endSceneObject = demoMode->obj_teapot,
 				j = (a3ui32)(currentSceneObject - demoMode->object_scene);
 				currentSceneObject <= endSceneObject;
@@ -363,9 +385,13 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				i = (j * 2 + 11) % hueCount;
 				currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
 				a3textureActivate(texture_dm[j], a3tex_unit00);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textureAtlas[j].mm); //Where the program gets one piece of the texture
+
 				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m);
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rgba4[i].v);
+				// color overlay - what makes the teapot red
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, 
+					currentSceneObject == demoMode->obj_plane ? rgba4[24].v : rgba4[i].v);
 				a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 				a3vertexDrawableActivateAndRender(currentDrawable);
 			}
