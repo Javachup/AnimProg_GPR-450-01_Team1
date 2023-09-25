@@ -24,6 +24,10 @@
 	********************************************
 	*** RENDERING FOR STARTER SCENE MODE     ***
 	********************************************
+	* 
+	* Quincy Gomes-Cedeno
+	* created textureAtlas mat4
+	* created ShaderSendFloat
 */
 
 //-----------------------------------------------------------------------------
@@ -200,13 +204,11 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	};
 
 	//************************************************************************
-	//MIGHT HELp if another array of matrices
-	//could update it in update with other arrays
+	//2D Sprite Matrix
 	const a3mat4 textureAtlas[] =
 	{
 		a3mat4_identity,
-		//this one should be associated with plane_z and test sprite
-		//demoMode->testSpriteAtlas 
+		a3_textureAtlas_getMatrix(&demoMode->spriteTestAtlas, getCurrentKeyframe((&demoMode->clipCtrlOne))->data), //associated with plane_z and test sprite
 		a3mat4_identity,
 		a3mat4_identity,
 		a3mat4_identity,
@@ -353,16 +355,6 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 	a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, hueCount, rgba4->v);
 	a3shaderUniformSendDouble(a3unif_single, currentDemoProgram->uTime, 1, &demoState->timer_display->totalTime);
 
-	//Matrix
-	//*************************************************
-	a3mat4 textureCoord = {//at the current keyframe
-	demoMode->spriteTestAtlas.cells[2].relativeSize[0], 0, 0, 0,
-	0, demoMode->spriteTestAtlas.cells[2].relativeSize[1], 0, 0,
-	0, 0, 1, 0,
-	demoMode->spriteTestAtlas.cells[2].relativeOffset[0], demoMode->spriteTestAtlas.cells[2].relativeOffset[1], 0, 1
-	}; // column major
-	//**********************************************************
-	
 	// select pipeline algorithm
 	glDisable(GL_BLEND);
 	switch (pipeline)
@@ -390,7 +382,7 @@ void a3starter_render(a3_DemoState const* demoState, a3_DemoMode0_Starter const*
 				i = (j * 2 + 11) % hueCount;
 				currentDrawable = drawable[currentSceneObject - demoMode->obj_skybox];
 				a3textureActivate(texture_dm[j], a3tex_unit00);
-				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textureCoord.mm);
+				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uAtlas, 1, textureAtlas[j].mm); //Where the program gets one piece of the texture
 
 				a3real4x4Product(modelViewProjectionMat.m, viewProjectionMat.m, currentSceneObject->modelMat.m);
 				a3shaderUniformSendFloatMat(a3unif_mat4, 0, currentDemoProgram->uMVP, 1, modelViewProjectionMat.mm);
