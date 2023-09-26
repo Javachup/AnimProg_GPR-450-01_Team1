@@ -89,6 +89,7 @@ struct a3_ClipController
 // Macros for ease of use 
 #define getCurrentClip(clipCtrl) (clipCtrl->clipPool->clip + clipCtrl->clipIndex)
 #define getCurrentKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframes + clipCtrl->keyIndex)
+#define getNextKeyframe(clipCtrl) (getCurrentClip(clipCtrl)->keyframes + (a3clamp(getCurrentClip(clipCtrl)->firstKeyIndex, getCurrentClip(clipCtrl)->lastKeyIndex, clipCtrl->keyIndex + clipCtrl->playbackDirection)))
 
 // initialize clip controller
 a3i32 a3clipControllerInit(a3_ClipController* clipCtrl_out, const a3byte ctrlName[a3keyframeAnimation_nameLenMax], const a3_ClipPool* clipPool, const a3ui32 clipIndex_pool);
