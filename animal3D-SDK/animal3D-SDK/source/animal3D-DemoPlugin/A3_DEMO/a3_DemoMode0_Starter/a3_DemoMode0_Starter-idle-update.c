@@ -97,7 +97,18 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			printf("\n========== ERROR UPDATING CLIP CONTROLER: %s (%d, %s) ==========\n\n", demoMode->clipCtrls[i].name, __LINE__, __FILE__);
 	}
 
-	demoMode->obj_teapot->position.x = (a3real)getCurrentKeyframe(demoMode->clipCtrl_lerp)->data;
+	// LERP
+	a3real x0 = (a3real)getCurrentKeyframe(demoMode->clipCtrl_lerp)->data;
+	a3real x1 = (a3real)getNextKeyframe(demoMode->clipCtrl_lerp)->data;
+	a3real u = (a3real)demoMode->clipCtrl_lerp->keyParameter;
+
+	if (demoMode->clipCtrl_lerp->playbackDirection < 0)
+		u = 1 - u; // Invert the lerp when going backwards
+
+	a3real newX = x0 + (x1 - x0) * u;
+	demoMode->lerp = newX;
+
+	demoMode->obj_teapot->position.x = newX;
 }
 
 

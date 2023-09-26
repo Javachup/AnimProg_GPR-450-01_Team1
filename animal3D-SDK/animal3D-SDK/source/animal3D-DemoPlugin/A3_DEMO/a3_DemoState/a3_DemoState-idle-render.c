@@ -235,7 +235,8 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"Reverse Terminus: %s", terminusText[demoState->demoMode0_starter->reverseAction]);
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Next Keyframe: %u", (getNextKeyframe(currCtrl)->index));
+		"    Current Keyframe Data: %i    Next Keyframe data: %i    Lerp: %f", 
+		getCurrentKeyframe(currCtrl)->data, getNextKeyframe(currCtrl)->data, demoState->demoMode0_starter->lerp);
 
 	// global controls
 	textOffset = -0.8f;

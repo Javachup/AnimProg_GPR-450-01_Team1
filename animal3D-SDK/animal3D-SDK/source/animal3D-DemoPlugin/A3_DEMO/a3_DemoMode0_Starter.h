@@ -207,6 +207,9 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		ForwardTerminusFunc forwardTerminusActions[starter_terminusActions_max];
 		ReverseTerminusFunc reverseTerminusActions[starter_terminusActions_max];
 		a3ui32 forwardAction, reverseAction;
+
+		// DEBUG
+		a3real lerp;
 	};
 
 //-----------------------------------------------------------------------------
