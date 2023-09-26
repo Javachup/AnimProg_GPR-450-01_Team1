@@ -39,7 +39,7 @@
 void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
 	// general counters
-	//a3ui32 j, p;
+	a3ui32 j, p;
 
 	// object pointers
 	a3_Hierarchy* hierarchy = 0;
@@ -63,7 +63,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// not streaming or stream doesn't exist
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
-	/*	// manually set up a skeleton
+		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
 		const a3ui32 jointCount = 32;
 
@@ -116,7 +116,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// save hierarchy assets
 		a3hierarchySaveBinary(hierarchy, fileStream);
-	*/
+
 		// done
 		a3fileStreamClose(fileStream);
 	}
@@ -132,7 +132,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 	hierarchyPoseGroup->hierarchy = 0;
 
-/*
 	// allocate poses
 	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 5, a3poseEulerOrder_xyz);
 
@@ -330,7 +329,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
 	a3spatialPoseSetTranslation(spatialPose, +3.0f, +4.0f, +5.0f);	// shift whole figure by some vector
-*/
+
 
 	// load from file
 	a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
@@ -338,7 +337,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	
 
 	// finally set up hierarchy states
-/*
 	// base state for skeleton
 	hierarchyState = demoMode->hierarchyState_skel;
 	hierarchyState->hierarchy = 0;
@@ -347,7 +345,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(hierarchyState);
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
-*/
+
 	// real-time state
 	hierarchyState = demoMode->hierarchyState_skel + 1;
 	hierarchyState->hierarchy = 0;
