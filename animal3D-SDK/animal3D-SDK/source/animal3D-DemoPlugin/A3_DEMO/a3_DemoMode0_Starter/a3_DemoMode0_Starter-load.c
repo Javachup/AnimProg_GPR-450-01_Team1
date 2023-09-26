@@ -174,7 +174,7 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	demoMode->targetCount[starter_passComposite] = 1;
 
 	// init keyframe pool which creates 64 keyframes
-	a3keyframePoolCreate(&demoMode->keyPool, 64);
+	a3keyframePoolCreate(&demoMode->keyPool_sprite, 64);
 	
 	// set atlas texture and create even cells
 	a3_DemoState demoStateCopy = *demoState;
@@ -184,11 +184,11 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	// allocate sprite cell index to each keyframe
 	for (a3ui32 i = 0; i < demoMode->spriteTestAtlas.numCells; i++)
 	{
-		a3keyframeInit(demoMode->keyPool.keyframe + i, 1.0, i);
+		a3keyframeInit(demoMode->keyPool_sprite.keyframe + i, 1.0, i);
 	}
 
 	// init clip pool which creates 8 clips (for each row)
-	a3clipPoolCreate(&demoMode->clipPool, 8);
+	a3clipPoolCreate(&demoMode->clipPool_sprite, 8);
 
 	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4",
 							"Clip 5", "Clip 6", "Clip 7", "Clip 8" };
@@ -198,12 +198,31 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	for (int i = 0; i < clipPoolSize; i++)
 	{
 		// Each clip will have 8 of the 64 keyframes in the keyframe pool
-		a3clipInit(demoMode->clipPool.clip + i, names[i], &demoMode->keyPool, i * clipPoolSize, i * clipPoolSize + 7);
-		a3clipCalculateDuration(demoMode->clipPool.clip + i);
+		a3clipInit(demoMode->clipPool_sprite.clip + i, names[i], &demoMode->keyPool_sprite, i * clipPoolSize, i * clipPoolSize + 7);
+		a3clipCalculateDuration(demoMode->clipPool_sprite.clip + i);
 	}
 
 	// init clip controllers
-	a3clipControllerInit(demoMode->clipCtrl_sprite, "Sprite Controller", &demoMode->clipPool, 2);
+	a3clipControllerInit(demoMode->clipCtrl_sprite, "Sprite Controller", &demoMode->clipPool_sprite, 2);
+
+	// --== Load lerp data ==--
+
+	// Keyframes
+	a3keyframePoolCreate(&demoMode->keyPool_lerp, 4);
+
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[0], 1, -1);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[1], 1, 0);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[2], 1, 2);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[3], 1, -2);
+
+	// Clips
+	a3clipPoolCreate(&demoMode->clipPool_lerp, 1);
+	a3clipInit(demoMode->clipPool_lerp.clip, "X", &demoMode->keyPool_lerp, 0, 3);
+	a3clipCalculateDuration(demoMode->clipPool_lerp.clip);
+
+	a3clipControllerInit(demoMode->clipCtrl_lerp, "Lerp Controller", &demoMode->clipPool_lerp, 0);
+	demoMode->clipCtrl_lerp->forwardTerminus = forwardPingPong;
+	demoMode->clipCtrl_lerp->reverseTerminus = reversePingPong;
 
 	// values for menu
 	demoMode->isNormalTime = a3true;

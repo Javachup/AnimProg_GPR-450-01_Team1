@@ -43,8 +43,12 @@ void a3starter_unloadValidate(a3_DemoState* demoState, a3_DemoMode0_Starter* dem
 
 void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode)
 {
-	a3clipPoolRelease(&demoMode->clipPool);
-	a3keyframePoolRelease(&demoMode->keyPool);
+	a3clipPoolRelease(&demoMode->clipPool_sprite);
+	a3keyframePoolRelease(&demoMode->keyPool_sprite);
+
+	a3clipPoolRelease(&demoMode->clipPool_lerp);
+	a3keyframePoolRelease(&demoMode->keyPool_lerp);
+
 	a3textureAtlasRelease(&demoMode->spriteTestAtlas);
 }
 

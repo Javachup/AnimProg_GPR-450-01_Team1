@@ -97,7 +97,7 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			printf("\n========== ERROR UPDATING CLIP CONTROLER: %s (%d, %s) ==========\n\n", demoMode->clipCtrls[i].name, __LINE__, __FILE__);
 	}
 
-	demoMode->obj_teapot->position.x = (a3real)getCurrentKeyframe(demoMode->clipCtrl_sprite)->data;
+	demoMode->obj_teapot->position.x = (a3real)getCurrentKeyframe(demoMode->clipCtrl_lerp)->data;
 }
 
 

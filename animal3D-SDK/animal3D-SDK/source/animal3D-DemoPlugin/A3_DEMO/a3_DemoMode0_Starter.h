@@ -63,7 +63,7 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starterMaxCount_sceneObject = 8,
 		starterMaxCount_cameraObject = 1,
 		starterMaxCount_projector = 1,
-		starterMaxCount_clipCtrl = 1,
+		starterMaxCount_clipCtrl = 2,
 	};
 
 	// scene object rendering program names
@@ -181,13 +181,18 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 			struct
 			{
 				a3_ClipController
-					clipCtrl_sprite[1];
+					clipCtrl_sprite[1],
+					clipCtrl_lerp[1];
 			};
 		};
 
 		// code added in class
-		a3_ClipPool clipPool;
-		a3_KeyframePool keyPool;
+		a3_ClipPool clipPool_sprite;
+		a3_KeyframePool keyPool_sprite;
+
+		// For lerping
+		a3_ClipPool clipPool_lerp;
+		a3_KeyframePool keyPool_lerp;
 
 		// Booleans for controls
 		a3boolean isNormalTime;

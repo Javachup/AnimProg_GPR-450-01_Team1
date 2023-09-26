@@ -55,8 +55,8 @@ enum
 // metaphor: moment
 struct a3_Keyframe
 {
-	a3real duration;
-	a3real invDuration;
+	a3f64 duration;
+	a3f64 invDuration;
 	a3integer data;
 
 	// index in keyframe pool
@@ -91,8 +91,8 @@ struct a3_Clip
 	// clip name
 	a3byte name[a3keyframeAnimation_nameLenMax];
 
-	a3real duration; //sum of all referenced keyframes
-	a3real invDuration; //reciprocal of duration
+	a3f64 duration; //sum of all referenced keyframes
+	a3f64 invDuration; //reciprocal of duration
 
 	a3ui32 keyCount; //number of keyframes referenced (including first and last)
 	a3ui32 firstKeyIndex; //index of first keyframe
