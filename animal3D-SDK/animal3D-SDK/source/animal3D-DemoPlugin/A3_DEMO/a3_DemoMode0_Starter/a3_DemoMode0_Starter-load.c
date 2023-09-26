@@ -89,7 +89,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 		+45.0f,
 	};
 	const a3f32 sceneObjectDistance = 8.0f;
-	const a3f32 sceneObjectHeight = 2.0f;
+	const a3f32 sceneObjectHeightWayAway = 200.0f;
+	const a3f32 sceneObjectHeight = 1.0f;
 
 
 	// all objects
@@ -116,29 +117,29 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	currentSceneObject->scale.x = 5.0f;
 	currentSceneObject->scale.y = 4.0f;
 	currentSceneObject->scale.z = 3.0f;
-	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_sphere;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.0f;
-	a3real3Set(currentSceneObject->position.v, -1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -1.0f * sceneObjectDistance, 0.0f, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_cylinder;
 	currentSceneObject->scaleMode = 2;
 	currentSceneObject->scale.x = 5.0f;
 	currentSceneObject->scale.y = 2.0f;
 	currentSceneObject->scale.z = 2.0f;
-	a3real3Set(currentSceneObject->position.v, +0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, +0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_capsule;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.0f;
-	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, -0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, -0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_torus;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.5f;
-	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_teapot;
 	currentSceneObject->scaleMode = 0;
