@@ -99,6 +99,12 @@ enum a3_SpatialPoseChannel
 // single pose for a single node
 struct a3_SpatialPose
 {
+	// non-matrix version of the data
+	a3real3 translation;
+	a3real3 rotation;
+	a3real3 scale;
+
+	// Matrix version of the data
 	a3mat4 transform;
 };
 

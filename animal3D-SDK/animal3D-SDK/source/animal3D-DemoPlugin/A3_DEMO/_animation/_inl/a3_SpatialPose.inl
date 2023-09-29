@@ -35,9 +35,9 @@ inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 r
 {
 	if (spatialPose)
 	{
-
+		a3real3Set(spatialPose->rotation, rx_degrees, ry_degrees, rz_degrees);
 	}
-	return -1;
+	return 0;
 }
 
 // scale
@@ -45,9 +45,9 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 {
 	if (spatialPose)
 	{
-
+		a3real3Set(spatialPose->translation, sx, sy, sz);
 	}
-	return -1;
+	return 0;
 }
 
 // translation
@@ -55,9 +55,9 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 {
 	if (spatialPose)
 	{
-
+		a3real3Set(spatialPose->scale, tx, ty, tz);
 	}
-	return -1;
+	return 0;
 }
 
 
@@ -68,9 +68,11 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 {
 	if (spatialPose)
 	{
-
+		a3spatialPoseSetTranslation(spatialPose, 0, 0, 0);
+		a3spatialPoseSetRotation(spatialPose, 0, 0, 0);
+		a3spatialPoseSetScale(spatialPose, 1, 1, 1);
 	}
-	return -1;
+	return 0;
 }
 
 // convert single node pose to matrix
@@ -88,9 +90,11 @@ inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_Spatial
 {
 	if (spatialPose_out && spatialPose_in)
 	{
-
+		a3spatialPoseSetTranslation(spatialPose_out, spatialPose_in->translation[0], spatialPose_in->translation[1], spatialPose_in->translation[2]);
+		a3spatialPoseSetRotation(spatialPose_out, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
+		a3spatialPoseSetScale(spatialPose_out, spatialPose_in->scale[0], spatialPose_in->scale[1], spatialPose_in->scale[2]);
 	}
-	return -1;
+	return 0;
 }
 
 
