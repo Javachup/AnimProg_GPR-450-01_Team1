@@ -54,17 +54,19 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		poseGroup_out->hpose = hposeBase;
 
 		// For each hpose, set the spatialPose pointer
-		for (int i = 0; i < poseCount; i++)
+		for (a3ui32 i = 0; i < poseCount; i++)
 		{
 			// Cast to non-const for the initialization
 			// Start at poseBase and add the size of every hierarchy pose before it (i + numNodes) to end up at that hpose's spatial pose memeory
-			(a3_HierarchyPose*)(poseGroup_out->hpose[i]).spatialPose = poseBase + i * hierarchy->numNodes;
+			//(a3_HierarchyPose*)(poseGroup_out->hpose[i]).spatialPose = poseBase + i * hierarchy->numNodes;
+			(a3_SpatialPose*)((poseGroup_out->hpose[i]).spatialPose) = poseBase + i * hierarchy->numNodes;
+
 		}
 
 		// reset all data
 		// For every spatialPose, reset it
 		// number of spatial poses = numPoses * numNodes
-		for (int i = 0; i < poseCount * hierarchy->numNodes; i++)
+		for (a3ui32 i = 0; i < poseCount * hierarchy->numNodes; i++)
 		{
 			a3spatialPoseReset(poseBase + i);
 		}
@@ -143,7 +145,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 // load HTR file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
-	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	if (poseGroup_out && !poseGroup_out->hposeCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 
 	}
@@ -153,7 +155,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 // load BVH file, read and store complete pose group and hierarchy
 a3i32 a3hierarchyPoseGroupLoadBVH(a3_HierarchyPoseGroup* poseGroup_out, a3_Hierarchy* hierarchy_out, const a3byte* resourceFilePath)
 {
-	if (poseGroup_out && !poseGroup_out->poseCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
+	if (poseGroup_out && !poseGroup_out->hposeCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
 
 	}
