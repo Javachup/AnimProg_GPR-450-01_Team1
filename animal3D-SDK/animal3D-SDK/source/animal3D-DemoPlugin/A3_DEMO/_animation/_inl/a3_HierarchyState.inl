@@ -70,32 +70,60 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 		for (a3ui32 i = 0; i < nodeCount; ++i)
 		{
 			a3_SpatialPose* currentPose = pose_inout->spatialPose;
-			currentPose[i].transform = a3mat4_identity;
+
+			a3real4x4 rotationX = {
+				{1.0f, 0.0f, 0.0f, 0.0f},
+				{0.0f, a3acosd(currentPose[i].rotation[0]), -a3asind(currentPose[i].rotation[0]), 0.0f},
+				{0.0f, a3asind(currentPose[i].rotation[0]), a3acosd(currentPose[i].rotation[0]), 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f}
+			};
+
+			a3real4x4 rotationY = {
+				{a3acosd(currentPose[i].rotation[1]), 0.0f, a3asind(currentPose[i].rotation[1]), 0.0f},
+				{0.0f, 1.0f, 0.0f, 0.0f},
+				{-a3asind(currentPose[i].rotation[1]), 0.0f, a3acosd(currentPose[i].rotation[1]), 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f}
+			};
+
+			a3real4x4 rotationZ = {
+				{a3acosd(currentPose[i].rotation[2]), -a3asind(currentPose[i].rotation[2]), 0.0f, 0.0f},
+				{a3asind(currentPose[i].rotation[2]), a3acosd(currentPose[i].rotation[2]), 0.0f, 0.0f},
+				{0.0f, 0.0f, 1.0f, 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f}
+			};
 
 			a3real4x4 rotationMat = {
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
-				{0, 0, 0, 0}
+				{1.0f, 0.0f, 0.0f, 0.0f},
+				{0.0f, 1.0f, 0.0f, 0.0f},
+				{0.0f, 0.0f, 1.0f, 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f},
 			};
 
-			// original scale
+			a3real4x4Product(rotationMat, rotationMat, rotationZ);
+			a3real4x4Product(rotationMat, rotationMat, rotationY);
+			a3real4x4Product(rotationMat, rotationMat, rotationX);
+
 			a3real4x4 scaleMat = {
-				{currentPose[i].scale[0], 0, 0, 0},
-				{0, currentPose[i].scale[1], 0, 0},
-				{0, 0, currentPose[i].scale[2], 0},
-				{0, 0, 0, 1}
+				{currentPose[i].scale[0], 0.0f, 0.0f, 0.0f},
+				{0.0f, currentPose[i].scale[1], 0.0f, 0.0f},
+				{0.0f, 0.0f, currentPose[i].scale[2], 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f}
 			};
 
-			// original translation
 			a3real4x4 translationMat = {
-				{1, 0, 0, currentPose[i].translation[0]},
-				{0, 1, 0, currentPose[i].translation[1]},
-				{0, 0, 1, currentPose[i].translation[2]},
-				{0, 0, 0, 1}
+				{1.0f, 0.0f, 0.0f, currentPose[i].translation[0]},
+				{0.0f, 1.0f, 0.0f, currentPose[i].translation[1]},
+				{0.0f, 0.0f, 1.0f, currentPose[i].translation[2]},
+				{0.0f, 0.0f, 0.0f, 1.0f}
 			};
 
-			a3real4x4 resultMat;
+			a3real4x4 resultMat = {
+				{1.0f, 0.0f, 0.0f, 0.0f},
+				{0.0f, 1.0f, 0.0f, 0.0f},
+				{0.0f, 0.0f, 1.0f, 0.0f},
+				{0.0f, 0.0f, 0.0f, 1.0f},
+			};
+
 			a3real4x4Sum(resultMat, resultMat, translationMat);
 			a3real4x4Sum(resultMat, resultMat, rotationMat);
 			a3real4x4Product(resultMat, resultMat, scaleMat);
