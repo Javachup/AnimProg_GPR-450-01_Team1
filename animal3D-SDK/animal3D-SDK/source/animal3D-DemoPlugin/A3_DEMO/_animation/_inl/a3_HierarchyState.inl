@@ -67,7 +67,43 @@ inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3
 {
 	if (pose_inout && nodeCount)
 	{
-		// WORK ON THIS		
+		for (a3ui32 i = 0; i < nodeCount; ++i)
+		{
+			a3_SpatialPose* currentPose = pose_inout->spatialPose;
+			currentPose[i].transform = a3mat4_identity;
+
+			a3real4x4 rotationMat = {
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0}
+			};
+
+			// original scale
+			a3real4x4 scaleMat = {
+				{currentPose[i].scale[0], 0, 0, 0},
+				{0, currentPose[i].scale[1], 0, 0},
+				{0, 0, currentPose[i].scale[2], 0},
+				{0, 0, 0, 1}
+			};
+
+			// original translation
+			a3real4x4 translationMat = {
+				{1, 0, 0, currentPose[i].translation[0]},
+				{0, 1, 0, currentPose[i].translation[1]},
+				{0, 0, 1, currentPose[i].translation[2]},
+				{0, 0, 0, 1}
+			};
+
+			a3real4x4 resultMat;
+			a3real4x4Sum(resultMat, resultMat, translationMat);
+			a3real4x4Sum(resultMat, resultMat, rotationMat);
+			a3real4x4Product(resultMat, resultMat, scaleMat);
+
+			a3real4x4SetReal4x4(currentPose[i].transform.m, resultMat);
+			
+		}
+		return 0;
 	}
 	return -1;
 }
