@@ -86,7 +86,7 @@ a3i32 a3hierarchyPoseGroupRelease(a3_HierarchyPoseGroup *poseGroup)
 	if (poseGroup && poseGroup->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
+		free(poseGroup->hpose); // poseGroup->hpose is the start of the memory block
 
 		// reset pointers
 		poseGroup->hierarchy = 0;
