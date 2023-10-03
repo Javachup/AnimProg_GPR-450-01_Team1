@@ -80,9 +80,63 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 {
 	if (mat_out && spatialPose_in)
 	{
+		a3real4x4 rotationX = {
+			{1.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, a3acosd(spatialPose_in->rotation[0]), -a3asind(spatialPose_in->rotation[0]), 0.0f},
+			{0.0f, a3asind(spatialPose_in->rotation[0]), a3acosd(spatialPose_in->rotation[0]), 0.0f},
+			{0.0f, 0.0f, 0.0f, 1.0f}
+		};
 
+		a3real4x4 rotationY = {
+			{a3acosd(spatialPose_in->rotation[1]), 0.0f, a3asind(spatialPose_in->rotation[1]), 0.0f},
+			{0.0f, 1.0f, 0.0f, 0.0f},
+			{-a3asind(spatialPose_in->rotation[1]), 0.0f, a3acosd(spatialPose_in->rotation[1]), 0.0f},
+			{0.0f, 0.0f, 0.0f, 1.0f}
+		};
+
+		a3real4x4 rotationZ = {
+			{a3acosd(spatialPose_in->rotation[2]), -a3asind(spatialPose_in->rotation[2]), 0.0f, 0.0f},
+			{a3asind(spatialPose_in->rotation[2]), a3acosd(spatialPose_in->rotation[2]), 0.0f, 0.0f},
+			{0.0f, 0.0f, 1.0f, 0.0f},
+			{0.0f, 0.0f, 0.0f, 1.0f}
+		};
+
+		a3real4x4 rotationMat = {
+			{1.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f, 0.0f},
+			{0.0f, 0.0f, 1.0f, 0.0f},
+			{0.0f, 0.0f, 0.0f, 1.0f},
+		};
+
+		// multiply by rZ * rY * rX
+		a3real4x4Product(rotationMat, rotationMat, rotationZ);
+		a3real4x4Product(rotationMat, rotationMat, rotationY);
+		a3real4x4Product(rotationMat, rotationMat, rotationX);
+
+		a3real4x4 scaleMat = {
+			{spatialPose_in->scale[0], 0.0f, 0.0f, 0.0f},
+			{0.0f, spatialPose_in->scale[1], 0.0f, 0.0f},
+			{0.0f, 0.0f, spatialPose_in->scale[2], 0.0f},
+			{0.0f, 0.0f, 0.0f, 1.0f}
+		};
+
+		a3real4x4 translationMat = {
+			{1.0f, 0.0f, 0.0f, spatialPose_in->translation[0]},
+			{0.0f, 1.0f, 0.0f, spatialPose_in->translation[1]},
+			{0.0f, 0.0f, 1.0f, spatialPose_in->translation[2]},
+			{0.0f, 0.0f, 0.0f, 1.0f}
+		};
+
+		// add translation
+		a3real4x4Sum(mat_out, mat_out, translationMat);
+		// add rotation
+		a3real4x4Sum(mat_out, mat_out, rotationMat);
+		// multiply scale
+		a3real4x4Product(mat_out, mat_out, scaleMat);
+
+		a3real4x4SetReal4x4(spatialPose_in->transform.m, mat_out);
 	}
-	return -1;
+	return 0;
 }
 
 // copy operation for single node pose
