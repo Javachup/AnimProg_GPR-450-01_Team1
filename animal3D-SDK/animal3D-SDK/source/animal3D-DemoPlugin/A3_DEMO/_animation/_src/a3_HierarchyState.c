@@ -108,14 +108,40 @@ a3i32 a3hierarchyStateCreate(a3_HierarchyState *state_out, const a3_Hierarchy *h
 	if (state_out && hierarchy && !state_out->hierarchy && hierarchy->nodes)
 	{
 		// determine memory requirements
-
+		// The raw data is the spactial poses that is wrapped in a hierarchy pose
+		const size_t size = sizeof(a3_SpatialPose) * 3 * hierarchy->numNodes;
 		// allocate everything (one malloc)
-		//??? = (...)malloc(sz);
+		void* mem = malloc(size);
+		if (mem == NULL)
+			return -1;
 
 		// set pointers
 		state_out->hierarchy = hierarchy;
 
+		//// For each hpose, set the spatialPose pointer
+		//for (a3ui32 i = 0; i < hierarchy->numNodes; i++)
+		//{
+		//	// Cast to non-const for the initialization
+		//	a3_HierarchyPose* hpose = (a3_HierarchyPose*)(poseGroup_out->hpose + i);
+		//
+		//	// Start at poseBase and add the size of every hierarchy pose before it (i + numNodes) to end up at that hpose's spatial pose memeory
+		//	hpose->spatialPose = poseBase + i * hierarchy->numNodes;
+		//}
+
+		a3_SpatialPose* poseBase = (a3_SpatialPose*)mem;
+		state_out->samplePose.spatialPose = poseBase;
+		state_out->localSpace.spatialPose = poseBase + hierarchy->numNodes;
+		state_out->objectSpace.spatialPose = poseBase + hierarchy->numNodes * 2;
+
+
+
 		// reset all data
+		// For every spatialPose, reset it
+		// number of spatial poses = numPoses * numNodes
+		for (a3ui32 i = 0; i < hierarchy->numNodes * 3; i++)
+		{
+			a3spatialPoseReset(poseBase + i);
+		}
 
 		// done
 		return 1;
@@ -130,7 +156,7 @@ a3i32 a3hierarchyStateRelease(a3_HierarchyState *state)
 	if (state && state->hierarchy)
 	{
 		// release everything (one free)
-		//free(???);
+		free(state->samplePose.spatialPose); // poseGroup->hpose is the start of the memory block
 
 		// reset pointers
 		state->hierarchy = 0;
