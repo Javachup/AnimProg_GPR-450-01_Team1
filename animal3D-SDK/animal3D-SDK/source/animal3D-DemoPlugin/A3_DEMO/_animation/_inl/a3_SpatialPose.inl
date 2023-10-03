@@ -76,12 +76,16 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 }
 
 // convert single node pose to matrix
-inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
-	if (mat_out && spatialPose_in)
+	if (spatialPose_in)
 	{
-
-		a3real4x4p rotationMat = 0;
+		a3real4x4p rotationMat = {
+			{0.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, 0.0f, 0.0f, 0.0f}
+		};
 		a3real4x4SetRotateXYZ(rotationMat, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
 
 		a3real4x4 scaleMat = {
@@ -95,17 +99,20 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 			{1.0f, 0.0f, 0.0f, 0.0f},
 			{0.0f, 1.0f, 0.0f, 0.0f},
 			{0.0f, 0.0f, 1.0f, 0.0f},
-			{ spatialPose_in->translation[0] , spatialPose_in->translation[1], spatialPose_in->translation[2], 1.0f}
+			{spatialPose_in->translation[0], spatialPose_in->translation[1], spatialPose_in->translation[2], 1.0f}
 		};
 
 		// add translation
-		a3real4x4Product(mat_out->m, mat_out->m, translationMat);
-		// add rotation
-		a3real4x4Product(mat_out->m, mat_out->m, rotationMat);
-		// multiply scale
-		a3real4x4Product(mat_out->m, mat_out->m, scaleMat);
+		a3real4x4 tmp_rs, tmp_rst;
 
-		a3real4x4SetReal4x4(spatialPose_in->transform.m, mat_out);
+		// add rotation
+		a3real4x4Product(tmp_rs, rotationMat, scaleMat);
+		// multiply scale
+		a3real4x4Product(tmp_rst, translationMat, tmp_rs);
+
+		//a3_SpatialPose* sPose = spatialPose_in;
+		//a3real4* transform = sPose->transform.m;
+		a3real4x4SetReal4x4(spatialPose_in->transform.m, tmp_rst);
 	}
 	return 0;
 }

@@ -59,7 +59,7 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		for (a3ui32 i = 0; i < poseCount; i++)
 		{
 			// Cast to non-const for the initialization
-			a3_HierarchyPose* hpose = (a3_HierarchyPose*)(poseGroup_out->hpose + i);
+			a3_HierarchyPose* hpose = (poseGroup_out->hpose + i);
 
 			// Start at poseBase and add the size of every hierarchy pose before it (i + numNodes) to end up at that hpose's spatial pose memeory
 			hpose->spatialPose = poseBase + i * hierarchy->numNodes;
