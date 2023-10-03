@@ -92,10 +92,10 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		};
 
 		a3real4x4 translationMat = {
-			{1.0f, 0.0f, 0.0f, spatialPose_in->translation[0]},
-			{0.0f, 1.0f, 0.0f, spatialPose_in->translation[1]},
-			{0.0f, 0.0f, 1.0f, spatialPose_in->translation[2]},
-			{0.0f, 0.0f, 0.0f, 1.0f}
+			{1.0f, 0.0f, 0.0f, 0.0f},
+			{0.0f, 1.0f, 0.0f, 0.0f},
+			{0.0f, 0.0f, 1.0f, 0.0f},
+			{ spatialPose_in->translation[0] , spatialPose_in->translation[1], spatialPose_in->translation[2], 1.0f}
 		};
 
 		// add translation
