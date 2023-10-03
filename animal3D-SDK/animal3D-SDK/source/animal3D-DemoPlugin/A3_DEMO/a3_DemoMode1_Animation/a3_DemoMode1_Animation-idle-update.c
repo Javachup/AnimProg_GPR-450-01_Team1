@@ -123,15 +123,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	baseHS->localSpace, // holds base pose
 	//	activeHS->objectSpace, // temp storage
 	//	demoMode->hierarchy_skel->numNodes);
-	/*a3hierarchyPoseConvert(&activeHS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		*demoMode->hierarchyPoseGroup_skel->channel,
-		demoMode->hierarchyPoseGroup_skel->order);*/
 	a3hierarchyPoseConvert(&activeHS->localSpace,
 		demoMode->hierarchy_skel->numNodes,
+		*demoMode->hierarchyPoseGroup_skel->channel,
 		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(activeHS);
-	a3hierarchyStateUpdateObjectInverse(activeHS);
 	//a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
 

@@ -45,7 +45,7 @@ inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, 
 {
 	if (spatialPose)
 	{
-		a3real3Set(spatialPose->translation, sx, sy, sz);
+		a3real3Set(spatialPose->scale, sx, sy, sz);
 	}
 	return 0;
 }
@@ -55,7 +55,7 @@ inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f3
 {
 	if (spatialPose)
 	{
-		a3real3Set(spatialPose->scale, tx, ty, tz);
+		a3real3Set(spatialPose->translation, tx, ty, tz);
 	}
 	return 0;
 }
