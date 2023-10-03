@@ -61,11 +61,11 @@ struct a3_HierarchyPoseGroup
 	// pointer to hierarchy
 	const a3_Hierarchy* hierarchy;
 
-	const a3_SpatialPose* pose;
-	const a3_HierarchyPose* hpose;
+	a3_SpatialPose* pose;
+	a3_HierarchyPose* hpose;
 
 	// Ignoreing channels for this lab
-	const a3_SpatialPoseChannel* channel;
+	a3_SpatialPoseChannel* channel;
 	// Also ingnoreing the Euler order for this lab
 	a3_SpatialPoseEulerOrder order;
 	// number of hierarchical poses
