@@ -99,11 +99,11 @@ inline a3i32 a3spatialPoseConvert(a3mat4* mat_out, const a3_SpatialPose* spatial
 		};
 
 		// add translation
-		a3real4x4Sum(mat_out, mat_out, translationMat);
+		a3real4x4Product(mat_out->m, mat_out->m, translationMat);
 		// add rotation
-		a3real4x4Sum(mat_out, mat_out, rotationMat);
+		a3real4x4Product(mat_out->m, mat_out->m, rotationMat);
 		// multiply scale
-		a3real4x4Product(mat_out, mat_out, scaleMat);
+		a3real4x4Product(mat_out->m, mat_out->m, scaleMat);
 
 		a3real4x4SetReal4x4(spatialPose_in->transform.m, mat_out);
 	}
