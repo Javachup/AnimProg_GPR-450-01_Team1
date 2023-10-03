@@ -55,6 +55,8 @@ a3i32 a3hierarchyPoseGroupCreate(a3_HierarchyPoseGroup *poseGroup_out, const a3_
 		// Link the 2 together: each hpose get numNodes number of spatial poses
 		poseGroup_out->hpose = hposeBase;
 
+		poseGroup_out->hposeCount = poseCount;
+
 		// For each hpose, set the spatialPose pointer
 		for (a3ui32 i = 0; i < poseCount; i++)
 		{

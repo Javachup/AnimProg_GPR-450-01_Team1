@@ -34,7 +34,7 @@ a3i32 a3kinematicsSolveForwardPartial(const a3_HierarchyState *hierarchyState, c
 		firstIndex < hierarchyState->hierarchy->numNodes && nodeCount)
 	{
 		// for all nodes starting at first index
-		a3ui32 i, n, j, p;
+		a3i32 i, n, j, p;
 		for (i = firstIndex, n = firstIndex + nodeCount; i < n; ++i)
 		{
 			const a3_HierarchyNode* node = hierarchyState->hierarchy->nodes + i;
