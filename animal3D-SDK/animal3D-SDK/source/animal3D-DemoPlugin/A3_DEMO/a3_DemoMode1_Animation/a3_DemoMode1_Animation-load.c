@@ -140,11 +140,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	p = 0;
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 	spatialPose = hierarchyPoseGroup->hpose[p].spatialPose + j;
-	//a3_SpatialPoseChannel currentChannel = 0;
-	//currentChannel = hierarchyPoseGroup->channel[j];
 	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, +3.6f);
 	//hierarchyPoseGroup->channel[j] = a3poseChannel_orient_xyz | a3poseChannel_scale_xyz | a3poseChannel_translate_xyz;
-	//currentChannel = a3poseChannel_orient_xyz | a3poseChannel_scale_xyz | a3poseChannel_translate_xyz;
 
 	j = a3hierarchyGetNodeIndex(hierarchy, "skel:spine_lower");
 	spatialPose = hierarchyPoseGroup->hpose[p].spatialPose + j;
