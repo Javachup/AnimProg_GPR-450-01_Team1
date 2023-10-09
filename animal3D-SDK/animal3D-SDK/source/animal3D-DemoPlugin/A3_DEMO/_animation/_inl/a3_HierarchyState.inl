@@ -65,6 +65,18 @@ inline a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui
 	return 0;
 }
 
+inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* keyPose_inout, const a3_HierarchyPose* basePose_in, const a3ui32 nodeCount)
+{
+	if (keyPose_inout && basePose_in && nodeCount)
+	{
+		for (a3ui32 i = 0; i < nodeCount; ++i)
+		{
+			a3spatialPoseConcat(&keyPose_inout->spatialPose[i], &basePose_in->spatialPose[i]);
+		}
+	}
+	return 0;
+}
+
 // convert full hierarchy pose to hierarchy transforms
 inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {

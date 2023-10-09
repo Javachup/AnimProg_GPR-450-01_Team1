@@ -344,6 +344,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			break;
 		}
 
+		/*
 		// draw skinned object
 		currentDemoProgram = demoState->prog_drawPhong_skin;
 		a3shaderProgramActivate(currentDemoProgram->program);
@@ -367,6 +368,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3shaderUniformSendInt(a3unif_single, currentDemoProgram->uIndex, 1, &j);
 			a3vertexDrawableActivateAndRender(currentDrawable);
 		}
+		*/
 
 	}	break;
 		// end forward scene pass
