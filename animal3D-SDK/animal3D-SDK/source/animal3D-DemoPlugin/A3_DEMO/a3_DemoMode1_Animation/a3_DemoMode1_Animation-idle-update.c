@@ -111,9 +111,15 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
 	}
 
-	a3hierarchyPoseCopy(&activeHS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchy_skel->numNodes);
+	a3_SpatialPoseChannel tempChannels = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
+
+	a3hierarchyPoseCopy(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseConvert(&activeHS->localSpace, demoMode->hierarchy_skel->numNodes, tempChannels, demoMode->hierarchyPoseGroup_skel->order);
+	a3kinematicsSolveForward(activeHS);
+
+	//a3hierarchyPoseCopy(&activeHS->localSpace,
+		//demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+		//demoMode->hierarchy_skel->numNodes);
 	//a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
@@ -127,10 +133,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchy_skel->numNodes,
 		*demoMode->hierarchyPoseGroup_skel->channel,
 		demoMode->hierarchyPoseGroup_skel->order);*/
-	a3hierarchyPoseConvert(&activeHS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz,
-		demoMode->hierarchyPoseGroup_skel->order);
 	//a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
 
 
