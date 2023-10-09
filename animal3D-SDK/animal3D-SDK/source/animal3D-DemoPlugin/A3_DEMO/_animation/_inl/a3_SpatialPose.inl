@@ -75,6 +75,18 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 	return 0;
 }
 
+inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPoseL_inout, const a3_SpatialPose* spatialPoseR_in)
+{
+	if (spatialPoseL_inout && spatialPoseR_in)
+	{
+		// Add translation and rotation, multiply scale 
+		a3real3Add(spatialPoseL_inout->translation, spatialPoseR_in->translation);
+		a3real3Add(spatialPoseL_inout->translation, spatialPoseR_in->translation);
+		a3real3MulComp(spatialPoseL_inout->scale, spatialPoseR_in->scale);
+	}
+	return 0;
+}
+
 // convert single node pose to matrix
 inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {

@@ -106,6 +106,9 @@ a3i32 a3hierarchyPoseGroupGetNodePoseOffsetIndex(const a3_HierarchyPoseGroup *po
 // reset full hierarchy pose
 a3i32 a3hierarchyPoseReset(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount);
 
+// concats the translation, rotation, and scale for each spatial pose in the hierarchy pose
+a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* keyPose_inout, const a3_HierarchyPose* basePose_in, const a3ui32 nodeCount);
+
 // convert full hierarchy pose to hierarchy transforms
 a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
 
