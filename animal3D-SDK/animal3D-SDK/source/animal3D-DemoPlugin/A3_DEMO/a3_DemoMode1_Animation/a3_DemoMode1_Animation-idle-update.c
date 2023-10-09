@@ -113,7 +113,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_SpatialPoseChannel tempChannels = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
 
-	a3hierarchyPoseCopy(&activeHS->localSpace, demoMode->hierarchyPoseGroup_skel->hpose + 3, demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseCopy(&activeHS->localSpace, 
+		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+		demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConcat(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(&activeHS->localSpace, demoMode->hierarchy_skel->numNodes, tempChannels, demoMode->hierarchyPoseGroup_skel->order);
 	a3kinematicsSolveForward(activeHS);
