@@ -170,6 +170,89 @@ void a3demo_render_data(const a3_DemoState* demoState,
 		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
 }
 
+
+// Display Clip Ctrl data + controls
+void a3demo_render_clipCtrl(const a3_DemoState* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	// Playback direction text
+	a3byte const playbackDirText[3][9] = {
+		"REVERSE ",
+		"PAUSED  ",
+		"FORWARDS",
+	};
+
+	// Playback speed text
+	a3byte const playbackSpeedText[2][7] = {
+		"SLOWMO",
+		"NORMAL",
+	};
+
+	// Terminus action text
+	a3byte const terminusText[3][10] = {
+		"LOOP     ",
+		"STOP     ",
+		"PING PONG",
+	};
+
+	const a3f32 textIndentOffset = 0.8f;
+
+	const a3_ClipController* currCtrl = &demoState->demoMode0_starter->clipCtrls[demoState->demoMode0_starter->clipCtrlIndex];
+
+	// display some general data
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Current Clip Controller (%u/%u) ['1' | '2']: %s", 
+		demoState->demoMode0_starter->clipCtrlIndex + 1, starterMaxCount_clipCtrl, currCtrl->name);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Playback Speed ['n']: %s", playbackSpeedText[demoState->demoMode0_starter->isNormalTime]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Clip Index ['[' | ']']: %u", currCtrl->clipIndex);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Playback Direction ['m' | ',' | '.']: %s", playbackDirText[currCtrl->playbackDirection + 1]);
+
+	textOffset += textOffsetDelta;
+	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Key Index : % u", currCtrl->keyIndex);
+	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Key Data: %i", getCurrentKeyframe(currCtrl)->data);
+
+	textOffset += textOffsetDelta;
+	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Clip Time: %f", currCtrl->clipTime);
+	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Clip Parameter: %f", currCtrl->clipParameter);
+
+	textOffset += textOffsetDelta;
+	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Key Time: %f", currCtrl->keyTime);
+	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Key Parameter: %f", currCtrl->keyParameter);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Terminus Actions: ['z' | 'Z'] LOOP, ['x' | 'X'] STOP, ['c' | 'C'] PONG PONG");
+
+	textOffset += textOffsetDelta;
+	a3textDraw(text, textAlign, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"    Forward Terminus: %s", terminusText[demoState->demoMode0_starter->forwardAction]);
+	a3textDraw(text, textAlign + textIndentOffset, textOffset, textDepth, col.r, col.g, col.b, col.a,
+		"Reverse Terminus: %s", terminusText[demoState->demoMode0_starter->reverseAction]);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Current Keyframe Data: %i    Next Keyframe data: %i    Lerp: %f", 
+		getCurrentKeyframe(currCtrl)->data, getNextKeyframe(currCtrl)->data, demoState->demoMode0_starter->lerp);
+
+	// global controls
+	textOffset = -0.8f;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+}
+
 /*
 // bloom iteration
 void a3demo_render_bloomIteration(a3_DemoState const* demoState, a3real2 pixelSize, a3_Framebuffer const* fbo_prev,
@@ -247,6 +330,11 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 				// general data
 			case demoState_textData:
 				a3demo_render_data(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+
+				// Controls for Clip Ctrl
+			case demoState_clipCtrl:
+				a3demo_render_clipCtrl(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

@@ -32,12 +32,33 @@
 // calculate clip duration as sum of keyframes' durations
 inline a3i32 a3clipCalculateDuration(a3_Clip* clip)
 {
-	return -1;
+	a3f64 sumDur = 0.0;
+	//a3real sumInvDur = 0.0;
+
+	//Suming up all keyframes referenced's durations and invDurations
+	for (a3ui32 i = 0; i < clip->keyCount; i++)
+	{
+		sumDur += (clip->keyframes + clip->firstKeyIndex + i)->duration;
+		//sumInvDur += (clip->keyframePool->keyframe + i)->invDuration;
+	}
+
+	clip->duration = sumDur;
+	clip->invDuration = 1/ sumDur;
+
+	return 0;
 }
 
 // calculate keyframes' durations by distributing clip's duration
 inline a3i32 a3clipDistributeDuration(a3_Clip* clip, const a3real newClipDuration)
 {
+	for (a3ui32 i = 0; i < clip->keyCount; i++)
+	{
+		// clip->keyframes is const but we need to edit them here so we cast to a non-const pointer
+		// Not risky as long as we only do this in internal functions like this one
+		((a3_Keyframe*)(clip->keyframes + i))->duration = newClipDuration;
+		((a3_Keyframe*)(clip->keyframes + i))->invDuration = 1 / newClipDuration;
+	}
+
 	return -1;
 }
 

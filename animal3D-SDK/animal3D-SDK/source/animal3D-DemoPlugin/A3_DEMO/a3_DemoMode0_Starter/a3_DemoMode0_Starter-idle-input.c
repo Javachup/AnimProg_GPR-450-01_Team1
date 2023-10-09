@@ -24,6 +24,9 @@
 	********************************************
 	*** INPUT FOR STARTER SCENE MODE         ***
 	********************************************
+	 
+	Ananda Shumock-Bailey
+	Implemented the basic testing interface
 */
 
 //-----------------------------------------------------------------------------
@@ -34,6 +37,7 @@
 #include "../a3_DemoState.h"
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
+#include <stdio.h>
 
 
 //-----------------------------------------------------------------------------
@@ -42,25 +46,100 @@
 // main demo mode callback
 void a3starter_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode, a3i32 const asciiKey, a3i32 const state)
 {
-	switch (asciiKey)
+	if (demoState->textMode == demoState_clipCtrl)
 	{
-		// toggle render program
-		a3demoCtrlCasesLoop(demoMode->render, starter_render_max, 'k', 'j');
+		a3_ClipController* currCtrl = &demoMode->clipCtrls[demoMode->clipCtrlIndex];
+		a3ui32 currClipIndex = currCtrl->clipIndex;
 
-		// toggle display program
-		a3demoCtrlCasesLoop(demoMode->display, starter_display_max, 'K', 'J');
+		switch (asciiKey)
+		{
+			// toggle clip controller
+			a3demoCtrlCasesLoop(demoMode->clipCtrlIndex, starterMaxCount_clipCtrl, '2', '1');
 
-		// toggle active camera
-		a3demoCtrlCasesLoop(demoMode->activeCamera, starter_camera_max, 'v', 'c');
+			// toggle clip
+			a3demoCtrlCasesLoop(currClipIndex, 5, ']', '[');
 
-		// toggle pipeline mode
-		a3demoCtrlCasesLoop(demoMode->pipeline, starter_pipeline_max, ']', '[');
+			// Toggles from 0 (paused) to 1 (forwards)
+			// Can not unpause into the reverse direction
+			a3demoCtrlCaseToggle(currCtrl->playbackDirection, ',');
 
-		// toggle target
-		a3demoCtrlCasesLoop(demoMode->targetIndex[demoMode->pass], demoMode->targetCount[demoMode->pass], '}', '{');
+			// Reverse
+		case 'm':
+			currCtrl->playbackDirection = -1;
+			break;
 
-		// toggle pass to display
-		a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+			// Forwards
+		case '.':
+			currCtrl->playbackDirection = 1;
+			break;
+
+		case 'o':
+			a3clipControllerSetKeyframe(currCtrl, getCurrentClip(currCtrl)->firstKeyIndex, false);
+			break;
+
+		case 'p':
+			a3clipControllerSetKeyframe(currCtrl, getCurrentClip(currCtrl)->lastKeyIndex, true);
+			break;
+
+		case 'z':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_loop];
+			demoMode->forwardAction = starter_loop;
+			break;
+		case 'Z':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_loop];
+			demoMode->reverseAction = starter_loop;
+			break;
+
+		case 'x':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_stop];
+			demoMode->forwardAction = starter_stop;
+			break;
+		case 'X':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_stop];
+			demoMode->reverseAction = starter_stop;
+			break;
+
+		case 'c':
+			currCtrl->forwardTerminus = demoMode->forwardTerminusActions[starter_pingPong];
+			demoMode->forwardAction = starter_pingPong;
+			break;
+		case 'C':
+			currCtrl->reverseTerminus = demoMode->reverseTerminusActions[starter_pingPong];
+			demoMode->reverseAction = starter_pingPong;
+			break;
+
+			// toggle slow motion
+			a3demoCtrlCaseToggle(demoMode->isNormalTime, 'n');
+		}
+
+		// Update new values
+		if (currClipIndex != currCtrl->clipIndex)
+		{
+			a3clipControllerSetClip(currCtrl, currCtrl->clipPool, currClipIndex);
+		}
+	}
+	else
+	{
+		switch (asciiKey)
+		{
+			// toggle render program
+			a3demoCtrlCasesLoop(demoMode->render, starter_render_max, 'k', 'j');
+
+			// toggle display program
+			a3demoCtrlCasesLoop(demoMode->display, starter_display_max, 'K', 'J');
+
+			// toggle active camera
+			a3demoCtrlCasesLoop(demoMode->activeCamera, starter_camera_max, 'v', 'c');
+
+			// toggle pipeline mode
+			a3demoCtrlCasesLoop(demoMode->pipeline, starter_pipeline_max, ']', '[');
+
+			// toggle target
+			a3demoCtrlCasesLoop(demoMode->targetIndex[demoMode->pass], demoMode->targetCount[demoMode->pass], '}', '{');
+
+			// toggle pass to display
+			a3demoCtrlCasesLoop(demoMode->pass, starter_pass_max, ')', '(');
+		}
 	}
 }
 
@@ -81,6 +160,8 @@ void a3demo_input_controlProjector(
 
 void a3starter_input(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a3f64 const dt)
 {
+	static a3integer frameCount = 0;
+	frameCount++;
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
 
 	// right click to ray pick

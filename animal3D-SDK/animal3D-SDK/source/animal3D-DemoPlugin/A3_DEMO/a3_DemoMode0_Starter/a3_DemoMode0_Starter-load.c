@@ -24,6 +24,12 @@
 	********************************************
 	*** LOADING FOR STARTER SCENE MODE       ***
 	********************************************
+	 
+	Ananda Shumock-Bailey
+	Created the keyframe pool, clip pool, and clip controllers
+	Created booleans for menu system and index variables
+	Created a texture atlas and assigned each index to a keyframe
+	Adjusted clip pool size to hold 8 clips with 8 keyframes
 */
 
 //-----------------------------------------------------------------------------
@@ -83,7 +89,8 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 		+45.0f,
 	};
 	const a3f32 sceneObjectDistance = 8.0f;
-	const a3f32 sceneObjectHeight = 2.0f;
+	const a3f32 sceneObjectHeightWayAway = 200.0f;
+	const a3f32 sceneObjectHeight = 1.0f;
 
 
 	// all objects
@@ -110,29 +117,29 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 	currentSceneObject->scale.x = 5.0f;
 	currentSceneObject->scale.y = 4.0f;
 	currentSceneObject->scale.z = 3.0f;
-	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, +1.0f * sceneObjectDistance, 0.0f, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_sphere;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.0f;
-	a3real3Set(currentSceneObject->position.v, -1.0f * sceneObjectDistance, 0.0f, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -1.0f * sceneObjectDistance, 0.0f, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_cylinder;
 	currentSceneObject->scaleMode = 2;
 	currentSceneObject->scale.x = 5.0f;
 	currentSceneObject->scale.y = 2.0f;
 	currentSceneObject->scale.z = 2.0f;
-	a3real3Set(currentSceneObject->position.v, +0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, +0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_capsule;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.0f;
-	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, -0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, -0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_torus;
 	currentSceneObject->scaleMode = 1;
 	currentSceneObject->scale.x = 2.5f;
-	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeight);
+	a3real3Set(currentSceneObject->position.v, -0.5f * sceneObjectDistance, +0.866f * sceneObjectDistance, sceneObjectHeightWayAway);
 
 	currentSceneObject = demoMode->obj_teapot;
 	currentSceneObject->scaleMode = 0;
@@ -165,6 +172,70 @@ void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMod
 
 	demoMode->targetCount[starter_passScene] = starter_target_scene_max;
 	demoMode->targetCount[starter_passComposite] = 1;
+
+	// init keyframe pool which creates 64 keyframes
+	a3keyframePoolCreate(&demoMode->keyPool_sprite, 64);
+	
+	// set atlas texture and create even cells
+	a3_DemoState demoStateCopy = *demoState;
+	a3textureAtlasSetTexture(&demoMode->spriteTestAtlas, demoStateCopy.tex_testsprite);
+	a3textureAtlasAllocateEvenCells(&demoMode->spriteTestAtlas, 8, 8);
+
+	// allocate sprite cell index to each keyframe
+	for (a3ui32 i = 0; i < demoMode->spriteTestAtlas.numCells; i++)
+	{
+		a3keyframeInit(demoMode->keyPool_sprite.keyframe + i, 1.0, i);
+	}
+
+	// init clip pool which creates 8 clips (for each row)
+	a3clipPoolCreate(&demoMode->clipPool_sprite, 8);
+
+	const char* names[] = { "Clip 1", "Clip 2", "Clip 3", "Clip 4",
+							"Clip 5", "Clip 6", "Clip 7", "Clip 8" };
+
+	int clipPoolSize = sizeof(names) / sizeof(names[0]);
+
+	for (int i = 0; i < clipPoolSize; i++)
+	{
+		// Each clip will have 8 of the 64 keyframes in the keyframe pool
+		a3clipInit(demoMode->clipPool_sprite.clip + i, names[i], &demoMode->keyPool_sprite, i * clipPoolSize, i * clipPoolSize + 7);
+		a3clipCalculateDuration(demoMode->clipPool_sprite.clip + i);
+	}
+
+	// init clip controllers
+	a3clipControllerInit(demoMode->clipCtrl_sprite, "Sprite Controller", &demoMode->clipPool_sprite, 2);
+
+	// --== Load lerp data ==--
+
+	// Keyframes
+	a3keyframePoolCreate(&demoMode->keyPool_lerp, 4);
+
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[0], 1, -1);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[1], 1, 0);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[2], 1, 2);
+	a3keyframeInit(&demoMode->keyPool_lerp.keyframe[3], 1, -2);
+
+	// Clips
+	a3clipPoolCreate(&demoMode->clipPool_lerp, 1);
+	a3clipInit(demoMode->clipPool_lerp.clip, "X", &demoMode->keyPool_lerp, 0, 3);
+	a3clipCalculateDuration(demoMode->clipPool_lerp.clip);
+
+	a3clipControllerInit(demoMode->clipCtrl_lerp, "Lerp Controller", &demoMode->clipPool_lerp, 0);
+	demoMode->clipCtrl_lerp->forwardTerminus = forwardPingPong;
+	demoMode->clipCtrl_lerp->reverseTerminus = reversePingPong;
+
+	// values for menu
+	demoMode->isNormalTime = a3true;
+
+	// Terminus Actions
+	demoMode->forwardTerminusActions[starter_loop] = forwardLoop;
+	demoMode->reverseTerminusActions[starter_loop] = reverseLoop;
+
+	demoMode->forwardTerminusActions[starter_stop] = forwardStop;
+	demoMode->reverseTerminusActions[starter_stop] = reverseStop;
+
+	demoMode->forwardTerminusActions[starter_pingPong] = forwardPingPong;
+	demoMode->reverseTerminusActions[starter_pingPong] = reversePingPong;
 }
 
 

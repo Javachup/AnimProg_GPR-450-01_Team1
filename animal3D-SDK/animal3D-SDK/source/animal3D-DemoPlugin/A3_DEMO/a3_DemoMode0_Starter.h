@@ -24,6 +24,9 @@
 	********************************************
 	*** THIS IS ONE DEMO MODE'S HEADER FILE  ***
 	********************************************
+	
+	Ananda Shumock-Bailey
+	Added booleans for menu and variables for indices
 */
 
 #ifndef __ANIMAL3D_DEMOMODE0_STARTER_H
@@ -33,7 +36,8 @@
 //-----------------------------------------------------------------------------
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
-
+#include "_animation/a3_KeyframeAnimationController.h"
+#include "animal3D-A3DG/a3graphics/A3_TEXTUREATLAS.H"
 
 //-----------------------------------------------------------------------------
 
@@ -59,6 +63,7 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starterMaxCount_sceneObject = 8,
 		starterMaxCount_cameraObject = 1,
 		starterMaxCount_projector = 1,
+		starterMaxCount_clipCtrl = 2,
 	};
 
 	// scene object rendering program names
@@ -114,6 +119,15 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_target_scene_max,
 	};
 
+	enum a3_DemoMode0_Starter_TerminusActions
+	{
+		starter_loop,
+		starter_stop,
+		starter_pingPong,
+
+		starter_terminusActions_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -159,8 +173,46 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 					proj_camera_main[1];
 			};
 		};
-	};
 
+		// A collection of all the clip controllers
+		// In this pattern so that we can update them all in a loop 
+		// but also access them individually
+		union
+		{
+			a3_ClipController clipCtrls[starterMaxCount_clipCtrl];
+			struct
+			{
+				a3_ClipController
+					clipCtrl_sprite[1],
+					clipCtrl_lerp[1];
+			};
+		};
+
+		// code added in class
+		a3_ClipPool clipPool_sprite;
+		a3_KeyframePool keyPool_sprite;
+
+		// For lerping
+		a3_ClipPool clipPool_lerp;
+		a3_KeyframePool keyPool_lerp;
+
+		// Booleans for controls
+		a3boolean isNormalTime;
+
+		// Numbers for clip controllers and clips
+		a3integer clipCtrlIndex;
+
+		// Texture atlas for sprites
+		a3_TextureAtlas spriteTestAtlas;
+        
+		// Terminus Actions
+		ForwardTerminusFunc forwardTerminusActions[starter_terminusActions_max];
+		ReverseTerminusFunc reverseTerminusActions[starter_terminusActions_max];
+		a3ui32 forwardAction, reverseAction;
+
+		// DEBUG
+		a3real lerp;
+	};
 
 //-----------------------------------------------------------------------------
 

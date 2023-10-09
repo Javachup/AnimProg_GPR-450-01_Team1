@@ -51,11 +51,14 @@ enum
 	a3keyframeAnimation_nameLenMax = 32,
 };
 
-
 // description of single keyframe
 // metaphor: moment
 struct a3_Keyframe
 {
+	a3f64 duration;
+	a3f64 invDuration;
+	a3integer data;
+
 	// index in keyframe pool
 	a3ui32 index;
 };
@@ -70,7 +73,6 @@ struct a3_KeyframePool
 	a3ui32 count;
 };
 
-
 // allocate keyframe pool
 a3i32 a3keyframePoolCreate(a3_KeyframePool* keyframePool_out, const a3ui32 count);
 
@@ -80,7 +82,6 @@ a3i32 a3keyframePoolRelease(a3_KeyframePool* keyframePool);
 // initialize keyframe
 a3i32 a3keyframeInit(a3_Keyframe* keyframe_out, const a3real duration, const a3ui32 value_x);
 
-
 //-----------------------------------------------------------------------------
 
 // description of single clip
@@ -89,6 +90,15 @@ struct a3_Clip
 {
 	// clip name
 	a3byte name[a3keyframeAnimation_nameLenMax];
+
+	a3f64 duration; //sum of all referenced keyframes
+	a3f64 invDuration; //reciprocal of duration
+
+	a3ui32 keyCount; //number of keyframes referenced (including first and last)
+	a3ui32 firstKeyIndex; //index of first keyframe
+	a3ui32 lastKeyIndex; //index of final keyframe
+
+	const a3_Keyframe* keyframes; //Clip references a set of keyframes the exist elsewhere (keyframePool)
 
 	// index in clip pool
 	a3ui32 index;

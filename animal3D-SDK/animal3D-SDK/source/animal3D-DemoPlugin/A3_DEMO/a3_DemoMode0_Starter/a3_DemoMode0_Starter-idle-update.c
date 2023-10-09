@@ -24,6 +24,9 @@
 	********************************************
 	*** UPDATE FOR STARTER SCENE MODE        ***
 	********************************************
+	
+	Ananda Shumock-Bailey
+	Applying the input from the testing interface to controllers
 */
 
 //-----------------------------------------------------------------------------
@@ -35,6 +38,7 @@
 
 #include "../_a3_demo_utilities/a3_DemoMacros.h"
 
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 // UPDATE
@@ -83,6 +87,28 @@ void a3starter_update(a3_DemoState* demoState, a3_DemoMode0_Starter* demoMode, a
 			activeCamera->projectionMat.m, activeCameraObject->modelMat.m, activeCameraObject->modelMatInv.m,
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
+
+	// Multiply dt by less than 1 for slowmo 
+	a3f64 dtMultiplier = demoMode->isNormalTime ? 1 : 0.1;
+
+	for (a3ui32 i = 0; i < starterMaxCount_clipCtrl; i++)
+	{
+		if (a3clipControllerUpdate(&demoMode->clipCtrls[i], dt * dtMultiplier) < 0)
+			printf("\n========== ERROR UPDATING CLIP CONTROLER: %s (%d, %s) ==========\n\n", demoMode->clipCtrls[i].name, __LINE__, __FILE__);
+	}
+
+	// LERP
+	a3real x0 = (a3real)getCurrentKeyframe(demoMode->clipCtrl_lerp)->data;
+	a3real x1 = (a3real)getNextKeyframe(demoMode->clipCtrl_lerp)->data;
+	a3real u = (a3real)demoMode->clipCtrl_lerp->keyParameter;
+
+	if (demoMode->clipCtrl_lerp->playbackDirection < 0)
+		u = 1 - u; // Invert the lerp when going backwards
+
+	a3real newX = x0 + (x1 - x0) * u;
+	demoMode->lerp = newX;
+
+	demoMode->obj_teapot->position.x = newX;
 }
 
 
