@@ -132,6 +132,9 @@ a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPoseL_inout, const a3_SpatialPo
 // convert single node pose to matrix
 a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
 
+// Lerps between 2 spacial poses
+a3i32 a3spatialPoseLerp(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
+
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 

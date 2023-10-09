@@ -111,6 +111,9 @@ a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* keyPose_inout, const a3_HierarchyP
 // convert full hierarchy pose to hierarchy transforms
 a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
 
+// lerp between keyPose0 and keyPose1 by param [0,1] amount and save to samplePos_out
+a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* samplePose_out, const a3_HierarchyPose* keyPose0_in, const a3_HierarchyPose* keyPose1_in, const a3real param, const a3ui32 nodeCount);
+
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 

@@ -129,6 +129,28 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_Spati
 	return 0;
 }
 
+inline a3i32 a3spatialPoseLerp(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param)
+{
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
+	{
+		a3spatialPoseSetTranslation(samplePose_out, 
+			a3lerp(keyPose0_in->translation[0], keyPose1_in->translation[0], param),
+			a3lerp(keyPose0_in->translation[1], keyPose1_in->translation[1], param),
+			a3lerp(keyPose0_in->translation[2], keyPose1_in->translation[2], param));
+
+		a3spatialPoseSetRotation(samplePose_out, 
+			a3lerp(keyPose0_in->rotation[0], keyPose1_in->rotation[0], param),
+			a3lerp(keyPose0_in->rotation[1], keyPose1_in->rotation[1], param),
+			a3lerp(keyPose0_in->rotation[2], keyPose1_in->rotation[2], param));
+
+		a3spatialPoseSetScale(samplePose_out, 
+			a3lerp(keyPose0_in->scale[0], keyPose1_in->scale[0], param),
+			a3lerp(keyPose0_in->scale[1], keyPose1_in->scale[1], param),
+			a3lerp(keyPose0_in->scale[2], keyPose1_in->scale[2], param));
+	}
+	return 0;
+}
+
 // copy operation for single node pose
 inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in)
 {
