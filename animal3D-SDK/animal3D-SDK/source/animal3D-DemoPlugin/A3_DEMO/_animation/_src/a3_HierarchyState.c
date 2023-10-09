@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 //-----------------------------------------------------------------------------
@@ -176,7 +177,39 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 {
 	if (poseGroup_out && !poseGroup_out->hposeCount && hierarchy_out && !hierarchy_out->numNodes && resourceFilePath && *resourceFilePath)
 	{
+		/*_____ignore any data following the # character_____*/
+		// [SegmentNames&Hierarchy] defines hierarchical struct of skeleton
+			// left is child, right is parent
+		// [BasePosition] indicates the beginning of the base pose section
+			// segment name, translation: xyz, rotation: xyz, bone length
+		// [Main], [Spine1-8], [ShoulderBlade], [LowerShoulder], [LowerForearm]
+		// [LowerWrist], [LowerHand], [LowerPinky1-3], [LOWERPINKY2], [LOWERPINKY3
 
+		// numSegments: number of bones in the skeleton
+		// numFrames: number of frames in the animation
+		// dataFrameRate: frames per second
+		a3ui32 numSegments, numFrames, dataFrameRate;
+
+		// eulerRotationOrder: a3_SpatialPoseEulerOrder
+		// calibrationUnits: metric used to measure translation units
+		// rotationUnits: metric used to measure rotation angles
+		// globalAxisOfGravity: global "up axis" of the data
+		// boneLengthAxis: dir/axis that all bone lengths are aligned to
+		/* a3char eulerRotationOrder, calibrationUnits, rotationUnits,
+			globalAxisOfGravity, boneLengthAxis; */
+
+		// scaleFactor: global scale factor applied to complete motion
+		a3real scaleFactor;
+
+		FILE* file_ptr;
+		file_ptr = fopen(resourceFilePath, "r");
+		if (file_ptr == NULL)
+		{
+			perror("Error opening file");
+			return -1;
+		}
+
+		return 1;
 	}
 	return -1;
 }
