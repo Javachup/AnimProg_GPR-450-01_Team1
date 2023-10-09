@@ -113,12 +113,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_SpatialPoseChannel tempChannels = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
 
-	//a3hierarchyPoseCopy(&activeHS->localSpace, demoMode->hierarchyPoseGroup_skel->hpose + 1, demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseCopy(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
-
-	activeHS->localSpace.spatialPose[0].rotation[1] += (a3real)demoState->timer_display->totalTime * 10; // test rotate the root joint by 90 on the y axis
-
-	//a3hierarchyPoseConcat(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseCopy(&activeHS->localSpace, demoMode->hierarchyPoseGroup_skel->hpose + 3, demoMode->hierarchy_skel->numNodes);
+	a3hierarchyPoseConcat(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(&activeHS->localSpace, demoMode->hierarchy_skel->numNodes, tempChannels, demoMode->hierarchyPoseGroup_skel->order);
 	a3kinematicsSolveForward(activeHS);
 

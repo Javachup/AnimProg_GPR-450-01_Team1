@@ -81,7 +81,7 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPoseL_inout, const a3_Sp
 	{
 		// Add translation and rotation, multiply scale 
 		a3real3Add(spatialPoseL_inout->translation, spatialPoseR_in->translation);
-		a3real3Add(spatialPoseL_inout->translation, spatialPoseR_in->translation);
+		a3real3Add(spatialPoseL_inout->rotation, spatialPoseR_in->rotation);
 		a3real3MulComp(spatialPoseL_inout->scale, spatialPoseR_in->scale);
 	}
 	return 0;
