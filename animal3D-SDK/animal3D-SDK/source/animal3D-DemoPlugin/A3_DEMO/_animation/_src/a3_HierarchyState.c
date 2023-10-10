@@ -186,6 +186,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			// [BoneName]: int frameNumber, trans: xyz, rot: xyz, bone scale
 		// [EndOfFile]: no more data to be processed
 
+		// MOCAPSEGMENT = a3_HierarchyPose
+		// MOCAPHEADER = (???)
+		// NODE = a3_SpatialPose
+
 		a3ui32 read, i, j, where;
 		a3ui32 pos[8];	// position of next char to write
 		char line[8][40];	// store attribute and value
@@ -196,17 +200,70 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3real ang[3], num, den;
 		a3boolean eof = false;
 
+		// allocate memory for arrays using malloc
 		base = (a3real **)malloc(3 * sizeof(a3real *));
 		rot = (a3real**)malloc(3 * sizeof(a3real*));
 		arot = (a3real**)malloc(3 * sizeof(a3real*));
 		trot = (a3real**)malloc(3 * sizeof(a3real*));
 
-		for (i = 0; i < 3; i++) {
+		/*for (i = 0; i < 3; i++)
+{
 			base[i] = (a3real*)malloc(3 * sizeof(a3real));
 			rot[i] = (a3real*)malloc(3 * sizeof(a3real));
 			arot[i] = (a3real*)malloc(3 * sizeof(a3real));
 			trot[i] = (a3real*)malloc(3 * sizeof(a3real));
+		}*/
+
+		// header->callib = 1.0f;
+		// header->scalefactor = 1.0f;
+
+		FILE* file = fopen(resourceFilePath, "rb");
+		if (file)
+		{
+			// process the "header" section of the file
+			read = fread(buffer, 1, sizeof(buffer) - 1, file);
+			buffer[read] = '\0';
+			i = strstr(buffer, "[Header]");
+			i += strcspn(buffer + i, '\n');
+			while (buffer[++i] < 32)
+			{
+				where = pos[0] = pos[1] = pos[2] = pos[3] = pos[4] = pos[5] = pos[6] = pos[7] = 0;
+				// process each line in the header
+				while (read && !eof)
+				{
+					while (i < read && !eof)
+					{
+						if (buffer[i] == '#' || buffer[i] == '\n')
+						{
+							// process line
+							line[1][pos[1]] = line[0][pos[0]] = '\0';
+							if (line[0][0] == '[')
+							{
+								// body struct has been read and ready to process base positions
+								// assign the GLOBAL node to the root pointer
+
+							}
+						}
+					}
+				}
+			}
+
+
 		}
+
+		/*for (i = 0; i < 3; i++)
+		{
+			free(base[i]);
+			free(rot[i]);
+			free(arot[i]);
+			free(trot[i]);
+		}*/
+
+		// free dynamically allocated memory when done
+		free(base);
+		free(rot);
+		free(arot);
+		free(trot);
 
 		return 1;
 	}
