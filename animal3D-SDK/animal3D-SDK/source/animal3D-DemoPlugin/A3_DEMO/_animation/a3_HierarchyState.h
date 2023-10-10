@@ -39,6 +39,9 @@
 extern "C"
 {
 #else	// !__cplusplus
+typedef struct MOCAPSEGMENT				MOCAPSEGMENT;
+typedef struct MOCAPHEADER				MOCAPHEADER;
+typedef struct NODE						NODE;
 typedef struct a3_HierarchyPose			a3_HierarchyPose;
 typedef struct a3_HierarchyPoseGroup	a3_HierarchyPoseGroup;
 typedef struct a3_HierarchyState		a3_HierarchyState;
@@ -46,6 +49,45 @@ typedef struct a3_HierarchyState		a3_HierarchyState;
 	
 
 //-----------------------------------------------------------------------------
+
+// complete motion capture skeleton
+struct MOCAPSEGMENT
+{
+	char* name;				// name of motion capture file
+	NODE* root;				// pointer to the root node
+	MOCAPHEADER* header;	// pointer to a struct w/ global params
+	NODE** nodeList;		// array of pointers to skeletal nodes
+};
+
+// holds global information about the animation
+struct MOCAPHEADER
+{
+	a3ui32 numOfSegments;	// num of body segments
+	a3ui64 numOfFrames;		// num of frames
+	a3ui32 dataRate;		// num of fps
+	a3ui32 euler[3][3];		// euler angle definition
+	a3real callib;			// scale factor -> translating units to meteres
+	a3boolean degrees;		// rotational measurements in degrees
+	a3real scaleFactor;		// scale factor
+	a3ui64 currentFrame;	// stores the current frame to render
+	a3real floor;			// position of the floor along the y-axis
+};
+
+// contains the data of a specific bone in the animation
+struct NODE
+{
+	char* name;	
+	a3real length;			// length of segment along y-axis
+	a3real offset[3];		// transitional offset w/ respect to parent
+	a3real euler[3];		// rotation of base position
+	a3real color[3];		// color used when displaying wire frame skeleton
+	a3ui32 numOfChildren;	// number of child nodes
+	NODE** children;		// array of pointers to child nodes
+	NODE* parent;			// back pointer to parent node
+	a3real** froset;		// array of offsets for each frame
+	a3real** freuler;		// array of angles for each frame
+	a3real* scale;			// array of scale factors for each frame
+};
 
 // single pose for a collection of nodes
 // makes algorithms easier to keep this as a separate data type
