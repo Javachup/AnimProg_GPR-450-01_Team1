@@ -135,6 +135,9 @@ a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_SpatialPoseC
 // Lerps between 2 spacial poses
 a3i32 a3spatialPoseLerp(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
 
+// Smooth Steps between 2 spacial poses
+a3i32 a3spatialPoseSmoothStep(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
+
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
