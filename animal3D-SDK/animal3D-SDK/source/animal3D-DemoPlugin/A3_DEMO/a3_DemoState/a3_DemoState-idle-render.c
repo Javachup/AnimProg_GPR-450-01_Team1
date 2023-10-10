@@ -253,6 +253,56 @@ void a3demo_render_clipCtrl(const a3_DemoState* demoState,
 		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
 }
 
+// Display animation data + controls
+void a3demo_render_animation(const a3_DemoState* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+
+	a3byte const poseText[5][12] =
+	{
+		"Base       ",
+		"No Delta   ",
+		"Rotation   ",
+		"Scale      ",
+		"Translation"
+	};
+
+	const a3_DemoMode1_Animation* demoMode = demoState->demoMode1_animation;
+
+	#define loadbarLength 15
+	a3byte loadbar[loadbarLength + 1];
+
+	for (a3ui32 i = 0; i < loadbarLength; i++)
+	{
+		float t = (float)i / loadbarLength;
+
+		loadbar[i] = t < demoMode->hierarchyKeyPose_param ? '/' : '.';
+	}
+	loadbar[loadbarLength] = '\0';
+
+	const a3f32 textIndentOffset = 0.8f;
+
+	const a3ui32 currIndex = demoMode->hierarchyKeyPose_display[0] + 1;
+	const a3ui32 nextIndex = demoMode->hierarchyKeyPose_display[1] + 1;
+
+	// Show info about current pose and next pose
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Curr Pose Index - %i [%s] %i - Next Pose Index",
+		currIndex, loadbar, nextIndex);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Curr Pose: %s  Next Pose: %s",
+		poseText[currIndex], poseText[nextIndex]);
+
+	// global controls
+	textOffset = -0.8f;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+}
+
 /*
 // bloom iteration
 void a3demo_render_bloomIteration(a3_DemoState const* demoState, a3real2 pixelSize, a3_Framebuffer const* fbo_prev,
@@ -335,6 +385,11 @@ void a3demo_render(a3_DemoState const* demoState, a3f64 const dt)
 				// Controls for Clip Ctrl
 			case demoState_clipCtrl:
 				a3demo_render_clipCtrl(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
+				break;
+
+				// Controls for Animations
+			case demoState_animation:
+				a3demo_render_animation(demoState, text, col, textAlign + x, textDepth, textOffsetDelta, textOffset + y);
 				break;
 			}
 		}

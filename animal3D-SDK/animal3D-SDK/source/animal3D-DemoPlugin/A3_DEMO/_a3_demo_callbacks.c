@@ -262,7 +262,7 @@ A3DYLIBSYMBOL a3_DemoState *a3demoCB_load(a3_DemoState *demoState, a3boolean hot
 		// text
 		a3demo_initializeText(demoState);
 		demoState->textInit = a3true;
-		demoState->textMode = demoState_clipCtrl;
+		demoState->textMode = demoState_animation;
 
 
 		// enable asset streaming between loads
