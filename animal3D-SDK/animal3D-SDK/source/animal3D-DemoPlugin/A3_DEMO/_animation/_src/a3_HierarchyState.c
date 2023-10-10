@@ -182,31 +182,30 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			// left is child, right is parent
 		// [BasePosition] indicates the beginning of the base pose section
 			// segment name, translation: xyz, rotation: xyz, bone length
-		// [Main], [Spine1-8], [ShoulderBlade], [LowerShoulder], [LowerForearm]
-		// [LowerWrist], [LowerHand], [LowerPinky1-3], [LOWERPINKY2], [LOWERPINKY3
+		// Motion data needed to drive the animation
+			// [BoneName]: int frameNumber, trans: xyz, rot: xyz, bone scale
+		// [EndOfFile]: no more data to be processed
 
-		// numSegments: number of bones in the skeleton
-		// numFrames: number of frames in the animation
-		// dataFrameRate: frames per second
-		a3ui32 numSegments, numFrames, dataFrameRate;
+		a3ui32 read, i, j, where;
+		a3ui32 pos[8];	// position of next char to write
+		char line[8][40];	// store attribute and value
+		char buffer[4097];
+		a3ui32 section = 0;	// which section is being processed
+		//NODE *tnode;	// setting up base pos and frames
+		a3real** base, ** rot, ** arot, ** trot;
+		a3real ang[3], num, den;
+		a3boolean eof = false;
 
-		// eulerRotationOrder: a3_SpatialPoseEulerOrder
-		// calibrationUnits: metric used to measure translation units
-		// rotationUnits: metric used to measure rotation angles
-		// globalAxisOfGravity: global "up axis" of the data
-		// boneLengthAxis: dir/axis that all bone lengths are aligned to
-		/* a3char eulerRotationOrder, calibrationUnits, rotationUnits,
-			globalAxisOfGravity, boneLengthAxis; */
+		base = (a3real **)malloc(3 * sizeof(a3real *));
+		rot = (a3real**)malloc(3 * sizeof(a3real*));
+		arot = (a3real**)malloc(3 * sizeof(a3real*));
+		trot = (a3real**)malloc(3 * sizeof(a3real*));
 
-		// scaleFactor: global scale factor applied to complete motion
-		a3real scaleFactor;
-
-		FILE* file_ptr;
-		file_ptr = fopen(resourceFilePath, "r");
-		if (file_ptr == NULL)
-		{
-			perror("Error opening file");
-			return -1;
+		for (i = 0; i < 3; i++) {
+			base[i] = (a3real*)malloc(3 * sizeof(a3real));
+			rot[i] = (a3real*)malloc(3 * sizeof(a3real));
+			arot[i] = (a3real*)malloc(3 * sizeof(a3real));
+			trot[i] = (a3real*)malloc(3 * sizeof(a3real));
 		}
 
 		return 1;
