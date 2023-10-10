@@ -241,51 +241,68 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						if (strcmp(keyWord, "FileType") == 0)
 						{
 							int result = sscanf(line, "FileType %255s", fileType);
+							printf("File Type: %s\n", fileType);
 						}
 						else if (strcmp(keyWord, "DataType") == 0)
 						{
 							int result = sscanf(line, "DataType %255s", dataType);
+							printf("Data Type: %s\n", dataType);
 						}
 						else if (strcmp(keyWord, "FileVersion") == 0)
 						{
 							int result = sscanf(line, "FileVersion %d", &fileVersion);
+							printf("File Version: %d\n", fileVersion);
 						}
 						else if (strcmp(keyWord, "NumSegments") == 0)
 						{
 							int result = sscanf(line, "NumSegments %d", &numSegments);
+							printf("Number of Segments: %d\n", numSegments);
 							a3hierarchyCreate(hierarchy_out,numSegments, 0);
+
+							if (hierarchy_out->numNodes == numSegments)
+							{
+								printf("Number of nodes has been set\n");
+							}
 						}
 						else if (strcmp(keyWord, "NumFrames") == 0)
 						{
 							int result = sscanf(line, "NumFrames %d", &numFrames);
+							printf("Number of Frames: %d\n", numFrames);
 						}
 						else if (strcmp(keyWord, "DataFrameRate") == 0)
 						{
 							int result = sscanf(line, "DataFrameRate %d", &dataFrame);
+							printf("Data Frame Rate: %d\n", dataFrame);
 						}
 						else if (strcmp(keyWord, "EulerRotationOrder") == 0)
 						{
 							int result = sscanf(line, "EulerRotationOrder %255s", euler);
+							printf("Euler Rotation Order: %s\n", euler);
 						}
 						else if (strcmp(keyWord, "CalibrationUnits") == 0)
 						{
 							int result = sscanf(line, "CalibrationUnits %255s", calib);
+							printf("Calibration Units: %s\n", calib);
 						}
 						else if (strcmp(keyWord, "RotationUnits") == 0)
 						{
 							int result = sscanf(line, "RotationUnits %255s", rot);
+							printf("Rotation Units: %s\n", rot);
 						}
 						else if (strcmp(keyWord, "GlobalAxisofGravity") == 0)
 						{
 							int result = sscanf(line, "GlobalAxisofGravity %255s", axis);
+							printf("Global Axis of Gravity: %s\n", axis);
 						}
 						else if (strcmp(keyWord, "BoneLengthAxis") == 0)
 						{
 							int result = sscanf(line, "BoneLengthAxis %255s", boneLength);
+							printf("Bone Length Axis: %s\n", boneLength);
 						}
 						else if (strcmp(keyWord, "ScaleFactor") == 0)
 						{
 							int result = sscanf(line, "ScaleFactor %f", &scaleFactor);
+							printf("Scale Factor: %f\n", scaleFactor);
 							spatialPoseScale = scaleFactor;
 						}
 					}
@@ -303,6 +320,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					{
 						jointParentIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
 					}	
+
+					printf("Object Name: %s		Parent Name: %s\n", object, objectParent);
 				}
 				else if (strcmp(section, "[BasePosition]") == 0)
 				{
@@ -322,6 +341,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
 					a3spatialPoseSetScale(spatialPose, spatialPoseScale, spatialPoseScale, spatialPoseScale);
 
+					printf("%s %f %f %f %f %f %f %f\n", jointName, tX, tY, tZ, rX, rY, rZ, boneLength);
+
 				}
 				else if (strcmp(section, "[EndOfFile]") == 0)
 				{
@@ -333,15 +354,32 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					// process the motion data
 					a3ui32 index;
 					a3f32 tX, tY, tZ, rX, rY, rZ, scaleFactor;
+					char jointName[256];
+
+					// get rid of the "[" and "]" on either side of the section name
+					strcpy(jointName, section);
+					size_t len = strlen(jointName);
+					// shift all chars to the left by 1
+					for (int l = 0; l < len - 1; l++)
+					{
+						jointName[l] = jointName[l + 1];
+					}
+					// null terminate the string
+					jointName[len - 2] = '\0';
+
 
 					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
 
 					p = index;
-					j = a3hierarchyGetNodeIndex(hierarchy_out, section);
+					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
+					printf("Node: %s		Hierarchy Pose: %d", jointName, index);
+
 					spatialPose = poseGroup_out->hpose[p].spatialPose + j;
 					a3spatialPoseSetTranslation(spatialPose, tX, tY, tZ);
 					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
 					a3spatialPoseSetScale(spatialPose, scaleFactor, scaleFactor, scaleFactor);
+
+					printf("%d %f %f %f %f %f %f %f\n", index, tX, tY, tZ, rX, rY, rZ, scaleFactor);
 				}
 			}
 		}
