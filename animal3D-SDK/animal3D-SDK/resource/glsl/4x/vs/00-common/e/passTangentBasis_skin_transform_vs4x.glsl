@@ -56,10 +56,15 @@ vec4 skin(in vec4 v)
 {
 	vec4 v_out = vec4(0.0);
 
-	int j = aBlendIndex[2];
-	float w = aBlendWeight[2];
+	int i,j;
+	float w;
+	for (i = 0; i < 4; i++)
+	{
+		j = aBlendIndex[i];
+		w = aBlendWeight[i];
 
-	v_out = skinMat[j] * (w * v);
+		v_out += skinMat[j] * (w * v);
+	}
 
 	return v_out;
 }
