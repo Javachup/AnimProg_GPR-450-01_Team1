@@ -117,6 +117,9 @@ a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* samplePose_out, const a3_HierarchyPo
 // smooth step between keyPose0 and keyPose1 by param [0,1] amount and save to samplePos_out
 a3i32 a3hierarchyPoseSmoothStep(a3_HierarchyPose* samplePose_out, const a3_HierarchyPose* keyPose0_in, const a3_HierarchyPose* keyPose1_in, const a3real param, const a3ui32 nodeCount);
 
+// round to the nearest pose based on param [0, 1]
+a3i32 a3hierarchyPoseNearest(a3_HierarchyPose* samplePose_out, const a3_HierarchyPose* keyPose0_in, const a3_HierarchyPose* keyPose1_in, const a3real param, const a3ui32 nodeCount);
+
 // copy full hierarchy pose
 a3i32 a3hierarchyPoseCopy(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_in, const a3ui32 nodeCount);
 

@@ -175,6 +175,20 @@ inline a3i32 a3spatialPoseSmoothStep(a3_SpatialPose* samplePose_out, const a3_Sp
 	return 0;
 }
 
+inline a3i32 a3spatialPoseNearest(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param)
+{
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
+	{
+		const a3_SpatialPose* keyPoseToUse = param < a3real_half ? keyPose0_in : keyPose1_in;
+
+		a3spatialPoseSetTranslation(samplePose_out, keyPoseToUse->translation[0], keyPoseToUse->translation[1], keyPoseToUse->translation[2]);
+		a3spatialPoseSetRotation(samplePose_out, keyPoseToUse->rotation[0], keyPoseToUse->rotation[1], keyPoseToUse->rotation[2]);
+		a3spatialPoseSetScale(samplePose_out, keyPoseToUse->scale[0], keyPoseToUse->scale[1], keyPoseToUse->scale[2]);
+	}
+
+	return 0;
+}
+
 // copy operation for single node pose
 inline a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in)
 {

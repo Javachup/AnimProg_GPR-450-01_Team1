@@ -77,6 +77,20 @@ inline a3i32 a3hierarchyPoseConcat(a3_HierarchyPose* keyPose_inout, const a3_Hie
 	return 0;
 }
 
+// convert full hierarchy pose to hierarchy transforms
+inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+{
+	if (pose_inout && nodeCount)
+	{
+		for (a3ui32 i = 0; i < nodeCount; ++i)
+		{
+			a3spatialPoseConvert(&pose_inout->spatialPose[i], channel, order);
+			
+		}
+	}
+	return 0;
+}
+
 inline a3i32 a3hierarchyPoseLerp(a3_HierarchyPose* samplePose_out, const a3_HierarchyPose* keyPose0_in, const a3_HierarchyPose* keyPose1_in, const a3real param, const a3ui32 nodeCount)
 {
 	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1 && nodeCount)
@@ -103,17 +117,16 @@ inline a3i32 a3hierarchyPoseSmoothStep(a3_HierarchyPose* samplePose_out, const a
 	return 0;
 }
 
-// convert full hierarchy pose to hierarchy transforms
-inline a3i32 a3hierarchyPoseConvert(const a3_HierarchyPose* pose_inout, const a3ui32 nodeCount, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
+inline a3i32 a3hierarchyPoseNearest(a3_HierarchyPose* samplePose_out, const a3_HierarchyPose* keyPose0_in, const a3_HierarchyPose* keyPose1_in, const a3real param, const a3ui32 nodeCount)
 {
-	if (pose_inout && nodeCount)
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1 && nodeCount)
 	{
 		for (a3ui32 i = 0; i < nodeCount; ++i)
 		{
-			a3spatialPoseConvert(&pose_inout->spatialPose[i], channel, order);
-			
+			a3spatialPoseNearest(&samplePose_out->spatialPose[i], &keyPose0_in->spatialPose[i], &keyPose1_in->spatialPose[i], param);
 		}
 	}
+
 	return 0;
 }
 
