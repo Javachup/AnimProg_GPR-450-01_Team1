@@ -51,6 +51,7 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
+typedef enum a3_DemoMode1_Animation_Interpolation			a3_DemoMode1_Animation_Interpolation;
 #endif	// __cplusplus
 
 
@@ -117,6 +118,15 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animation_target_scene_max,
 	};
 
+	enum a3_DemoMode1_Animation_Interpolation
+	{
+		animation_step,
+		animation_nearest,
+		animation_lerp,
+		animation_smoothstep,
+
+		animation_interpolation_max
+	};
 
 //-----------------------------------------------------------------------------
 
@@ -130,6 +140,8 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3_DemoMode1_Animation_PipelineName pipeline;
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
+
+		a3_DemoMode1_Animation_Interpolation interpolationMethod;
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];

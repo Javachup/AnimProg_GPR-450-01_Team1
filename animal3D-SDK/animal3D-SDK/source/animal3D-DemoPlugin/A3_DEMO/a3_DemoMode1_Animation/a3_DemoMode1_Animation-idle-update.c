@@ -116,27 +116,39 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_SpatialPoseChannel tempChannels = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
 
-	a3hierarchyPoseCopy(&activeHS->localSpace, 
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchy_skel->numNodes);
+	// Pick which interpolation method to use
+	switch (demoMode->interpolationMethod)
+	{
+	case animation_step:
+		a3hierarchyPoseCopy(&activeHS->localSpace, 
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+			demoMode->hierarchy_skel->numNodes);
+		break;
 
-	//a3hierarchyPoseLerp(&activeHS->localSpace,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-	//	demoMode->hierarchyKeyPose_param,
-	//	demoMode->hierarchy_skel->numNodes);
+	case animation_nearest:
+		a3hierarchyPoseNearest(&activeHS->localSpace,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+			demoMode->hierarchyKeyPose_param,
+			demoMode->hierarchy_skel->numNodes);
+		break;
 
-	//a3hierarchyPoseSmoothStep(&activeHS->localSpace,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-	//	demoMode->hierarchyKeyPose_param,
-	//	demoMode->hierarchy_skel->numNodes);
+	case animation_lerp:
+		a3hierarchyPoseLerp(&activeHS->localSpace,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+			demoMode->hierarchyKeyPose_param,
+			demoMode->hierarchy_skel->numNodes);
+		break;
 
-	//a3hierarchyPoseNearest(&activeHS->localSpace,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-	//	demoMode->hierarchyKeyPose_param,
-	//	demoMode->hierarchy_skel->numNodes);
+	case animation_smoothstep:
+		a3hierarchyPoseSmoothStep(&activeHS->localSpace,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
+			demoMode->hierarchyKeyPose_param,
+			demoMode->hierarchy_skel->numNodes);
+		break;
+	}
 
 	a3hierarchyPoseConcat(&activeHS->localSpace, &baseHS->localSpace, demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConvert(&activeHS->localSpace, demoMode->hierarchy_skel->numNodes, tempChannels, demoMode->hierarchyPoseGroup_skel->order);
