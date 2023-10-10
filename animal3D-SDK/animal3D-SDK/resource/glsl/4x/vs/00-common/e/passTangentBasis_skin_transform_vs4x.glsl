@@ -30,6 +30,12 @@ layout (location = 8) in vec4 aTexcoord;
 layout (location = 10) in vec4 aTangent;
 layout (location = 11) in vec4 aBitangent;
 
+#define MAX_SKINMATS 128
+uniform ubTransformBlend
+{
+	mat4 skinMat[MAX_SKINMATS];
+};
+
 uniform mat4 uP;
 uniform mat4 uMV, uMV_nrm;
 uniform mat4 uAtlas;
