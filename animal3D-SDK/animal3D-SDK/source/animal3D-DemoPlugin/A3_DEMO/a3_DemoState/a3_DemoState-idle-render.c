@@ -268,6 +268,14 @@ void a3demo_render_animation(const a3_DemoState* demoState,
 		"Translation"
 	};
 
+	a3byte const interpText[4][12] =
+	{
+		"Step       ",
+		"Nearest    ",
+		"Lerp       ",
+		"Smooth Step"
+	};
+
 	const a3_DemoMode1_Animation* demoMode = demoState->demoMode1_animation;
 
 	#define loadbarLength 15
@@ -290,10 +298,14 @@ void a3demo_render_animation(const a3_DemoState* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Curr Pose Index - %i [%s] %i - Next Pose Index",
 		currIndex, loadbar, nextIndex);
-
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Curr Pose: %s  Next Pose: %s",
 		poseText[currIndex], poseText[nextIndex]);
+
+	// Interp method and controls
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"Interp Method (%i/%i): %s",
+		demoMode->interpolationMethod + 1, animation_interpolation_max, interpText[demoMode->interpolationMethod]);
 
 	// global controls
 	textOffset = -0.8f;
