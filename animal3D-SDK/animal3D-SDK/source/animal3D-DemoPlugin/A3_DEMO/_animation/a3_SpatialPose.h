@@ -11,15 +11,20 @@
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
-limitations under the License.
+	limitations under the License.
 */
 
 /*
-animal3D SDK: Minimal 3D Animation Framework
-By Daniel S. Buckstein
+	animal3D SDK: Minimal 3D Animation Framework
+	By Daniel S. Buckstein
 	
-a3_SpatialPose.h
-Description of a spatial pose with rotation, translation and scale.
+	a3_SpatialPose.h
+	Description of a spatial pose with rotation, translation and scale.
+
+	Joey Romanowski:
+		Created and implemented a3spatialPoseLerp(...)
+		Created and implemented a3spatialPoseSmoothStep(...)
+		Created and implemented a3spatialPoseNearest(...)
 */
 
 #ifndef __ANIMAL3D_SPATIALPOSE_H

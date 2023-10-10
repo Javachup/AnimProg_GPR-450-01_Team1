@@ -20,6 +20,11 @@
 	
 	a3_HierarchyState.h
 	Hierarchy transformation state.
+
+	Joey Romanowski:
+		Created and implemented a3heirarchyPoseLerp(...)
+		Created and implemented a3heirarchyPoseSmoothStep(...)
+		Created and implemented a3heirarchyPoseNearest(...)
 */
 
 #ifndef __ANIMAL3D_HIERARCHYSTATE_H

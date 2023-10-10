@@ -20,6 +20,13 @@
 	
 	a3_SpatialPose.inl
 	Implementation of inline spatial pose operations.
+
+
+
+	Joey Romanowski:
+		Created and implemented a3spatialPoseLerp(...)
+		Created and implemented a3spatialPoseSmoothStep(...)
+		Created and implemented a3spatialPoseNearest(...)
 */
 
 
@@ -155,6 +162,7 @@ inline a3i32 a3spatialPoseSmoothStep(a3_SpatialPose* samplePose_out, const a3_Sp
 {
 	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
 	{
+		// Smooth step equation from: https://en.wikipedia.org/wiki/Smoothstep
 		float newParam = param * param * (3.0f - 2.0f * param);
 
 		a3spatialPoseSetTranslation(samplePose_out,

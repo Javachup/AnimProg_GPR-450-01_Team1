@@ -27,6 +27,9 @@
 	 
 	Ananda Shumock-Bailey
 	Worked on hierarchical pose-to-pose animation
+
+	Joey Romanowski:
+		Added keyPose interpolation
 */
 
 //-----------------------------------------------------------------------------

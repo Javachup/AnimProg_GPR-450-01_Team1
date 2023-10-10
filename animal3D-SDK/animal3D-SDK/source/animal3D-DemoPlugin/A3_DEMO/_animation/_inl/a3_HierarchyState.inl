@@ -20,6 +20,11 @@
 	
 	a3_HierarchyState.inl
 	Implementation of inline transform hierarchy state operations.
+
+	Joey Romanowski:
+		Created and implemented a3heirarchyPoseLerp(...)
+		Created and implemented a3heirarchyPoseSmoothStep(...)
+		Created and implemented a3heirarchyPoseNearest(...)
 */
 
 
