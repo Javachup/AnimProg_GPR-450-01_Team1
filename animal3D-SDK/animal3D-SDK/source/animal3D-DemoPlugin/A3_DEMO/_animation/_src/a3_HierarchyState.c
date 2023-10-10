@@ -186,319 +186,168 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			// [BoneName]: int frameNumber, trans: xyz, rot: xyz, bone scale
 		// [EndOfFile]: no more data to be processed
 
-		// MOCAPSEGMENT = a3_HierarchyPose
-		// MOCAPHEADER = (???)
-		// NODE = a3_SpatialPose
+		// header variables, however not all are used
+		char fileType[256], dataType[256], euler[256],
+			calib[256], rot[256], axis[256], boneLength[256];
+		a3ui32 fileVersion, numSegments, numFrames, dataFrame;
+		a3real scaleFactor;
 
-		MOCAPSEGMENT mocapsegment;
-		MOCAPHEADER mocapheader;
+		// manually set up the skeleton
+		a3ui32 rootJointIndex, j, p,
+			jointIndex = 0, jointParentIndex = -1;
+		char objectParent[256], object[256];
+		a3_SpatialPose* spatialPose = 0;
+		a3real spatialPoseScale;
 
-		size_t read;
-		a3ui32 i, j, where;
-		a3ui32 pos[8];	// position of next char to write
-		char line[8][40];	// store attribute and value
-		char buffer[4097];
-		a3ui32 section = 0;	// which section is being processed
-		NODE *tnode;	// setting up base pos and frames
-		a3real** base, ** rot, ** arot, ** trot;
-		a3real ang[3], num, den;
-		a3boolean eof = false;
-		a3ui32 currentnode = mocapheader.numOfSegments;
+		FILE* file;
+		char line[4096];	// max line length
+		char section[1024];	// current section name
 
-		// allocate memory for arrays using malloc
-		base = (a3real **)malloc(3 * sizeof(a3real *));
-		rot = (a3real**)malloc(3 * sizeof(a3real*));
-		arot = (a3real**)malloc(3 * sizeof(a3real*));
-		trot = (a3real**)malloc(3 * sizeof(a3real*));
-
-		/*for (i = 0; i < 3; i++)
-{
-			base[i] = (a3real*)malloc(3 * sizeof(a3real));
-			rot[i] = (a3real*)malloc(3 * sizeof(a3real));
-			arot[i] = (a3real*)malloc(3 * sizeof(a3real));
-			trot[i] = (a3real*)malloc(3 * sizeof(a3real));
-		}*/
-
-		mocapsegment.header->callib = 1.0f;
-		mocapsegment.header->scaleFactor = 1.0f;
-
-		FILE* file = fopen(resourceFilePath, "rb");
-		if (file)
+		// open the file for reading
+		file = fopen(resourceFilePath, "r");
+		if (file == NULL)
 		{
-			// process the "header" section of the file
-			read = fread(buffer, 1, 4096, file);
-			buffer[read] = '\0';
-			i = strstr(buffer, "[Header]");
-			i += strcspn(buffer + i, '\n');
-			while (buffer[++i] < 32)
+			perror("Error opening file");
+			return -1;
+		}
+
+		// read each line from the file
+		while (fgets(line, sizeof(line), file) != NULL)
+		{
+			// remove trailing newline characters
+			line[strcspn(line, "\n")] = '\0';
+
+			// ignore all comments
+			if (line[0] == '#')
 			{
-				where = pos[0] = pos[1] = pos[2] = pos[3] = pos[4] = pos[5] = pos[6] = pos[7] = 0;
-				// process each line in the header
-				while (read && !eof)
+				continue;
+			}
+
+			// check if the line contains a section header
+			if (line[0] == '[' && line[strlen(line) - 1] == ']')
+			{
+				strcpy(section, line);	// save the current section name
+			}
+			else
+			{
+				if (strcmp(section, "[Header]") == 0)
 				{
-					while (i < read && !eof)
+					// parse the header
+					char keyWord[256];
+					int result = sscanf(line, "%s", keyWord);
+
+					if (result == 1)
 					{
-						if (buffer[i] == '#' || buffer[i] == '\n')
+						if (strcmp(keyWord, "FileType") == 0)
 						{
-							// process line
-							line[1][pos[1]] = line[0][pos[0]] = '\0';
-							if (line[0][0] == '[')
-							{
-								// body struct has been read and ready to process base positions
-								// assign the GLOBAL node to the root pointer
-								mocapsegment.root = 0;
-								for (j = 0; j < currentnode && !mocapsegment.root; ++j)
-								{
-									if (strcomp(mocapsegment.nodeList[j]->name, "GLOBAL"))
-									{
-										mocapsegment.root = mocapsegment.nodeList[j]->children[0];
-										mocapsegment.root->parent = 0;
-										NODE** temp = (NODE**)malloc(sizeof(NODE*) * mocapheader.numOfSegments);
-
-										a3ui32 m;
-										for (m = 0; m < j; ++m)
-										{
-											temp[m] = mocapsegment.nodeList[m];
-										}
-										for (m = j + 1; m <= mocapheader.numOfSegments; ++m)
-										{
-											temp[m - 1] = mocapsegment.nodeList[m];
-										}
-
-										for (m = 0; m < mocapheader.numOfFrames; ++m)
-										{
-											free(mocapsegment.nodeList[j]->froset[m]);
-											free(mocapsegment.nodeList[j]->freuler[m]);
-										}
-										free(mocapsegment.nodeList[j]->froset);
-										free(mocapsegment.nodeList[j]->freuler);
-										free(mocapsegment.nodeList[j]->scale);
-										free(mocapsegment.nodeList[j]->name);
-										free(mocapsegment.nodeList[j]->children);
-										free(mocapsegment.nodeList[j]);
-										free(mocapsegment.nodeList);
-										mocapsegment.nodeList = temp;
-										--currentnode;
-									}
-								}
-							}
-
-							if (section > 2)
-							{
-								char temp[40];
-								j = 1;
-								while ((temp[j - 1] = line[0][j]) && line[0][++j] != ']');
-								temp[j - 1] = '\0';
-								tnode = 0;
-								for (j = 0; j < currentnode && !tnode; ++j)
-								{
-									if (!strcmp(mocapsegment.nodeList[j]->name, temp))
-									{
-										tnode = mocapsegment.nodeList[j];
-									}
-								}
-
-								if (!tnode)
-								{
-									if (strcmp(temp, "EndOfFile"))
-									{
-										//strcpy(strerror, "Unknown node has been encountered while processing the frames");
-										fclose(file);
-										return -1;
-									}
-									else
-									{
-										eof = true;
-									}
-								}
-							}
+							int result = sscanf(line, "FileType %255s", fileType);
 						}
-						else if (line[0][0] && line[1][0])
+						else if (strcmp(keyWord, "DataType") == 0)
 						{
-							if (!section)
-							{
-								if (!ProcessHeader(line, pos))
-								{
-									fclose(file);
-									return -1;
-								}
-							}
-							else if (section == 1)
-							{
-								if (!ProcessSegments(line, pos))
-								{
-									fclose(file);
-									return -1;
-								}
-							}
-							else if (section == 2)
-							{
-								// setup the base positions for the segment
-								line[7][pos[7]] = line[6][pos[6]] = line[5][pos[5]] = line[4][pos[4]] =
-									line[3][pos[3]] = line[2][pos[2]] = line[1][pos[1]] = '\0';
-								tnode = 0;
-								for (j = 0; j < currentnode && !tnode; ++j)
-								{
-									if (!strcmp(mocapsegment.nodeList[j]->name, '\n'))
-									{
-										tnode = mocapsegment.nodeList[j];
-									}
-								}
-								SetupColor(tnode);
-								SetupOffset(tnode, (a3real)atof(line[1]) * mocapheader.callib, (a3real)atof(line[2]) *
-									mocapheader.callib, (a3real)atof(line[3])* mocapheader.callib);
-								tnode->euler[0] = (a3real)atof(line[4]);
-								tnode->euler[1] = (a3real)atof(line[5]);
-								tnode->euler[2] = (a3real)atof(line[6]);
-								tnode->length = (a3real)atof(line[7]) * mocapheader.callib;
-							}
-							else if (section > 2)
-							{
-								// process the frame information for tnode
-								line[7][pos[7]] = line[6][pos[6]] = line[5][pos[5]] = line[4][pos[4]] =
-									line[3][pos[3]] = line[2][pos[2]] = line[1][pos[1]] = '\0';
-								a3ui32 frame = atol(line[0]) - 1;
-								if (!frame)
-								{
-									ang[0] = tnode->euler[0] * 0.017453f;
-									ang[1] = tnode->euler[1] * 0.017453f;
-									ang[2] = tnode->euler[2] * 0.017453f;
-									CalcRotationMatrix(ang, base, trot, arot, tnode->euler[0], tnode->euler[1]);
-								}
-
-								ang[0] = (a3real)atof(line[4]) * 0.017453f;
-								ang[1] = (a3real)atof(line[5]) * 0.017453f;
-								ang[2] = (a3real)atof(line[6]) * 0.017453f;
-								CalcRotationMatrix(ang, rot, trot, arot, tnode->euler[0], tnode->euler[1]);
-								matmult(base, rot, trot, 3, 3);
-
-								// decompose into ZYX
-								tnode->freuler[frame][0] = (a3real)atan(trot[1][0] / trot[0][0]);
-								if (base[0][0] < 0)
-								{
-									if (base[1][0] < 0)
-									{
-										tnode->freuler[frame][0] -= 3.141592f;
-									}
-									else
-									{
-										tnode->freuler[frame][0] += 3.141592f;
-									}
-								}
-
-								num = (a3real)(trot[0][2] * sin(tnode->freuler[frame][0]) - trot[1][2] *
-									cos(tnode->freuler[frame][0]));
-								den = (a3real)(-trot[0][1] * sin(tnode->freuler[frame][0]) + trot[1][1] *
-									cos(tnode->freuler[frame][0]));
-								tnode->freuler[frame][2] = (a3real)atan(num / den) * 57.2957795f;
-								if (den < 0)
-								{
-									if (num < 0)
-									{
-										tnode->freuler[frame][2] -= 180;
-									}
-									else
-									{
-										tnode->freuler[frame][2] += 180;
-									}
-								}
-
-								num = -trot[2][0];
-								den = (a3real)(trot[0][0] * cos(tnode->freuler[frame][0]) + trot[1][0] *
-									sin(tnode->freuler[frame][0]));
-								tnode->freuler[frame][1] = (a3real)atan(num / den) * 57.2957795f;
-								if (den < 0)
-								{
-									if (num < 0)
-									{
-										tnode->freuler[frame][1] -= 180;
-									}
-									else
-									{
-										tnode->freuler[frame][1] += 180;
-									}
-								}
-								tnode->freuler[frame][2] *= 57.2957795f;
-
-								tnode->froset[frame][0] = (a3real)atof(line[1]) * mocapheader.callib;
-								tnode->froset[frame][1] = (a3real)atof(line[2]) * mocapheader.callib;
-								tnode->froset[frame][2] = (a3real)atof(line[3]) * mocapheader.callib;
-								tnode->scale[frame] = (a3real)atof(line[7]);
-							}
+							int result = sscanf(line, "DataType %255s", dataType);
 						}
-
-						// move onto the next line and clear current line information
-						j = strstr(buffer + 1, '\n');
-						if (j == -1)
+						else if (strcmp(keyWord, "FileVersion") == 0)
 						{
-							if (buffer[4095] != 10)
-							{
-								read = fread(buffer, 1, 4096, file);
-								i = strstr(buffer, '\n');
-							}
-							else
-							{
-								read = fread(buffer, 1, 4096, file);
-								i = 0;
-							}
-							buffer[4096] = '\0';
+							int result = sscanf(line, "FileVersion %d", &fileVersion);
 						}
-						else
+						else if (strcmp(keyWord, "NumSegments") == 0)
 						{
-							i += j;
+							int result = sscanf(line, "NumSegments %d", &numSegments);
+							a3hierarchyCreate(hierarchy_out,numSegments, 0);
 						}
-						where = pos[0] = pos[1] = pos[2] = pos[3] = pos[4] = pos[5] = pos[6] = pos[7] = 0;
+						else if (strcmp(keyWord, "NumFrames") == 0)
+						{
+							int result = sscanf(line, "NumFrames %d", &numFrames);
+						}
+						else if (strcmp(keyWord, "DataFrameRate") == 0)
+						{
+							int result = sscanf(line, "DataFrameRate %d", &dataFrame);
+						}
+						else if (strcmp(keyWord, "EulerRotationOrder") == 0)
+						{
+							int result = sscanf(line, "EulerRotationOrder %255s", euler);
+						}
+						else if (strcmp(keyWord, "CalibrationUnits") == 0)
+						{
+							int result = sscanf(line, "CalibrationUnits %255s", calib);
+						}
+						else if (strcmp(keyWord, "RotationUnits") == 0)
+						{
+							int result = sscanf(line, "RotationUnits %255s", rot);
+						}
+						else if (strcmp(keyWord, "GlobalAxisofGravity") == 0)
+						{
+							int result = sscanf(line, "GlobalAxisofGravity %255s", axis);
+						}
+						else if (strcmp(keyWord, "BoneLengthAxis") == 0)
+						{
+							int result = sscanf(line, "BoneLengthAxis %255s", boneLength);
+						}
+						else if (strcmp(keyWord, "ScaleFactor") == 0)
+						{
+							int result = sscanf(line, "ScaleFactor %f", &scaleFactor);
+							spatialPoseScale = scaleFactor;
+						}
 					}
+				}
+				else if (strcmp(section, "[SegmentNames&Hierarchy]") == 0)
+				{
+					// link the segments into the hierarchy
+					int result = sscanf(line, "%s %s", object, objectParent);
 
-					if (buffer[i] > 44 && buffer[i] < 123)
+					if (objectParent == "GLOBAL")
 					{
-						line[where][pos[where]++] = buffer[i++];
-					}
-					else if ((buffer[i] == 32 || buffer[i] == 9) && pos[where] > 0) // && (where == 0 || section > 1)
-					{
-						++where;
-						++i;
+						jointParentIndex = rootJointIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
 					}
 					else
 					{
-						++i;
-					}
-
-					read = fread(buffer, 1, 4096, file);
-					buffer[4096] = '\0';
-					i = 0;
+						jointParentIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
+					}	
 				}
-
-				mocapheader.degrees = true;
-				mocapheader.euler[0][0] = mocapheader.euler[0][1] = 0; 
-				mocapheader.euler[0][2] = 1;
-				mocapheader.euler[1][0] = mocapheader.euler[1][2] = 0;
-				mocapheader.euler[1][1] = 1;
-				mocapheader.euler[2][1] = mocapheader.euler[2][2] = 0;
-				mocapheader.euler[2][0] = 1;
-
-				fclose(file);
-				for (i = 0; i < 3; i++)
+				else if (strcmp(section, "[BasePosition]") == 0)
 				{
-					free(base[i]);
-					free(rot[i]);
-					free(arot[i]);
-					free(trot[i]);
-				}
+					// set the base position
+					poseGroup_out->hierarchy = 0;
+					a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, 81);
 
-				// free dynamically allocated memory when done
-				free(base);
-				free(rot);
-				free(arot);
-				free(trot);
-				return 1;
+					char jointName[256];
+					float tX, tY, tZ, rX, rY, rZ, boneLength;
+
+					int result = sscanf(line, "%s %f %f %f %f %f %f %f", jointName, &tX, &tY, &tZ, &rX, &rY, &rZ, &boneLength);
+
+					p = 0;
+					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
+					spatialPose = poseGroup_out->hpose[p].spatialPose + j;
+					a3spatialPoseSetTranslation(spatialPose, tX, tY, tZ);
+					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
+					a3spatialPoseSetScale(spatialPose, spatialPoseScale, spatialPoseScale, spatialPoseScale);
+
+				}
+				else if (strcmp(section, "[EndOfFile]") == 0)
+				{
+					// if the end of the file is reached then break while loop
+					break;
+				}
+				else
+				{
+					// process the motion data
+					a3ui32 index;
+					float tX, tY, tZ, rX, rY, rZ, scaleFactor;
+
+					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
+
+					p = index;
+					j = a3hierarchyGetNodeIndex(hierarchy_out, section);
+					spatialPose = poseGroup_out->hpose[p].spatialPose + j;
+					a3spatialPoseSetTranslation(spatialPose, tX, tY, tZ);
+					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
+					a3spatialPoseSetScale(spatialPose, scaleFactor, scaleFactor, scaleFactor);
+				}
 			}
 		}
-		else
-		{
-			//strcpy(strerror, "Cannot open file");
-			return -1;
-		}
+
+		fclose(file);
+		return 1;
 	}
 	return -1;
 }
