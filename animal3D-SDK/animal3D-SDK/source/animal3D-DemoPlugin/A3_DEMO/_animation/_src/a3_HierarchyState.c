@@ -226,7 +226,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 			// check if the line contains a section header
 			if (line[0] == '[' && line[strlen(line) - 1] == ']')
 			{
-				strcpy(section, line);	// save the current section name
+				strcpy(section, line);	//save the current section name
 			}
 			else
 			{
@@ -367,7 +367,6 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					// null terminate the string
 					jointName[len - 2] = '\0';
 
-
 					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
 
 					p = index;
@@ -383,7 +382,6 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				}
 			}
 		}
-
 		fclose(file);
 		return 1;
 	}
