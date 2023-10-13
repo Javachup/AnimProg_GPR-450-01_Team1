@@ -312,7 +312,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					// link the segments into the hierarchy
 					int result = sscanf(line, "%s %s", object, objectParent);
 
-					if (objectParent == "GLOBAL")
+					if (strcmp(objectParent, "GLOBAL") == 0)
 					{
 						jointParentIndex = rootJointIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
 					}
