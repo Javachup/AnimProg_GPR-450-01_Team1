@@ -298,9 +298,9 @@ void a3demo_render_animation(const a3_DemoState* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"Curr Pose Index - %i [%s] %i - Next Pose Index",
 		currIndex, loadbar, nextIndex);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Curr Pose: %s  Next Pose: %s",
-		poseText[currIndex], poseText[nextIndex]);
+	//a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+	//	"    Curr Pose: %s  Next Pose: %s",
+	//	poseText[currIndex], poseText[nextIndex]);
 
 	// Interp method and controls
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
