@@ -98,7 +98,7 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_Spati
 			{0.0f, 0.0f, 0.0f, 0.0f},
 			{0.0f, 0.0f, 0.0f, 0.0f}
 		};
-		a3real4x4SetRotateXYZ(rotationMat, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
+		a3real4x4SetRotateZYX(rotationMat, spatialPose_in->rotation[0], spatialPose_in->rotation[1], spatialPose_in->rotation[2]);
 
 		a3real4x4 scaleMat = {
 			{spatialPose_in->scale[0], 0.0f, 0.0f, 0.0f},
