@@ -267,7 +267,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						else if (strcmp(keyWord, "NumFrames") == 0)
 						{
 							int result = sscanf(line, "NumFrames %d", &numFrames);
+
 							a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, numFrames);
+							// set the base position
+							poseGroup_out->hierarchy = hierarchy_out;
+
 							printf("Number of Frames: %d\n", numFrames);
 						}
 						else if (strcmp(keyWord, "DataFrameRate") == 0)
@@ -326,9 +330,6 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 				}
 				else if (strcmp(section, "[BasePosition]") == 0)
 				{
-					// set the base position
-					poseGroup_out->hierarchy = 0;
-
 					char jointName[256];
 					a3f32 tX, tY, tZ, rX, rY, rZ, boneLength;
 
