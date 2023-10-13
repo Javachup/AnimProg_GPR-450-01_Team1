@@ -340,6 +340,11 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 					int result = sscanf(line, "%s %f %f %f %f %f %f %f", jointName, &tX, &tY, &tZ, &rX, &rY, &rZ, &boneLength);
 
+					// Scale translation by 0.1f since calibration scale is mm
+					tX *= 0.1f;
+					tY *= 0.1f;
+					tZ *= 0.1f;
+
 					p = 0;
 					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
 					spatialPose = poseGroup_out->hpose[p].spatialPose + j;
@@ -374,6 +379,10 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					jointName[len - 2] = '\0';
 
 					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
+
+					tX *= 0.1f;
+					tY *= 0.1f;
+					tZ *= 0.1f;
 
 					p = ++index;
 					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
