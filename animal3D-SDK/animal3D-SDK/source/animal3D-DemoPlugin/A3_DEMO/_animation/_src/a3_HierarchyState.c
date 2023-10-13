@@ -321,7 +321,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						jointParentIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
 					}	
 
-					printf("Object Name: %s		Parent Name: %s\n", object, objectParent);
+					//printf("Object Name: %s		Parent Name: %s\n", object, objectParent);
 				}
 				else if (strcmp(section, "[BasePosition]") == 0)
 				{
@@ -341,7 +341,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
 					a3spatialPoseSetScale(spatialPose, spatialPoseScale, spatialPoseScale, spatialPoseScale);
 
-					printf("%s %f %f %f %f %f %f %f\n", jointName, tX, tY, tZ, rX, rY, rZ, boneLength);
+					//printf("%s %f %f %f %f %f %f %f\n", jointName, tX, tY, tZ, rX, rY, rZ, boneLength);
 
 				}
 				else if (strcmp(section, "[EndOfFile]") == 0)
@@ -372,14 +372,14 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 					p = index;
 					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
-					printf("Node: %s		Hierarchy Pose: %d", jointName, index);
+					//printf("Node: %s		Hierarchy Pose: %d\n", jointName, index);
 
 					spatialPose = poseGroup_out->hpose[p].spatialPose + j;
 					a3spatialPoseSetTranslation(spatialPose, tX, tY, tZ);
 					a3spatialPoseSetRotation(spatialPose, rX, rY, rZ);
 					a3spatialPoseSetScale(spatialPose, scaleFactor, scaleFactor, scaleFactor);
 
-					printf("%d %f %f %f %f %f %f %f\n", index, tX, tY, tZ, rX, rY, rZ, scaleFactor);
+					//printf("%f %f %f %f %f %f %f\n", tX, tY, tZ, rX, rY, rZ, scaleFactor);
 				}
 			}
 		}
