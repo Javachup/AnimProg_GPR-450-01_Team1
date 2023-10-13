@@ -370,7 +370,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
 
-					p = index;
+					p = index++;
 					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
 					//printf("Node: %s		Hierarchy Pose: %d\n", jointName, index);
 
