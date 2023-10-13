@@ -193,8 +193,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3real scaleFactor;
 
 		// manually set up the skeleton
-		a3ui32 rootJointIndex, j, p,
-			jointIndex = 0, jointParentIndex = -1;
+		a3ui32 j, p, jointIndex = 0, jointParentIndex = -1;
 		char objectParent[256], object[256];
 		a3_SpatialPose* spatialPose = 0;
 		a3real spatialPoseScale;
@@ -319,14 +318,17 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 					// link the segments into the hierarchy
 					int result = sscanf(line, "%s %s", object, objectParent);
 
+					// if the object is main, set the joint parent index to -1
 					if (strcmp(objectParent, "GLOBAL") == 0)
 					{
-						jointParentIndex = rootJointIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
+						jointParentIndex = -1;
 					}
 					else
 					{
-						jointParentIndex = a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
-					}	
+						jointParentIndex = a3hierarchyGetNodeIndex(hierarchy_out, objectParent);
+					}
+
+					a3hierarchySetNode(hierarchy_out, jointIndex++, jointParentIndex, object);
 
 					//printf("Object Name: %s		Parent Name: %s\n", object, objectParent);
 				}
