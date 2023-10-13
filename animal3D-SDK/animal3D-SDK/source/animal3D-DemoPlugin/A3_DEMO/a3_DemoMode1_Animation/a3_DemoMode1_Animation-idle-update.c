@@ -111,7 +111,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		i = (a3ui32)(demoState->timer_display->totalTime * 0.5);
 		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
 		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime * 0.5 - (a3f64)i);
+		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
 	}
 
 	a3_SpatialPoseChannel tempChannels = a3poseChannel_translate_xyz | a3poseChannel_orient_xyz | a3poseChannel_scale_xyz;
