@@ -108,7 +108,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal
 	if (demoState->updateAnimation)
 	{
-		i = (a3ui32)(demoState->timer_display->totalTime * 0.5);
+		i = (a3ui32)(demoState->timer_display->totalTime);
 		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
 		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
 		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
