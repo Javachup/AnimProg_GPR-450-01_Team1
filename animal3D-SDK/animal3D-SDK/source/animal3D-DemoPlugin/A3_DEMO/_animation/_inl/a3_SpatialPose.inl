@@ -20,6 +20,13 @@
 	
 	a3_SpatialPose.inl
 	Implementation of inline spatial pose operations.
+
+
+
+	Joey Romanowski:
+		Created and implemented a3spatialPoseLerp(...)
+		Created and implemented a3spatialPoseSmoothStep(...)
+		Created and implemented a3spatialPoseNearest(...)
 */
 
 
@@ -126,6 +133,67 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_Spati
 		//a3real4* transform = sPose->transform.m;
 		a3real4x4SetReal4x4(spatialPose_in->transform.m, tmp_rst);
 	}
+	return 0;
+}
+
+inline a3i32 a3spatialPoseLerp(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param)
+{
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
+	{
+		a3spatialPoseSetTranslation(samplePose_out, 
+			a3lerp(keyPose0_in->translation[0], keyPose1_in->translation[0], param),
+			a3lerp(keyPose0_in->translation[1], keyPose1_in->translation[1], param),
+			a3lerp(keyPose0_in->translation[2], keyPose1_in->translation[2], param));
+
+		a3spatialPoseSetRotation(samplePose_out, 
+			a3lerp(keyPose0_in->rotation[0], keyPose1_in->rotation[0], param),
+			a3lerp(keyPose0_in->rotation[1], keyPose1_in->rotation[1], param),
+			a3lerp(keyPose0_in->rotation[2], keyPose1_in->rotation[2], param));
+
+		a3spatialPoseSetScale(samplePose_out, 
+			a3lerp(keyPose0_in->scale[0], keyPose1_in->scale[0], param),
+			a3lerp(keyPose0_in->scale[1], keyPose1_in->scale[1], param),
+			a3lerp(keyPose0_in->scale[2], keyPose1_in->scale[2], param));
+	}
+	return 0;
+}
+
+inline a3i32 a3spatialPoseSmoothStep(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param)
+{
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
+	{
+		// Smooth step equation from: https://en.wikipedia.org/wiki/Smoothstep
+		float newParam = param * param * (3.0f - 2.0f * param);
+
+		a3spatialPoseSetTranslation(samplePose_out,
+			a3lerp(keyPose0_in->translation[0], keyPose1_in->translation[0], newParam),
+			a3lerp(keyPose0_in->translation[1], keyPose1_in->translation[1], newParam),
+			a3lerp(keyPose0_in->translation[2], keyPose1_in->translation[2], newParam));
+
+		a3spatialPoseSetRotation(samplePose_out,
+			a3lerp(keyPose0_in->rotation[0], keyPose1_in->rotation[0], newParam),
+			a3lerp(keyPose0_in->rotation[1], keyPose1_in->rotation[1], newParam),
+			a3lerp(keyPose0_in->rotation[2], keyPose1_in->rotation[2], newParam));
+
+		a3spatialPoseSetScale(samplePose_out,
+			a3lerp(keyPose0_in->scale[0], keyPose1_in->scale[0], newParam),
+			a3lerp(keyPose0_in->scale[1], keyPose1_in->scale[1], newParam),
+			a3lerp(keyPose0_in->scale[2], keyPose1_in->scale[2], newParam));
+	}
+	return 0;
+}
+
+inline a3i32 a3spatialPoseNearest(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param)
+{
+	if (samplePose_out && keyPose0_in && keyPose1_in && param >= 0 && param <= 1)
+	{
+		const a3_SpatialPose* keyPoseToUse = param < a3real_half ? keyPose0_in : keyPose1_in;
+
+		a3spatialPoseSetTranslation(samplePose_out, keyPoseToUse->translation[0], keyPoseToUse->translation[1], keyPoseToUse->translation[2]);
+		a3spatialPoseSetRotation(samplePose_out, keyPoseToUse->rotation[0], keyPoseToUse->rotation[1], keyPoseToUse->rotation[2]);
+		a3spatialPoseSetScale(samplePose_out, keyPoseToUse->scale[0], keyPoseToUse->scale[1], keyPoseToUse->scale[2]);
+	}
+
 	return 0;
 }
 

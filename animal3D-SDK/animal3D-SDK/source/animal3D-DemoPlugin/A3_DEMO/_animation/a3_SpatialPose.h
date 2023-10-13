@@ -11,15 +11,20 @@
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
-limitations under the License.
+	limitations under the License.
 */
 
 /*
-animal3D SDK: Minimal 3D Animation Framework
-By Daniel S. Buckstein
+	animal3D SDK: Minimal 3D Animation Framework
+	By Daniel S. Buckstein
 	
-a3_SpatialPose.h
-Description of a spatial pose with rotation, translation and scale.
+	a3_SpatialPose.h
+	Description of a spatial pose with rotation, translation and scale.
+
+	Joey Romanowski:
+		Created and implemented a3spatialPoseLerp(...)
+		Created and implemented a3spatialPoseSmoothStep(...)
+		Created and implemented a3spatialPoseNearest(...)
 */
 
 #ifndef __ANIMAL3D_SPATIALPOSE_H
@@ -131,6 +136,15 @@ a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPoseL_inout, const a3_SpatialPo
 
 // convert single node pose to matrix
 a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose_in, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+
+// Lerps between 2 spacial poses
+a3i32 a3spatialPoseLerp(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
+
+// Smooth Steps between 2 spacial poses
+a3i32 a3spatialPoseSmoothStep(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
+
+// rounds to the nearest of the 2 keyPoses given
+a3i32 a3spatialPoseNearest(a3_SpatialPose* samplePose_out, const a3_SpatialPose* keyPose0_in, const a3_SpatialPose* keyPose1_in, const a3real param);
 
 // copy operation for single node pose
 a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);

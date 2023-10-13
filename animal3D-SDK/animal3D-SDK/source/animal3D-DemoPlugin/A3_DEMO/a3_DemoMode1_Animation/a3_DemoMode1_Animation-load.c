@@ -456,6 +456,8 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	demoMode->targetCount[animation_passScene] = animation_target_scene_max;
 	demoMode->targetCount[animation_passComposite] = 1;
 
+	// Set which interpolation method should be used
+	demoMode->interpolationMethod = animation_smoothstep;
 
 	// setup
 	a3animation_init_animation(demoState, demoMode);
