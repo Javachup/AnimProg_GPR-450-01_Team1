@@ -268,6 +268,8 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 						{
 							int result = sscanf(line, "NumFrames %d", &numFrames);
 
+							// more frames because we need room for the base pose
+							numFrames += 1;
 							a3hierarchyPoseGroupCreate(poseGroup_out, hierarchy_out, numFrames);
 							// set the base position
 							poseGroup_out->hierarchy = hierarchy_out;
@@ -370,7 +372,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 
 					int result = sscanf(line, "%d %f %f %f %f %f %f %f", &index, &tX, &tY, &tZ, &rX, &rY, &rZ, &scaleFactor);
 
-					p = index++;
+					p = ++index;
 					j = a3hierarchyGetNodeIndex(hierarchy_out, jointName);
 					//printf("Node: %s		Hierarchy Pose: %d\n", jointName, index);
 
