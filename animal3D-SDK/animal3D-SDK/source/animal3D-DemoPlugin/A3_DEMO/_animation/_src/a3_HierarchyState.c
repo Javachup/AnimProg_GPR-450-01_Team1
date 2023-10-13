@@ -193,7 +193,7 @@ a3i32 a3hierarchyPoseGroupLoadHTR(a3_HierarchyPoseGroup* poseGroup_out, a3_Hiera
 		a3real scaleFactor;
 
 		// manually set up the skeleton
-		a3ui32 j, p, jointIndex = 0, jointParentIndex = -1;
+		a3i32 j, p, jointIndex = 0, jointParentIndex = -1;
 		char objectParent[256], object[256];
 		a3_SpatialPose* spatialPose = 0;
 		a3real spatialPoseScale;
