@@ -114,17 +114,26 @@ void a3demo_unloadValidate(a3_DemoState const* demoState);
 //-----------------------------------------------------------------------------
 
 void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
 void a3starter_loadValidate(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_loadValidate(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
-void a3demoMode_loadValidate(a3_DemoState* demoState)
-{
-	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
-	a3starter_loadValidate(demoState, demoState->demoMode0_starter);
-}
+void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
+
+void a3starter_unloadValidate(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_unloadValidate(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
 void a3demo_load(a3_DemoState* demoState)
 {
+	// demo modes
+	demoState->demoMode = demoState_modeAnimation;
+	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
+	a3starter_load(demoState, demoState->demoMode0_starter);
+	a3animation_load(demoState, demoState->demoMode1_animation);
+
+
 	// geometry
 	a3demo_loadGeometry(demoState);
 
@@ -146,12 +155,6 @@ void a3demo_load(a3_DemoState* demoState)
 	demoState->updateAnimation = a3true;
 	demoState->stencilTest = a3false;
 	demoState->skipIntermediatePasses = a3false;
-
-
-	// demo modes
-	demoState->demoMode = demoState_modeStarter;
-	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
-	a3starter_load(demoState, demoState->demoMode0_starter);
 }
 
 void a3demo_unload(a3_DemoState* demoState)
@@ -160,6 +163,22 @@ void a3demo_unload(a3_DemoState* demoState)
 	a3demo_unloadShaders(demoState);
 	a3demo_unloadTextures(demoState);
 	a3demo_unloadFramebuffers(demoState);
+
+	a3starter_unload(demoState, demoState->demoMode0_starter);
+	a3animation_unload(demoState, demoState->demoMode1_animation);
+}
+
+void a3demoMode_loadValidate(a3_DemoState* demoState)
+{
+	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
+	a3starter_loadValidate(demoState, demoState->demoMode0_starter);
+	a3animation_loadValidate(demoState, demoState->demoMode1_animation);
+}
+
+void a3demoMode_unloadValidate(a3_DemoState* demoState)
+{
+	a3starter_unloadValidate(demoState, demoState->demoMode0_starter);
+	a3animation_unloadValidate(demoState, demoState->demoMode1_animation);
 }
 
 
@@ -290,6 +309,7 @@ A3DYLIBSYMBOL a3_DemoState *a3demoCB_unload(a3_DemoState *demoState, a3boolean h
 			a3demo_unload(demoState);
 
 			// validate unload
+			a3demoMode_unloadValidate(demoState);
 			a3demo_unloadValidate(demoState);
 
 			// erase other stuff
