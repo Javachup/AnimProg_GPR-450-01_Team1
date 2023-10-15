@@ -67,8 +67,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3ui32 i;
 	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
-	a3_HierarchyState* activeHS = demoMode->hierarchyState_skel + 1, * baseHS = demoMode->hierarchyState_skel;
-
 	// active camera
 	a3_DemoProjector const* activeCamera = demoMode->projector + demoMode->activeCamera;
 	a3_DemoSceneObject const* activeCameraObject = activeCamera->sceneObject;
@@ -108,25 +106,30 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
 	}
 
+	a3_HierarchyState* baseHS = demoMode->hs_base;
+	a3_HierarchyState* outputHS = demoMode->hs_output;
+	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
+	a3_HierarchyState* ctrl2HS = demoMode->hs_control_2;
+
 	//a3hierarchyPoseCopy(activeHS->objectSpace,
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 	//	demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseLerp(activeHS->objectSpace,	// use as temp storage
+	a3hierarchyPoseLerp(outputHS->objectSpace,	// use as temp storage
 		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
 		demoMode->hierarchyKeyPose_param,
 		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(activeHS->localSpace,	// goal to calculate
+	a3hierarchyPoseConcat(outputHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose
-		activeHS->objectSpace, // temp storage
+		outputHS->objectSpace, // temp storage
 		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(activeHS->localSpace,
+	a3hierarchyPoseConvert(outputHS->localSpace,
 		demoMode->hierarchy_skel->numNodes,
 		demoMode->hierarchyPoseGroup_skel->channel,
 		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(activeHS);
-	a3hierarchyStateUpdateObjectInverse(activeHS);
-	a3hierarchyStateUpdateObjectBindToCurrent(activeHS, baseHS);
+	a3kinematicsSolveForward(outputHS);
+	a3hierarchyStateUpdateObjectInverse(outputHS);
+	a3hierarchyStateUpdateObjectBindToCurrent(outputHS, baseHS);
 
 
 	// prepare and upload graphics data
@@ -151,7 +154,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		
 			// joint transform
 			a3real4x4SetScale(scaleMat.m, a3real_quarter);
-			a3real4x4Concat(activeHS->objectSpace->pose[i].transform.m, scaleMat.m);
+			a3real4x4Concat(outputHS->objectSpace->pose[i].transform.m, scaleMat.m);
 			a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
 			
 			// bone transform
@@ -159,11 +162,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			if (p >= 0)
 			{
 				// position is parent joint's position
-				scaleMat.v3 = activeHS->objectSpace->pose[p].transform.v3;
+				scaleMat.v3 = outputHS->objectSpace->pose[p].transform.v3;
 
 				// direction basis is from parent to current
 				a3real3Diff(scaleMat.v2.v,
-					activeHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
+					outputHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
 
 				// right basis is cross of some upward vector and direction
 				// select 'z' for up if either of the other dimensions is set
@@ -183,7 +186,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3real4x4Product(mvp_bone->m, mvp_obj.m, scaleMat.m);
 
 			// get base to current object-space
-			*t_skin = activeHS->objectSpaceBindToCurrent->pose[i].transform;
+			*t_skin = outputHS->objectSpaceBindToCurrent->pose[i].transform;
 		
 			// calculate DQ
 			{

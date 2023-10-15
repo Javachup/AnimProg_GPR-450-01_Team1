@@ -132,8 +132,22 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyState hierarchyState_skel[2];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
+
+		// 4 hierarchy states for base, output, and 2 controls
+		union
+		{
+			a3_HierarchyState hierarchyState_skel[4];
+			struct
+			{
+				a3_HierarchyState
+					hs_base[1],
+					hs_output[1],
+					hs_control_1[1],
+					hs_control_2[1];
+			};
+		};
+
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 		a3ui32 hierarchyKeyPose_display[2];
