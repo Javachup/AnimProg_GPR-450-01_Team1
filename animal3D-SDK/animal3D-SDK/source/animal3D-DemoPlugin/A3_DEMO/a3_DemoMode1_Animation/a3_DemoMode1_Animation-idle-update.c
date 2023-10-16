@@ -134,81 +134,87 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// prepare and upload graphics data
 	{
-		a3ui32 const numTotalBones = demoMode->hierarchy_skel->numNodes * 2;
-		const a3_HierarchyState* activeHS;
+		a3ui32 const numBones = demoMode->hierarchy_skel->numNodes;
 
 		a3addressdiff const skeletonIndex = demoMode->obj_skeleton - demoMode->object_scene;
-		a3ui32 const mvp_size = numTotalBones * sizeof(a3mat4);
+		a3ui32 const mvp_size = numBones * sizeof(a3mat4);
 		a3ui32 const t_skin_size = sizeof(demoMode->t_skin);
 		a3ui32 const dq_skin_size = sizeof(demoMode->dq_skin);
 		a3mat4 mvp_obj;
 		a3mat4* mvp_joint, * mvp_bone, * t_skin;
 		a3dualquat* dq_skin;
-		a3index i;
+		a3index i, currSkel;
 		a3i32 p;
+
+		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
+		{ outputHS, baseHS, /*baseHS*/ };
+		const a3_HierarchyState* currentHS;
 		
-		// update joint and bone transforms
-		for (i = 0; i < numTotalBones; ++i)
+		// for each skeleton
+		for (currSkel = 0; currSkel < animationMaxCount_skeleton; currSkel++)
 		{
-			activeHS = i < demoMode->hierarchy_skel->numNodes ? outputHS : baseHS;
-			mvp_obj = i < demoMode->hierarchy_skel->numNodes ? matrixStack[skeletonIndex].modelViewProjectionMat : matrixStack[skeletonIndex+1].modelViewProjectionMat;
-			a3ui32 index = i % demoMode->hierarchy_skel->numNodes;
+			currentHS = states[currSkel];
+			mvp_obj = matrixStack[skeletonIndex + currSkel].modelViewProjectionMat;
 
-			mvp_joint = demoMode->mvp_joint + i;
-			mvp_bone = demoMode->mvp_bone + i;
-			t_skin = demoMode->t_skin + i;
-			dq_skin = demoMode->dq_skin + i;
-		
-			// joint transform
-			a3real4x4SetScale(scaleMat.m, a3real_quarter);
-			a3real4x4Concat(activeHS->objectSpace->pose[index].transform.m, scaleMat.m);
-			a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
-			
-			// bone transform
-			p = demoMode->hierarchy_skel->nodes[index].parentIndex;
-			if (p >= 0)
+			// update joint and bone transforms
+			for (i = 0; i < numBones; ++i)
 			{
-				// position is parent joint's position
-				scaleMat.v3 = activeHS->objectSpace->pose[p].transform.v3;
+				mvp_joint = demoMode->mvp_joint + i * currSkel;
+				mvp_bone = demoMode->mvp_bone + i * currSkel;
+				t_skin = demoMode->t_skin + i * currSkel;
+				dq_skin = demoMode->dq_skin + i * currSkel;
 
-				// direction basis is from parent to current
-				a3real3Diff(scaleMat.v2.v,
-					activeHS->objectSpace->pose[index].transform.v3.v, scaleMat.v3.v);
+				// joint transform
+				a3real4x4SetScale(scaleMat.m, a3real_quarter);
+				a3real4x4Concat(currentHS->objectSpace->pose[i].transform.m, scaleMat.m);
+				a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
 
-				// right basis is cross of some upward vector and direction
-				// select 'z' for up if either of the other dimensions is set
-				a3real3MulS(a3real3CrossUnit(scaleMat.v0.v,
-					a3real2LengthSquared(scaleMat.v2.v) > a3real_zero
-					? a3vec3_z.v : a3vec3_y.v, scaleMat.v2.v), a3real_quarter);
-			
-				// up basis is cross of direction and right
-				a3real3MulS(a3real3CrossUnit(scaleMat.v1.v,
-					scaleMat.v2.v, scaleMat.v0.v), a3real_quarter);
-			}
-			else
-			{
-				// if we are a root joint, make bone invisible
-				a3real4x4SetScale(scaleMat.m, a3real_zero);
-			}
-			a3real4x4Product(mvp_bone->m, mvp_obj.m, scaleMat.m);
+				// bone transform
+				p = demoMode->hierarchy_skel->nodes[i].parentIndex;
+				if (p >= 0)
+				{
+					// position is parent joint's position
+					scaleMat.v3 = currentHS->objectSpace->pose[p].transform.v3;
 
-			// get base to current object-space
-			*t_skin = outputHS->objectSpaceBindToCurrent->pose[i].transform;
-		
-			// calculate DQ
-			{
-				a3real4 d = { a3real_zero };
-				a3demo_mat2quat_safe(dq_skin->r.q, t_skin->m);
-				a3real3ProductS(d, t_skin->v3.v, a3real_half);
-				a3quatProduct(dq_skin->d.q, d, dq_skin->r.q);
+					// direction basis is from parent to current
+					a3real3Diff(scaleMat.v2.v,
+						currentHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
+
+					// right basis is cross of some upward vector and direction
+					// select 'z' for up if either of the other dimensions is set
+					a3real3MulS(a3real3CrossUnit(scaleMat.v0.v,
+						a3real2LengthSquared(scaleMat.v2.v) > a3real_zero
+						? a3vec3_z.v : a3vec3_y.v, scaleMat.v2.v), a3real_quarter);
+
+					// up basis is cross of direction and right
+					a3real3MulS(a3real3CrossUnit(scaleMat.v1.v,
+						scaleMat.v2.v, scaleMat.v0.v), a3real_quarter);
+				}
+				else
+				{
+					// if we are a root joint, make bone invisible
+					a3real4x4SetScale(scaleMat.m, a3real_zero);
+				}
+				a3real4x4Product(mvp_bone->m, mvp_obj.m, scaleMat.m);
+
+				// get base to current object-space
+				*t_skin = currentHS->objectSpaceBindToCurrent->pose[i].transform;
+
+				// calculate DQ
+				{
+					a3real4 d = { a3real_zero };
+					a3demo_mat2quat_safe(dq_skin->r.q, t_skin->m);
+					a3real3ProductS(d, t_skin->v3.v, a3real_half);
+					a3quatProduct(dq_skin->d.q, d, dq_skin->r.q);
+				}
 			}
+
+			// upload
+			a3bufferRefill(demoState->ubo_transformMVP + currSkel, 0, mvp_size, demoMode->mvp_joint);
+			a3bufferRefill(demoState->ubo_transformMVPB + currSkel, 0, mvp_size, demoMode->mvp_bone);
+			a3bufferRefill(demoState->ubo_transformBlend + currSkel, 0, t_skin_size, demoMode->t_skin);
+			a3bufferRefillOffset(demoState->ubo_transformBlend + currSkel, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 		}
-		
-		// upload
-		a3bufferRefill(demoState->ubo_transformMVP, 0, mvp_size, demoMode->mvp_joint);
-		a3bufferRefill(demoState->ubo_transformMVPB, 0, mvp_size, demoMode->mvp_bone);
-		a3bufferRefill(demoState->ubo_transformBlend, 0, t_skin_size, demoMode->t_skin);
-		a3bufferRefillOffset(demoState->ubo_transformBlend, 0, t_skin_size, dq_skin_size, demoMode->dq_skin);
 	}
 }
 

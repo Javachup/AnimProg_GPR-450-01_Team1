@@ -579,27 +579,29 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 		// hidden volumes
 		if (demoState->displayHiddenVolumes)
 		{
-			const a3_HierarchyState* currentHierarchyState;
 			const a3_Hierarchy* currentHierarchy;
 
 			// set up to draw skeleton
 			currentDemoProgram = demoState->prog_drawColorUnif_instanced;
 			a3shaderProgramActivate(currentDemoProgram->program);
-			currentHierarchyState = demoMode->hierarchyState_skel;
-			currentHierarchy = currentHierarchyState->hierarchy;
+			currentHierarchy = demoMode->hierarchy_skel;
 
-			// draw skeletal joints
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
-			currentDrawable = demoState->draw_node;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes * 2);
+			// for each skeleton
+			for (a3index i = 0; i < animationMaxCount_skeleton; i++)
+			{
+				// draw skeletal joints
+				a3shaderUniformBufferActivate(demoState->ubo_transformMVP + i, 0);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
+				currentDrawable = demoState->draw_node;
+				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 
-			// draw bones
-			a3shaderProgramActivate(currentDemoProgram->program);
-			a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
-			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
-			currentDrawable = demoState->draw_link;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes * 2);
+				// draw bones
+				a3shaderProgramActivate(currentDemoProgram->program);
+				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+				currentDrawable = demoState->draw_link;
+				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+			}
 
 			// draw skeletal joint orientations
 			if (demoState->displayTangentBases)
