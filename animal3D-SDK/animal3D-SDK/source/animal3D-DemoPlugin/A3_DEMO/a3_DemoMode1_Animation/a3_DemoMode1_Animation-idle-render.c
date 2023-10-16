@@ -586,14 +586,14 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
 			currentDrawable = demoState->draw_node;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes * 2);
 
 			// draw bones
 			a3shaderProgramActivate(currentDemoProgram->program);
 			a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
 			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
 			currentDrawable = demoState->draw_link;
-			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
+			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes * 2);
 
 			// draw skeletal joint orientations
 			if (demoState->displayTangentBases)

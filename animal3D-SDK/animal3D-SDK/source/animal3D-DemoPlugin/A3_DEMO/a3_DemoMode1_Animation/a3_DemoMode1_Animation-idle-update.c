@@ -134,8 +134,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// prepare and upload graphics data
 	{
+		a3ui32 const numTotalBones = demoMode->hierarchy_skel->numNodes * 2;
+		const a3_HierarchyState* activeHS;
+
 		a3addressdiff const skeletonIndex = demoMode->obj_skeleton - demoMode->object_scene;
-		a3ui32 const mvp_size = demoMode->hierarchy_skel->numNodes * sizeof(a3mat4);
+		a3ui32 const mvp_size = numTotalBones * sizeof(a3mat4);
 		a3ui32 const t_skin_size = sizeof(demoMode->t_skin);
 		a3ui32 const dq_skin_size = sizeof(demoMode->dq_skin);
 		a3mat4 const mvp_obj = matrixStack[skeletonIndex].modelViewProjectionMat;
@@ -145,8 +148,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 		
 		// update joint and bone transforms
-		for (i = 0; i < demoMode->hierarchy_skel->numNodes; ++i)
+		for (i = 0; i < numTotalBones; ++i)
 		{
+			activeHS = i < demoMode->hierarchy_skel->numNodes ? outputHS : baseHS;
+			a3ui32 index = i % demoMode->hierarchy_skel->numNodes;
+
 			mvp_joint = demoMode->mvp_joint + i;
 			mvp_bone = demoMode->mvp_bone + i;
 			t_skin = demoMode->t_skin + i;
@@ -154,19 +160,19 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		
 			// joint transform
 			a3real4x4SetScale(scaleMat.m, a3real_quarter);
-			a3real4x4Concat(outputHS->objectSpace->pose[i].transform.m, scaleMat.m);
+			a3real4x4Concat(activeHS->objectSpace->pose[index].transform.m, scaleMat.m);
 			a3real4x4Product(mvp_joint->m, mvp_obj.m, scaleMat.m);
 			
 			// bone transform
-			p = demoMode->hierarchy_skel->nodes[i].parentIndex;
+			p = demoMode->hierarchy_skel->nodes[index].parentIndex;
 			if (p >= 0)
 			{
 				// position is parent joint's position
-				scaleMat.v3 = outputHS->objectSpace->pose[p].transform.v3;
+				scaleMat.v3 = activeHS->objectSpace->pose[p].transform.v3;
 
 				// direction basis is from parent to current
 				a3real3Diff(scaleMat.v2.v,
-					outputHS->objectSpace->pose[i].transform.v3.v, scaleMat.v3.v);
+					activeHS->objectSpace->pose[index].transform.v3.v, scaleMat.v3.v);
 
 				// right basis is cross of some upward vector and direction
 				// select 'z' for up if either of the other dimensions is set
