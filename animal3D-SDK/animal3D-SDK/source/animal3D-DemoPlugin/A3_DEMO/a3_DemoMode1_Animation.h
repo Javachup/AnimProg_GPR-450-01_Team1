@@ -161,7 +161,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 				a3_DemoSceneObject
 					obj_skybox[1];
 				a3_DemoSceneObject
-					obj_skeleton[1];
+					obj_skeleton[3];
 			};
 		};
 		union {

@@ -106,6 +106,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
 
+	/*
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, animation_pipeline_max, pipelineText[pipeline]);
@@ -121,6 +122,11 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
+	*/
+
+	a3vec3 const camEuler = demoMode->projector->sceneObject->euler;
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Cam euler: (%f, %f, %f)", camEuler.x, camEuler.y, camEuler.z);
 }
 
 

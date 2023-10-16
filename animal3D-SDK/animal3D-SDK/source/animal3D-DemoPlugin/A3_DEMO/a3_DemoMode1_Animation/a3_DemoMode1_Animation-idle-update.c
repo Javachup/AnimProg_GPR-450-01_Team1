@@ -141,7 +141,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3ui32 const mvp_size = numTotalBones * sizeof(a3mat4);
 		a3ui32 const t_skin_size = sizeof(demoMode->t_skin);
 		a3ui32 const dq_skin_size = sizeof(demoMode->dq_skin);
-		a3mat4 const mvp_obj = matrixStack[skeletonIndex].modelViewProjectionMat;
+		a3mat4 mvp_obj;
 		a3mat4* mvp_joint, * mvp_bone, * t_skin;
 		a3dualquat* dq_skin;
 		a3index i;
@@ -151,6 +151,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		for (i = 0; i < numTotalBones; ++i)
 		{
 			activeHS = i < demoMode->hierarchy_skel->numNodes ? outputHS : baseHS;
+			mvp_obj = i < demoMode->hierarchy_skel->numNodes ? matrixStack[skeletonIndex].modelViewProjectionMat : matrixStack[skeletonIndex+1].modelViewProjectionMat;
 			a3ui32 index = i % demoMode->hierarchy_skel->numNodes;
 
 			mvp_joint = demoMode->mvp_joint + i;
