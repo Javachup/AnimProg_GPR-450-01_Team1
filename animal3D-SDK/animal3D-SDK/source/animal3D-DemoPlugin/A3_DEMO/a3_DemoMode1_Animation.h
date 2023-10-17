@@ -36,6 +36,8 @@
 
 #include "_animation/a3_HierarchyStateBlend.h"
 
+#include "_animation/a3_KeyframeAnimationController.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -148,6 +150,10 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 					hs_control_2[1];
 			};
 		};
+
+		a3_ClipPool clips[1];
+		a3_KeyframePool keys[1];
+		a3_ClipController clipCtrl[1];
 
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];

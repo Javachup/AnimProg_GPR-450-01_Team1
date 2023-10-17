@@ -24,6 +24,10 @@
 	********************************************
 	*** LOADING FOR ANIMATION SCENE MODE     ***
 	********************************************
+
+	Joey Romanowski:
+		Load skeleton positions
+		Load Keyframe and Clip data
 */
 
 //-----------------------------------------------------------------------------
@@ -163,6 +167,27 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyState = demoMode->hierarchyState_skel + 1;
 	hierarchyState->hierarchy = 0;
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// Set up keyframes
+
+	a3keyframePoolCreate(demoMode->keys, 15);
+	for (a3i32 i = 0; i < 15; i++)
+	{
+		a3keyframeInit(demoMode->keys->keyframe + i, 1, -i * i);
+	}
+
+	// Set up clips
+	a3clipPoolCreate(demoMode->clips, 3);
+	a3clipInit(demoMode->clips->clip + 0, "Clip 0", demoMode->keys, 0, 4);
+	a3clipInit(demoMode->clips->clip + 1, "Clip 1", demoMode->keys, 5, 9);
+	a3clipInit(demoMode->clips->clip + 2, "Clip 2", demoMode->keys, 10, 14);
+
+	a3clipCalculateDuration(demoMode->clips->clip + 0);
+	a3clipCalculateDuration(demoMode->clips->clip + 1);
+	a3clipCalculateDuration(demoMode->clips->clip + 2);
+
+	// Set up clip controllers
+	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 1);
 }
 
 

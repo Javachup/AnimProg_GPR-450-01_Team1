@@ -97,6 +97,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	}
 
 
+	// Update clipCtrl
+	a3clipControllerUpdate(demoMode->clipCtrl, dt);
+
 	// skeletal
 	if (demoState->updateAnimation)
 	{
