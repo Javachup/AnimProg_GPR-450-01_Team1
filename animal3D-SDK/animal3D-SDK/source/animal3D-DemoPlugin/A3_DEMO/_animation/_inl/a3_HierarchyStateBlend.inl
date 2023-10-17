@@ -45,8 +45,47 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 	return pose_out;
 }
 
+//Controls (3): vectors representing rotation angles, scale and translation.
+inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
+{
+	//vectors representing rotation angles, scale and translation.
+
+
+	return pose_out;
+
+}
+
+//inline a3_SpatialPose* a3spatialPoseOPCopy(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1)
+//{
+//
+//	return pose_out;
+//}
+
+//inline a3_SpatialPose* a3spatialPoseOPConcat(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1)
+//{
+//	return pose_out;
+//}
+
+//Controls (4): pre-initial, initial, terminal and post-terminal poses.
+inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pre, a3_SpatialPose const* init, a3_SpatialPose const* term, a3_SpatialPose const* post, a3real const u)
+{
+
+	
+
+
+	return pose_out;
+}
+
 // pointer-based LERP operation for single spatial pose
-inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
+//inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
+//{
+//
+//	// done
+//	return pose_out;
+//}
+
+//Controls (1): spatial pose.
+inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real const u)
 {
 	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
 
