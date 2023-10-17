@@ -26,7 +26,7 @@
 #ifdef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
-
+#include "math.h"
 
 //-----------------------------------------------------------------------------
 
@@ -85,27 +85,33 @@ inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_Spatial
 //}
 
 //Controls (1): spatial pose.
-//inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real const u)
-//{
-//	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
-//
-//	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
-//
-//	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
-//
-//	return pose_out;
-//}
+inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
+{
+	pose_out->angles.x = -(pose_in->angles.x);
+	pose_out->angles.y = -(pose_in->angles.y);
+	pose_out->angles.z = -(pose_in->angles.z);
+
+	pose_out->translation.x = -(pose_in->translation.x);
+	pose_out->translation.y = -(pose_in->translation.y);
+	pose_out->translation.z = -(pose_in->translation.z);
+
+	pose_out->scale.x = 1 / pose_in->scale.x;
+	pose_out->scale.y = 1 / pose_in->scale.y;
+	pose_out->scale.z = 1 / pose_in->scale.z;
+
+	return pose_out;
+}
 
 // pointer-based Nearest operation for a single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
 {
 	if (u < 0.5f)
 	{
-		a3spatialPoseCopy(pose_out, pose0);
+		a3spatialPoseOPCopy(pose_out, pose0);
 	}
 	else
 	{
-		a3spatialPoseCopy(pose_out, pose1);
+		a3spatialPoseOPCopy(pose_out, pose1);
 	}
 
 	// done
@@ -143,12 +149,12 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out)
 }
 
 // pointer-based LERP operation for hierarchical pose
-inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
-{
-
-	// done
-	return pose_out;
-}
+//inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
+//{
+//
+//	// done
+//	return pose_out;
+//}
 
 
 //-----------------------------------------------------------------------------
