@@ -90,6 +90,78 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3_Hi
 
 //-----------------------------------------------------------------------------
 
+/*__________DERIVATIVE BLEND OPERATIONS - POINTER BASED__________*/
+
+// calculates the difference between the two control poses
+inline a3_SpatialPose* a3spatialPoseDOpSplit(a3_SpatialPose* pose_out, a3_SpatialPose const* poseL, a3_SpatialPose const* poseR)
+{
+	// pose_out = poseL - poseR
+	if (pose_out && poseL && poseR)
+	{
+		pose_out->angles.x = a3trigValid_sind(poseL->angles.x - poseR->angles.x);
+		pose_out->angles.y = a3trigValid_sind(poseL->angles.y - poseR->angles.y);
+		pose_out->angles.z = a3trigValid_sind(poseL->angles.z - poseR->angles.z);
+
+		pose_out->scale.x = poseL->scale.x / poseR->scale.x;
+		pose_out->scale.y = poseL->scale.y / poseR->scale.y;
+		pose_out->scale.z = poseL->scale.z / poseR->scale.z;
+
+		pose_out->translation.x = poseL->translation.x - poseR->translation.x;
+		pose_out->translation.y = poseL->translation.y - poseR->translation.y;
+		pose_out->translation.z = poseL->translation.z - poseR->translation.z;
+	}
+	return pose_out;
+}
+
+// calculates the "scaled" pose, which is some blend between the ID pose and ctrl pose
+inline a3_SpatialPose* a3spatialPoseDOpScale(a3_SpatialPose* pose_out, a3real const u)
+{
+	// ID lerp pose-out(u)
+	a3_SpatialPose* identityMatrix = a3spatialPoseOpIdentity(pose_out);
+	a3spatialPoseDOpLERP(*identityMatrix, *pose_out, u);
+	return pose_out;
+}
+
+// triangular interpolations for poses
+inline a3_SpatialPose* a3spatialPoseDOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
+{
+	pose_out = concat(concat(a3spatialPoseDOpScale(pose0, (1 - u1 - u2)), a3spatialPoseDOpScale(pose1, u1)), a3spatialPoseDOpScale(pose2, u2));
+	return pose_out;
+}
+
+// binearest interpolation function for poses
+inline a3_SpatialPose* a3spatialPoseDOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1, 
+	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u2)
+{
+	// TODO: implement this function using joey's nearest lerp
+	return pose_out;
+}
+
+// bilinear interpolation function for poses
+inline a3_SpatialPose* a3spatialPoseDOpBiLinear(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1,
+	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
+{
+	a3_SpatialPose blend0 = a3spatialPoseDOpLERP(*pose0_0, *pose0_1, u0);
+	a3_SpatialPose blend1 = a3spatialPoseDOpLERP(*pose1_0, *pose1_1, u1);
+
+	*pose_out = a3spatialPoseDOpLERP(blend0, blend1, u);
+	return pose_out;
+}
+
+// bicubic interpolation function for poses
+inline a3_SpatialPose* a3spatialPoseDOpBiCubic(a3_SpatialPose* pose_out,
+	a3_SpatialPose const* poseN1_n1, a3_SpatialPose const* poseN1_0, a3_SpatialPose const* poseN1_1, a3_SpatialPose const* poseN1_2,
+	a3_SpatialPose const* pose0_n1, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1, a3_SpatialPose const* pose0_2, 
+	a3_SpatialPose const* pose1_n1, a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3_SpatialPose const* pose1_2, 
+	a3_SpatialPose const* pose2_n1, a3_SpatialPose const* pose2_0, a3_SpatialPose const* pose2_1, a3_SpatialPose const* pose2_2,
+	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u)
+{
+	// TODO: implement this function using some kind of cubic function
+	return pose_out;
+}
+
+//-----------------------------------------------------------------------------
+
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
