@@ -85,16 +85,16 @@ inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_Spatial
 //}
 
 //Controls (1): spatial pose.
-inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real const u)
-{
-	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
-
-	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
-
-	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
-
-	return pose_out;
-}
+//inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in, a3real const u)
+//{
+//	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
+//
+//	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+//
+//	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
+//
+//	return pose_out;
+//}
 
 // pointer-based Nearest operation for a single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
@@ -180,9 +180,18 @@ inline a3_SpatialPose* a3spatialPoseOpSplit(a3_SpatialPose* pose_out, a3_Spatial
 inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in, a3real const u)
 {	// COPY THE FORMAT OF DOPSPLIT
 
-	// ID lerp pose-out(u)
-	a3_SpatialPose* identityMatrix = a3spatialPoseOpIdentity(pose_out);
-	a3spatialPoseOpLERP(pose_out, identityMatrix, pose_in, u);
+	pose_out->angles.x = pose_in->angles.x * u;
+	pose_out->angles.y = pose_in->angles.y * u;
+	pose_out->angles.z = pose_in->angles.z * u;
+
+	pose_out->scale.x = pow(pose_in->scale.x, u);
+	pose_out->scale.y = pow(pose_in->scale.y, u);
+	pose_out->scale.z = pow(pose_in->scale.z, u);
+
+	pose_out->translation.x = pose_in->translation.x * u;
+	pose_out->translation.y = pose_in->translation.y * u;
+	pose_out->translation.z = pose_in->translation.z * u;
+
 	return pose_out;
 }
 
@@ -202,9 +211,9 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
 {
 	// conditional based on nearest
-	a3_SpatialPose* nearest1, nearest2;
-	a3spatialPoseOpNearest(nearest1, pose0_0, pose1_0, u0);
-	a3spatialPoseOpNearest(nearest2, pose0_1, pose1_1, u1);
+	a3_SpatialPose* nearest1, *nearest2;
+	a3spatialPoseOpNearest(nearest1, pose0_0, pose0_1, u0);
+	a3spatialPoseOpNearest(nearest2, pose1_0, pose1_1, u1);
 
 	a3spatialPoseOpNearest(pose_out, nearest1, nearest2, u);
 	
@@ -215,10 +224,11 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1,
 	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
 {
-	a3_SpatialPose blend0 = a3spatialPoseDOpLERP(*pose0_0, *pose0_1, u0);
-	a3_SpatialPose blend1 = a3spatialPoseDOpLERP(*pose1_0, *pose1_1, u1);
+	a3_SpatialPose* blend0, * blend1;
+	a3spatialPoseOpLERP(blend0, pose0_0, pose0_1, u0);
+	a3spatialPoseOpLERP(blend1, pose1_0, pose1_1, u1);
 
-	*pose_out = a3spatialPoseDOpLERP(blend0, blend1, u);
+	a3spatialPoseOpLERP(pose_out, blend0, blend1, u);
 	return pose_out;
 }
 
@@ -230,6 +240,13 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose2_n1, a3_SpatialPose const* pose2_0, a3_SpatialPose const* pose2_1, a3_SpatialPose const* pose2_2,
 	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u)
 {
+	a3_SpatialPose* cubic1, * cubic2, * cubic3, * cubic4;
+	a3spatialPoseOPCubic(cubic1, poseN1_n1, poseN1_0, poseN1_1, poseN1_2, u);
+	a3spatialPoseOPCubic(cubic2, pose0_n1, pose0_0, pose0_1, pose0_2, u);
+	a3spatialPoseOPCubic(cubic3, pose1_n1, pose1_0, pose1_1, pose1_2, u);
+	a3spatialPoseOPCubic(cubic4, pose2_n1, pose2_0, pose2_1, pose2_2, u);
+
+	a3spatialPoseOPCubic(pose_out, cubic1, cubic2, cubic3, cubic4, u);
 	return pose_out;
 }
 
