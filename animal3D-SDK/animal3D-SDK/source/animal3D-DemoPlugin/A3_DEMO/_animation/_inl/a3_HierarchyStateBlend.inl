@@ -208,12 +208,16 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 // triangular interpolations for poses
 inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1, a3_SpatialPose* pose2, a3real const u1, a3real const u2)
 {
-	a3_SpatialPose *scaled1, *scaled2, *scaled3;
-	a3spatialPoseOpScale(scaled1, pose0, (1 - u1 - u2));
-	a3spatialPoseOpScale(scaled2, pose1, u1);
-	a3spatialPoseOpScale(scaled3, pose2, u2);
+	a3_SpatialPose scaled1, scaled2, scaled3;
+	a3spatialPoseOpScale(&scaled1, pose0, (1 - u1 - u2));
+	a3spatialPoseOpScale(&scaled2, pose1, u1);
+	a3spatialPoseOpScale(&scaled3, pose2, u2);
 
-	a3spatialPoseConcat(pose_out, pose0, pose1);
+	a3_SpatialPose temp;
+
+	a3spatialPoseConcat(pose_out, 
+		a3spatialPoseConcat(&temp, &scaled1, &scaled2),
+		&scaled3);
 	return pose_out;
 }
 

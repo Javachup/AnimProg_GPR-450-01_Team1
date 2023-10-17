@@ -31,42 +31,39 @@
 //-----------------------------------------------------------------------------
 
 // set rotation values for a single node pose
-inline a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degrees, const a3f32 ry_degrees, const a3f32 rz_degrees)
+inline a3_SpatialPose* a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degrees, const a3f32 ry_degrees, const a3f32 rz_degrees)
 {
 	if (spatialPose)
 	{
 		spatialPose->angles.x = a3trigValid_sind(rx_degrees);
 		spatialPose->angles.y = a3trigValid_sind(ry_degrees);
 		spatialPose->angles.z = a3trigValid_sind(rz_degrees);
-		return 1;
 	}
-	return -1;
+	return spatialPose;
 }
 
 // scale
-inline a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz)
+inline a3_SpatialPose* a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz)
 {
 	if (spatialPose)
 	{
 		spatialPose->scale.x = sx;
 		spatialPose->scale.y = sy;
 		spatialPose->scale.z = sz;
-		return 1;
 	}
-	return -1;
+	return spatialPose;
 }
 
 // translation
-inline a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz)
+inline a3_SpatialPose* a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz)
 {
 	if (spatialPose)
 	{
 		spatialPose->translation.x = tx;
 		spatialPose->translation.y = ty;
 		spatialPose->translation.z = tz;
-		return 1;
 	}
-	return -1;
+	return spatialPose;
 }
 
 
