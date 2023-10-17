@@ -597,7 +597,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 
 				// draw bones
 				a3shaderProgramActivate(currentDemoProgram->program);
-				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB + i, 0);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
 				currentDrawable = demoState->draw_link;
 				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);

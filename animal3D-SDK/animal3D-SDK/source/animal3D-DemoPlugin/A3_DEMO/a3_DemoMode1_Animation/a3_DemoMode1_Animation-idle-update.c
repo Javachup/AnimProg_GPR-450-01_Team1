@@ -147,7 +147,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 
 		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
-		{ outputHS, baseHS, /*baseHS*/ };
+		{ outputHS, baseHS, baseHS };
 		const a3_HierarchyState* currentHS;
 		
 		// for each skeleton
@@ -159,10 +159,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			// update joint and bone transforms
 			for (i = 0; i < numBones; ++i)
 			{
-				mvp_joint = demoMode->mvp_joint + i * currSkel;
-				mvp_bone = demoMode->mvp_bone + i * currSkel;
-				t_skin = demoMode->t_skin + i * currSkel;
-				dq_skin = demoMode->dq_skin + i * currSkel;
+				mvp_joint = demoMode->mvp_joint + i;
+				mvp_bone = demoMode->mvp_bone + i;
+				t_skin = demoMode->t_skin + i;
+				dq_skin = demoMode->dq_skin + i;
 
 				// joint transform
 				a3real4x4SetScale(scaleMat.m, a3real_quarter);
