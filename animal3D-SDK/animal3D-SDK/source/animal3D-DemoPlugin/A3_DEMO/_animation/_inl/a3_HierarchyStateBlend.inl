@@ -160,10 +160,14 @@ inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_Sp
 
 // binearest interpolation function for poses
 inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1, 
-	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u2)
+	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
 {
 	// conditional based on nearest
-	//a3spatialPoseOpNearest(pose_out, pose0, pose1, u);
+	a3_SpatialPose* nearest1, nearest2;
+	a3spatialPoseOpNearest(nearest1, pose0_0, pose1_0, u0);
+	a3spatialPoseOpNearest(nearest2, pose0_1, pose1_1, u1);
+
+	a3spatialPoseOpNearest(pose_out, nearest1, nearest2, u);
 	
 	return pose_out;
 }
