@@ -96,12 +96,16 @@ inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_Spatial
 }
 
 // pointer-based LERP operation for single spatial pose
-//inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
-//{
-//
-//	// done
-//	return pose_out;
-//}
+inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u)
+{
+	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
+
+	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+
+	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
+
+	return pose_out;
+}
 
 //Controls (1): spatial pose.
 inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
@@ -221,13 +225,18 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 }
 
 // triangular interpolations for poses
-inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose2, a3real const u1, a3real const u2)
+inline a3_SpatialPose* a3spatialPoseOpTriangular(a3_SpatialPose* pose_out, a3_SpatialPose* pose0, a3_SpatialPose* pose1, a3_SpatialPose* pose2, a3real const u1, a3real const u2)
 {
-	pose_out = concat(
-		concat(
-			a3spatialPoseOpScale(pose_out, pose0, (1 - u1 - u2)),
-			a3spatialPoseOpScale(pose_out, pose1, u1)),
-			a3spatialPoseOpScale(pose_out, pose2, u2));
+	a3_SpatialPose scaled1, scaled2, scaled3;
+	a3spatialPoseOpScale(&scaled1, pose0, (1 - u1 - u2));
+	a3spatialPoseOpScale(&scaled2, pose1, u1);
+	a3spatialPoseOpScale(&scaled3, pose2, u2);
+
+	a3_SpatialPose temp;
+
+	a3spatialPoseConcat(pose_out, 
+		a3spatialPoseConcat(&temp, &scaled1, &scaled2),
+		&scaled3);
 	return pose_out;
 }
 
