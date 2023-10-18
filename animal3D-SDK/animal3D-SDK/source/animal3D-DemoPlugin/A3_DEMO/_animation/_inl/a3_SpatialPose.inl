@@ -82,7 +82,7 @@ inline a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose)
 		spatialPose->angles = a3vec4_zero;
 		spatialPose->scale = a3vec4_one;
 		spatialPose->translation = a3vec4_w;
-		return 1;
+		return spatialPose;
 	}
 	return -1;
 }
@@ -127,7 +127,7 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialP
 		a3real3MulS(spatialPose->transform.v1.v, spatialPose->scale.y);
 		a3real3MulS(spatialPose->transform.v2.v, spatialPose->scale.z);
 		spatialPose->transform.v3 = spatialPose->translation;
-		return 1;
+		return spatialPose;
 	}
 	return -1;
 }
@@ -148,7 +148,7 @@ inline a3i32 a3spatialPoseOPCopy(a3_SpatialPose* spatialPose_out, const a3_Spati
 	if (spatialPose_out && spatialPose_in)
 	{
 		*spatialPose_out = *spatialPose_in;
-		return 1;
+		return spatialPose_out;
 	}
 	return -1;
 }
@@ -170,7 +170,7 @@ inline a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_Spati
 		spatialPose_out->translation.y = spatialPose_lhs->translation.y + spatialPose_rhs->translation.y;
 		spatialPose_out->translation.z = spatialPose_lhs->translation.z + spatialPose_rhs->translation.z;
 
-		return 1;
+		return spatialPose_out;
 	}
 	return -1;
 }
@@ -186,7 +186,7 @@ inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_Spatial
 
 		a3real3Lerp(spatialPose_out->translation.v, spatialPose_0->translation.v, spatialPose_1->translation.v, u);
 
-		return 1;
+		return spatialPose_out;
 	}
 	return -1;
 }
