@@ -76,20 +76,20 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4
 //	return pose_out;
 //}
 
-//Controls (4): pre-initial, initial, terminal and post-terminal poses.
-inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pre_pose, a3_SpatialPose const* initial_pose, a3_SpatialPose const* term_pose, a3_SpatialPose const* postTerm_pose, a3real const u)
+//Controls (4): pre-initial = pose_b, initial, terminal and post-terminal = pose_a.
+inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t)
 {
-	/*pose_out->angles.x = a3CatmullRom();
-	pose_out->angles.y = a3CatmullRom();
-	pose_out->angles.z = a3CatmullRom();
+	pose_out->angles.x = a3CatmullRom(pose_b->angles.x, pose0->angles.x, pose1->angles.x, pose_a->angles.x, t);
+	pose_out->angles.y = a3CatmullRom(pose_b->angles.y, pose0->angles.y, pose1->angles.y, pose_a->angles.y, t);
+	pose_out->angles.z = a3CatmullRom(pose_b->angles.z, pose0->angles.z, pose1->angles.z, pose_a->angles.z, t);
 
-	pose_out->translation.x = a3CatmullRom();
-	pose_out->translation.y = a3CatmullRom();
-	pose_out->translation.z = a3CatmullRom();
+	pose_out->translation.x = a3CatmullRom(pose_b->translation.x, pose0->translation.x, pose1->translation.x, pose_a->translation.x, t);
+	pose_out->translation.y = a3CatmullRom(pose_b->translation.y, pose0->translation.y, pose1->translation.y, pose_a->translation.y, t);
+	pose_out->translation.z = a3CatmullRom(pose_b->translation.z, pose0->translation.z, pose1->translation.z, pose_a->translation.z, t);
 
-	pose_out->scale.x = a3CatmullRom();
-	pose_out->scale.y = a3CatmullRom();
-	pose_out->scale.z = a3CatmullRom();*/
+	pose_out->scale.x = a3CatmullRom(pose_b->scale.x, pose0->scale.x, pose1->scale.x, pose_a->scale.x, t);
+	pose_out->scale.y = a3CatmullRom(pose_b->scale.y, pose0->scale.y, pose1->scale.y, pose_a->scale.y, t);
+	pose_out->scale.z = a3CatmullRom(pose_b->scale.z, pose0->scale.z, pose1->scale.z, pose_a->scale.z, t);
 
 
 	return pose_out;
