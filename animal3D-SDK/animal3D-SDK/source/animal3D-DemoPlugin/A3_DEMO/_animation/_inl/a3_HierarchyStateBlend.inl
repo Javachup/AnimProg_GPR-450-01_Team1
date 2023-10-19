@@ -46,10 +46,20 @@ inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 }
 
 //Controls (3): vectors representing rotation angles, scale and translation.
-inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in)
+inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4 angles, a3vec4 scale, a3vec4 translation)
 {
 	//vectors representing rotation angles, scale and translation.
+	pose_out->angles.x = angles.x;
+	pose_out->angles.y = angles.y;
+	pose_out->angles.z = angles.z;
 
+	pose_out->translation.x = translation.x;
+	pose_out->translation.y = translation.y;
+	pose_out->translation.z = translation.z;
+
+	pose_out->scale.x = scale.x;
+	pose_out->scale.y = scale.y;
+	pose_out->scale.z = scale.z;
 
 	return pose_out;
 
@@ -67,10 +77,19 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3_Spa
 //}
 
 //Controls (4): pre-initial, initial, terminal and post-terminal poses.
-inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pre, a3_SpatialPose const* init, a3_SpatialPose const* term, a3_SpatialPose const* post, a3real const u)
+inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pre_pose, a3_SpatialPose const* initial_pose, a3_SpatialPose const* term_pose, a3_SpatialPose const* postTerm_pose, a3real const u)
 {
+	/*pose_out->angles.x = a3CatmullRom();
+	pose_out->angles.y = a3CatmullRom();
+	pose_out->angles.z = a3CatmullRom();
 
+	pose_out->translation.x = a3CatmullRom();
+	pose_out->translation.y = a3CatmullRom();
+	pose_out->translation.z = a3CatmullRom();
 
+	pose_out->scale.x = a3CatmullRom();
+	pose_out->scale.y = a3CatmullRom();
+	pose_out->scale.z = a3CatmullRom();*/
 
 	return pose_out;
 }
@@ -193,9 +212,9 @@ inline a3_SpatialPose* a3spatialPoseOpScale(a3_SpatialPose* pose_out, a3_Spatial
 	pose_out->angles.y = pose_in->angles.y * u;
 	pose_out->angles.z = pose_in->angles.z * u;
 
-	pose_out->scale.x = (a3real)pow(pose_in->scale.x, u);
-	pose_out->scale.y = (a3real)pow(pose_in->scale.y, u);
-	pose_out->scale.z = (a3real)pow(pose_in->scale.z, u);
+	pose_out->scale.x = powf(pose_in->scale.x, u);
+	pose_out->scale.y = powf(pose_in->scale.y, u);
+	pose_out->scale.z = powf(pose_in->scale.z, u);
 
 	pose_out->translation.x = pose_in->translation.x * u;
 	pose_out->translation.y = pose_in->translation.y * u;
