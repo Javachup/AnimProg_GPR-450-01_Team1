@@ -70,7 +70,6 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3_Spa
 inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pre, a3_SpatialPose const* init, a3_SpatialPose const* term, a3_SpatialPose const* post, a3real const u)
 {
 
-	
 
 
 	return pose_out;
