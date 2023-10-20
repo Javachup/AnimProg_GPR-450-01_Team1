@@ -101,14 +101,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3clipControllerUpdate(demoMode->clipCtrl, dt);
 
 	// skeletal
-	if (demoState->updateAnimation)
-	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
-		demoMode->hierarchyKeyPose_display[0] = (i + 0) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_display[1] = (i + 1) % (demoMode->hierarchyPoseGroup_skel->hposeCount - 1);
-		demoMode->hierarchyKeyPose_param = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
-	}
-
 	a3_HierarchyState* baseHS = demoMode->hs_base;
 	a3_HierarchyState* outputHS = demoMode->hs_output;
 	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
@@ -118,9 +110,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
 	//	demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseLerp(outputHS->objectSpace,	// use as temp storage
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-		demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[1] + 1,
-		demoMode->hierarchyKeyPose_param,
+		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl)->data,
+		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl)->data,
+		(a3real)demoMode->clipCtrl->keyParameter,
 		demoMode->hierarchy_skel->numNodes);
 	a3hierarchyPoseConcat(outputHS->localSpace,	// goal to calculate
 		baseHS->localSpace, // holds base pose

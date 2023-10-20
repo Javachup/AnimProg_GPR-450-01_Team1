@@ -134,6 +134,13 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    KeyTime: %f", demoMode->clipCtrl->keyTime);
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    clipTime: %f", demoMode->clipCtrl->clipTime);
+
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    keypose 0: %i", getCurrentKeyframe(demoMode->clipCtrl)->data);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    keypose 1: %i", getNextKeyframe(demoMode->clipCtrl)->data);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Key Param: %f", demoMode->clipCtrl->keyParameter);
 }
 
 

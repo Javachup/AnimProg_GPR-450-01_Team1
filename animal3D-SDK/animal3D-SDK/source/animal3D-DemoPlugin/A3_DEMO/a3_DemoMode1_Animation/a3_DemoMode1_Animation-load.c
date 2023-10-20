@@ -170,24 +170,26 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// Set up keyframes
 
-	a3keyframePoolCreate(demoMode->keys, 15);
-	for (a3i32 i = 0; i < 15; i++)
+	a3keyframePoolCreate(demoMode->keys, demoMode->hierarchyPoseGroup_skel->poseCount);
+	for (a3index i = 0; i < demoMode->hierarchyPoseGroup_skel->poseCount; i++)
 	{
-		a3keyframeInit(demoMode->keys->keyframe + i, 1, -i * i);
+		a3keyframeInit(demoMode->keys->keyframe + i, 1, i);
 	}
 
 	// Set up clips
-	a3clipPoolCreate(demoMode->clips, 3);
-	a3clipInit(demoMode->clips->clip + 0, "Clip 0", demoMode->keys, 0, 4);
-	a3clipInit(demoMode->clips->clip + 1, "Clip 1", demoMode->keys, 5, 9);
-	a3clipInit(demoMode->clips->clip + 2, "Clip 2", demoMode->keys, 10, 14);
+	// (These keyframes are guesses for the clips based on the HTR animation)
+	a3clipPoolCreate(demoMode->clips, 5);
+	a3clipInit(demoMode->clips->clip + 0, "Clip 0", demoMode->keys, 1, 10);
+	a3clipInit(demoMode->clips->clip + 1, "Clip 1", demoMode->keys, 11, 20);
+	a3clipInit(demoMode->clips->clip + 2, "Clip 2", demoMode->keys, 20, 26);
+	a3clipInit(demoMode->clips->clip + 3, "Clip 3", demoMode->keys, 27, 54);
+	a3clipInit(demoMode->clips->clip + 4, "Clip 4", demoMode->keys, 54, 80);
 
-	a3clipCalculateDuration(demoMode->clips->clip + 0);
-	a3clipCalculateDuration(demoMode->clips->clip + 1);
-	a3clipCalculateDuration(demoMode->clips->clip + 2);
+	for (a3index i = 0; i < 5; i++)
+		a3clipCalculateDuration(demoMode->clips->clip + i);
 
 	// Set up clip controllers
-	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 1);
+	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 4);
 }
 
 
