@@ -127,20 +127,6 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3vec3 const camEuler = demoMode->projector->sceneObject->euler;
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Cam euler: (%f, %f, %f)", camEuler.x, camEuler.y, camEuler.z);
-
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    KeyIndex: %i", demoMode->clipCtrl->keyIndex);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    KeyTime: %f", demoMode->clipCtrl->keyTime);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    clipTime: %f", demoMode->clipCtrl->clipTime);
-
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    keypose 0: %i", getCurrentKeyframe(demoMode->clipCtrl)->data);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    keypose 1: %i", getNextKeyframe(demoMode->clipCtrl)->data);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Key Param: %f", demoMode->clipCtrl->keyParameter);
 }
 
 

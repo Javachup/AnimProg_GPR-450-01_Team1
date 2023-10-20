@@ -65,6 +65,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animationMaxCount_projector = 1,
 		animationMaxCount_skeleton = 3,
 		animationMaxCount_hs = 4,
+		animationMaxCount_clipCtrl = 2,
 	};
 
 	// scene object rendering program names
@@ -154,7 +155,17 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		a3_ClipPool clips[1];
 		a3_KeyframePool keys[1];
-		a3_ClipController clipCtrl[1];
+
+		union
+		{
+			a3_ClipController clipCtrls[animationMaxCount_clipCtrl];
+			struct
+			{
+				a3_ClipController
+					clipCtrl1[1],
+					clipCtrl2[1];
+			};
+		};
 
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];

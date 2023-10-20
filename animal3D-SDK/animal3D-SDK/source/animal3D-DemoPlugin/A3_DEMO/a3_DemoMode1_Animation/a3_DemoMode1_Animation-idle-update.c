@@ -98,7 +98,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 
 	// Update clipCtrl
-	a3clipControllerUpdate(demoMode->clipCtrl, dt);
+	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
+	{
+		a3clipControllerUpdate(demoMode->clipCtrls + i, dt);
+	}
 
 	// skeletal
 	a3_HierarchyState* baseHS = demoMode->hs_base;
@@ -108,15 +111,15 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// Copy current ctrl poses to each of the control poses
 	a3hierarchyPoseLerp(ctrl1HS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl)->data,
-		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl)->data,
-		(a3real)demoMode->clipCtrl->keyParameter,
+		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl1)->data,
+		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl1)->data,
+		(a3real)demoMode->clipCtrl1->keyParameter,
 		demoMode->hierarchy_skel->numNodes);
 
 	a3hierarchyPoseLerp(ctrl2HS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl)->data,
-		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl)->data,
-		(a3real)demoMode->clipCtrl->keyParameter,
+		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl2)->data,
+		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl2)->data,
+		(a3real)demoMode->clipCtrl2->keyParameter,
 		demoMode->hierarchy_skel->numNodes);
 
 	// DO OPERATIONS HERE!

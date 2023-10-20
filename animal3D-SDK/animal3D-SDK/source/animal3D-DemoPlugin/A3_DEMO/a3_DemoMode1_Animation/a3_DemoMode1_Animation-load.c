@@ -187,7 +187,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipCalculateDuration(demoMode->clips->clip + i);
 
 	// Set up clip controllers
-	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 0);
+	a3clipControllerInit(demoMode->clipCtrl1, "ctrl1", demoMode->clips, 0);
+	a3clipControllerInit(demoMode->clipCtrl2, "ctrl2", demoMode->clips, 1);
 }
 
 
