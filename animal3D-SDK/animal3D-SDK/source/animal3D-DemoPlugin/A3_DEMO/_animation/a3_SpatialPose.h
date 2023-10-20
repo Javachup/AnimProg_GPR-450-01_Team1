@@ -113,34 +113,34 @@ struct a3_SpatialPose
 //-----------------------------------------------------------------------------
 
 // set rotation values for a single node pose
-a3i32 a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degrees, const a3f32 ry_degrees, const a3f32 rz_degrees);
+a3_SpatialPose* a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degrees, const a3f32 ry_degrees, const a3f32 rz_degrees);
 
 // scale
-a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz);
+a3_SpatialPose* a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz);
 
 // translation
-a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
+a3_SpatialPose* a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
 
 
 //-----------------------------------------------------------------------------
 
 // reset single node pose
-a3i32 a3spatialPoseReset(a3_SpatialPose* spatialPose);
+a3_SpatialPose* a3spatialPoseReset(a3_SpatialPose* spatialPose);
 
 // convert single node pose to matrix
-a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3_SpatialPose* a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
 
 // restore single node pose from matrix
-a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
+a3_SpatialPose* a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order);
 
 // copy operation for single node pose
-a3i32 a3spatialPoseCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
+a3_SpatialPose* a3spatialPoseOPCopy(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_in);
 
 // concat
-a3i32 a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs);
+a3_SpatialPose* a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_lhs, const a3_SpatialPose* spatialPose_rhs);
 
 // lerp
-a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
+a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
 
 
 //-----------------------------------------------------------------------------
