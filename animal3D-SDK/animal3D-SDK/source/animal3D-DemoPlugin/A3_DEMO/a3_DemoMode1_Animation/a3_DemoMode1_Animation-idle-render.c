@@ -589,6 +589,9 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			// for each skeleton
 			for (a3index i = 0; i < animationMaxCount_skeleton; i++)
 			{
+				const a3real* boneColor = i == 0 ?
+					yellow : sky; // output skeleton color : all other skeletons color
+
 				// draw skeletal joints
 				a3shaderUniformBufferActivate(demoState->ubo_transformMVP + i, 0);
 				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
@@ -598,7 +601,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 				// draw bones
 				a3shaderProgramActivate(currentDemoProgram->program);
 				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB + i, 0);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, boneColor);
 				currentDrawable = demoState->draw_link;
 				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 			}

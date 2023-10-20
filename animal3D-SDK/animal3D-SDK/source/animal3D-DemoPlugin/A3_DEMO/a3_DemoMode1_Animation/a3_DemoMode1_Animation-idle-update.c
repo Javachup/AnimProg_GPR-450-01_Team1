@@ -165,7 +165,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 
 		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
-		{ ctrl1HS, ctrl2HS, outputHS };
+		{ outputHS, ctrl1HS, ctrl2HS };
 		const a3_HierarchyState* currentHS;
 		
 		// for each skeleton
