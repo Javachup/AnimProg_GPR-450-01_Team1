@@ -79,6 +79,7 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4
 //Controls (4): pre-initial = pose_b, initial, terminal and post-terminal = pose_a.
 inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t)
 {
+	// FUNCTION IS ADDITIVE
 	pose_out->angles.x = a3CatmullRom(pose_b->angles.x, pose0->angles.x, pose1->angles.x, pose_a->angles.x, t);
 	pose_out->angles.y = a3CatmullRom(pose_b->angles.y, pose0->angles.y, pose1->angles.y, pose_a->angles.y, t);
 	pose_out->angles.z = a3CatmullRom(pose_b->angles.z, pose0->angles.z, pose1->angles.z, pose_a->angles.z, t);
@@ -87,6 +88,7 @@ inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_Spatial
 	pose_out->translation.y = a3CatmullRom(pose_b->translation.y, pose0->translation.y, pose1->translation.y, pose_a->translation.y, t);
 	pose_out->translation.z = a3CatmullRom(pose_b->translation.z, pose0->translation.z, pose1->translation.z, pose_a->translation.z, t);
 
+	// MAKE MULTIPLICATIVE
 	pose_out->scale.x = a3CatmullRom(pose_b->scale.x, pose0->scale.x, pose1->scale.x, pose_a->scale.x, t);
 	pose_out->scale.y = a3CatmullRom(pose_b->scale.y, pose0->scale.y, pose1->scale.y, pose_a->scale.y, t);
 	pose_out->scale.z = a3CatmullRom(pose_b->scale.z, pose0->scale.z, pose1->scale.z, pose_a->scale.z, t);
@@ -99,6 +101,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 {
 	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
 
+	// LOGLERP FOR SCALE
 	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
 
 	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
@@ -377,11 +380,11 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
 {
 	// conditional based on nearest
-	a3_SpatialPose* nearest1, *nearest2;
-	a3spatialPoseOpNearest(nearest1, pose0_0, pose0_1, u0);
-	a3spatialPoseOpNearest(nearest2, pose1_0, pose1_1, u1);
+	a3_SpatialPose nearest1, nearest2;
+	a3spatialPoseOpNearest(&nearest1, pose0_0, pose0_1, u0);
+	a3spatialPoseOpNearest(&nearest2, pose1_0, pose1_1, u1);
 
-	a3spatialPoseOpNearest(pose_out, nearest1, nearest2, u);
+	a3spatialPoseOpNearest(pose_out, &nearest1, &nearest2, u);
 	
 	return pose_out;
 }
@@ -390,11 +393,11 @@ inline a3_SpatialPose* a3spatialPoseOpBiNearest(a3_SpatialPose* pose_out, a3_Spa
 inline a3_SpatialPose* a3spatialPoseOpBiLinear(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0_0, a3_SpatialPose const* pose0_1,
 	a3_SpatialPose const* pose1_0, a3_SpatialPose const* pose1_1, a3real const u0, a3real const u1, a3real const u)
 {
-	a3_SpatialPose* blend0, * blend1;
-	a3spatialPoseOpLERP(blend0, pose0_0, pose0_1, u0);
-	a3spatialPoseOpLERP(blend1, pose1_0, pose1_1, u1);
+	a3_SpatialPose blend0, blend1;
+	a3spatialPoseOpLERP(&blend0, pose0_0, pose0_1, u0);
+	a3spatialPoseOpLERP(&blend1, pose1_0, pose1_1, u1);
 
-	a3spatialPoseOpLERP(pose_out, blend0, blend1, u);
+	a3spatialPoseOpLERP(pose_out, &blend0, &blend1, u);
 	return pose_out;
 }
 
@@ -406,13 +409,13 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose2_n1, a3_SpatialPose const* pose2_0, a3_SpatialPose const* pose2_1, a3_SpatialPose const* pose2_2,
 	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u)
 {
-	a3_SpatialPose* cubic1, * cubic2, * cubic3, * cubic4;
-	a3spatialPoseOPCubic(cubic1, poseN1_n1, poseN1_0, poseN1_1, poseN1_2, u);
-	a3spatialPoseOPCubic(cubic2, pose0_n1, pose0_0, pose0_1, pose0_2, u);
-	a3spatialPoseOPCubic(cubic3, pose1_n1, pose1_0, pose1_1, pose1_2, u);
-	a3spatialPoseOPCubic(cubic4, pose2_n1, pose2_0, pose2_1, pose2_2, u);
+	a3_SpatialPose cubic1, cubic2, cubic3, cubic4;
+	a3spatialPoseOPCubic(&cubic1, poseN1_n1, poseN1_0, poseN1_1, poseN1_2, u);
+	a3spatialPoseOPCubic(&cubic2, pose0_n1, pose0_0, pose0_1, pose0_2, u);
+	a3spatialPoseOPCubic(&cubic3, pose1_n1, pose1_0, pose1_1, pose1_2, u);
+	a3spatialPoseOPCubic(&cubic4, pose2_n1, pose2_0, pose2_1, pose2_2, u);
 
-	a3spatialPoseOPCubic(pose_out, cubic1, cubic2, cubic3, cubic4, u);
+	a3spatialPoseOPCubic(pose_out, &cubic1, &cubic2, &cubic3, &cubic4, u);
 	return pose_out;
 }
 
