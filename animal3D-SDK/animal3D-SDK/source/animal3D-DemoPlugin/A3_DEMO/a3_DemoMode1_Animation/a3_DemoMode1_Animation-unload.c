@@ -39,7 +39,10 @@ void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* d
 {
 	// release skeleton and related assets
 	a3hierarchyRelease(demoMode->hierarchy_skel);
-	a3hierarchyStateRelease(demoMode->hierarchyState_skel);
+
+	for (a3index i = 0; i < animationMaxCount_hs; i++)
+		a3hierarchyStateRelease(demoMode->hierarchyState_skel + i);
+
 	a3hierarchyPoseGroupRelease(demoMode->hierarchyPoseGroup_skel);
 
 	// release clip/key pools

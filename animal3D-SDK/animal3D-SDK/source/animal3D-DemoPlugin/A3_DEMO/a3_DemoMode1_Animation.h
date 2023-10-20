@@ -64,6 +64,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
 		animationMaxCount_skeleton = 3,
+		animationMaxCount_hs = 4,
 	};
 
 	// scene object rendering program names
@@ -140,7 +141,7 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		// 4 hierarchy states for base, output, and 2 controls
 		union
 		{
-			a3_HierarchyState hierarchyState_skel[4];
+			a3_HierarchyState hierarchyState_skel[animationMaxCount_hs];
 			struct
 			{
 				a3_HierarchyState

@@ -153,20 +153,18 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	
 
 	// finally set up hierarchy states
+	// Create each base state
+	for (a3index i = 0; i < animationMaxCount_hs; i++)
+	{
+		demoMode->hierarchyState_skel[i].hierarchy = 0;
+		a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
+	}
 
-	// base state for skeleton
-	hierarchyState = demoMode->hs_base;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
-	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
-	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
-	a3kinematicsSolveForward(hierarchyState);
-	a3hierarchyStateUpdateObjectInverse(hierarchyState);
-
-	// real-time state
-	hierarchyState = demoMode->hierarchyState_skel + 1;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	// Copy base pose to the base hs
+	a3hierarchyPoseCopy(demoMode->hs_base->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
+	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3kinematicsSolveForward(demoMode->hs_base);
+	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
 
 	// Set up keyframes
 
@@ -189,7 +187,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipCalculateDuration(demoMode->clips->clip + i);
 
 	// Set up clip controllers
-	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 4);
+	a3clipControllerInit(demoMode->clipCtrl, "ctrl", demoMode->clips, 0);
 }
 
 

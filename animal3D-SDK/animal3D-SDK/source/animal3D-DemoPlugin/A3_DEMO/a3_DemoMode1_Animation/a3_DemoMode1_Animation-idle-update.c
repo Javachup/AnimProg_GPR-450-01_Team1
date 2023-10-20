@@ -106,26 +106,46 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
 	a3_HierarchyState* ctrl2HS = demoMode->hs_control_2;
 
-	//a3hierarchyPoseCopy(activeHS->objectSpace,
-	//	demoMode->hierarchyPoseGroup_skel->hpose + demoMode->hierarchyKeyPose_display[0] + 1,
-	//	demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseLerp(outputHS->objectSpace,	// use as temp storage
+	// Copy current ctrl poses to each of the control poses
+	a3hierarchyPoseLerp(ctrl1HS->objectSpace,
 		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl)->data,
 		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl)->data,
 		(a3real)demoMode->clipCtrl->keyParameter,
 		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConcat(outputHS->localSpace,	// goal to calculate
-		baseHS->localSpace, // holds base pose
-		outputHS->objectSpace, // temp storage
-		demoMode->hierarchy_skel->numNodes);
-	a3hierarchyPoseConvert(outputHS->localSpace,
-		demoMode->hierarchy_skel->numNodes,
-		demoMode->hierarchyPoseGroup_skel->channel,
-		demoMode->hierarchyPoseGroup_skel->order);
-	a3kinematicsSolveForward(outputHS);
-	a3hierarchyStateUpdateObjectInverse(outputHS);
-	a3hierarchyStateUpdateObjectBindToCurrent(outputHS, baseHS);
 
+	a3hierarchyPoseLerp(ctrl2HS->objectSpace,
+		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl)->data,
+		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl)->data,
+		(a3real)demoMode->clipCtrl->keyParameter,
+		demoMode->hierarchy_skel->numNodes);
+
+	// DO OPERATIONS HERE!
+	// outputHS = OPERATION(ctrl1HS, ctrl2HS);
+	a3hierarchyPoseLerp(outputHS->objectSpace,	// use as temp storage
+		ctrl1HS->objectSpace,
+		ctrl2HS->objectSpace,
+		0.5f,
+		demoMode->hierarchy_skel->numNodes);
+
+	// Add these poses to the base pose for display
+	for (a3index i = 0; i < 3; i++)
+	{
+		a3_HierarchyState* hs = demoMode->hierarchyState_skel + i + 1;
+
+		a3hierarchyPoseConcat(hs->localSpace,	// goal to calculate
+			baseHS->localSpace, // holds base pose
+			hs->objectSpace, // temp storage
+			demoMode->hierarchy_skel->numNodes);
+
+		a3hierarchyPoseConvert(hs->localSpace,
+			demoMode->hierarchy_skel->numNodes,
+			demoMode->hierarchyPoseGroup_skel->channel,
+			demoMode->hierarchyPoseGroup_skel->order);
+
+		a3kinematicsSolveForward(hs);
+		a3hierarchyStateUpdateObjectInverse(hs);
+		a3hierarchyStateUpdateObjectBindToCurrent(hs, baseHS);
+	}
 
 	// prepare and upload graphics data
 	{
@@ -142,7 +162,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 
 		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
-		{ outputHS, baseHS, baseHS };
+		{ ctrl1HS, ctrl2HS, outputHS };
 		const a3_HierarchyState* currentHS;
 		
 		// for each skeleton
