@@ -136,7 +136,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"Triangular",
 		"Binearest",
 		"Bilinear",
-		"Bicubic",
+		//"Bicubic",
 	};
 
 	if (demoMode->shouldDisplayOp)

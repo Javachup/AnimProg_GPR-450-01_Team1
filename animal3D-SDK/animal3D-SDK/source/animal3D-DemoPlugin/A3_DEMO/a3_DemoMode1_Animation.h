@@ -138,7 +138,7 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animation_op_bilinear,
 		animation_op_bicubic,
 
-		animation_op_max
+		animation_op_max = 10 // ignore bicubic
 	};
 
 	struct a3_DemoMode1_Animation_DisplayInfo

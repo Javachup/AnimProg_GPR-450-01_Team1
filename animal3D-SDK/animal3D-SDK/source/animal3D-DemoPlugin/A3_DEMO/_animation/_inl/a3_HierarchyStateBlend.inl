@@ -170,7 +170,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, a
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpIdentity(pose_out[i].pose);
+		a3spatialPoseOpIdentity(pose_out->pose + i);
 	}
 	return pose_out;
 }
@@ -179,7 +179,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConstruct(a3_HierarchyPose* pose_out, 
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOPConstruct(pose_out[i].pose, pose_out[i].pose->angles, pose_out[i].pose->scale, pose_out[i].pose->translation);
+		a3spatialPoseOPConstruct(pose_out->pose + i, pose_out->pose[i].angles, pose_out->pose[i].scale, pose_out->pose[i].translation);
 	}
 
 	return pose_out;
@@ -189,7 +189,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCopy(a3_HierarchyPose* pose_out, a3ui3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOPCopy(pose_out[i].pose, pose_in[i].pose);
+		a3spatialPoseOPCopy(pose_out->pose + i, pose_in->pose + i);
 	}
 
 	return pose_out;
@@ -199,7 +199,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpInvert(a3_HierarchyPose* pose_out, a3u
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOPInvert(pose_out[i].pose, pose_in[i].pose);
+		a3spatialPoseOPInvert(pose_out->pose + i, pose_in->pose + i);
 	}
 
 	return pose_out;
@@ -209,7 +209,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpConcat(a3_HierarchyPose* pose_out, a3u
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseConcat(pose_out[i].pose, pose0[i].pose, pose1[i].pose);
+		a3spatialPoseConcat(pose_out->pose + i, pose0->pose + i, pose1->pose + i);
 	}
 
 	return pose_out;
@@ -219,7 +219,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpNearest(a3_HierarchyPose* pose_out, a3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpNearest(pose_out[i].pose, pose0[i].pose, pose1[i].pose, u);
+		a3spatialPoseOpNearest(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 	}
 
 	return pose_out;
@@ -230,7 +230,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseLerp(pose_out[i].pose, pose0[i].pose, pose1[i].pose, u);
+		a3spatialPoseLerp(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 	}
 	return pose_out;
 }
@@ -240,7 +240,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOPCubic(pose_out[i].pose, pose_b[i].pose, pose0[i].pose, pose1[i].pose, pose_a[i].pose, t);
+		a3spatialPoseOPCubic(pose_out->pose + i, pose_b->pose + i, pose0->pose + i, pose1->pose + i, pose_a->pose + i, t);
 	}
 	return pose_out;
 }
@@ -249,7 +249,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpSplit(a3_HierarchyPose* pose_out, a3ui
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpSplit(pose_out[i].pose, poseL[i].pose, poseR[i].pose);
+		a3spatialPoseOpSplit(pose_out->pose + i, poseL->pose + i, poseR->pose + i);
 	}
 	return pose_out;
 }
@@ -258,7 +258,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpScale(pose_out[i].pose, pose_in[i].pose, u);
+		a3spatialPoseOpScale(pose_out->pose + i, pose_in->pose + i, u);
 	}
 	return pose_out;
 }
@@ -268,7 +268,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out,
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpTriangular(pose_out[i].pose, pose0[i].pose, pose1[i].pose, pose2[i].pose, u1, u2);
+		a3spatialPoseOpTriangular(pose_out->pose + i, pose0->pose + i, pose1->pose + i, pose2->pose + i, u1, u2);
 	}
 	return pose_out;
 }
@@ -278,8 +278,8 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, 
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpBiNearest(pose_out[i].pose, pose0_0[i].pose, pose0_1[i].pose,
-			pose1_0[i].pose, pose1_1[i].pose, u0, u1, u);
+		a3spatialPoseOpBiNearest(pose_out->pose + i, pose0_0->pose + i, pose0_1->pose + i,
+			pose1_0->pose + i, pose1_1->pose + i, u0, u1, u);
 	}
 	return pose_out;
 }
@@ -289,8 +289,8 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiLinear(a3_HierarchyPose* pose_out, a
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpBiLinear(pose_out[i].pose, pose0_0[i].pose, pose0_1[i].pose,
-			pose1_0[i].pose, pose1_1[i].pose, u0, u1, u);
+		a3spatialPoseOpBiLinear(pose_out->pose + i, pose0_0->pose + i, pose0_1->pose + i,
+			pose1_0->pose + i, pose1_1->pose + i, u0, u1, u);
 	}
 	return pose_out;
 }
@@ -304,11 +304,11 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseOpBiCubic(pose_out[i].pose,
-			poseN1_n1[i].pose, poseN1_0[i].pose, poseN1_1[i].pose, poseN1_2[i].pose,
-			pose0_n1[i].pose, pose0_0[i].pose, pose0_1[i].pose, pose0_2[i].pose,
-			pose1_n1[i].pose, pose1_0[i].pose, pose1_1[i].pose, pose1_2[i].pose,
-			pose2_n1[i].pose, pose2_0[i].pose, pose2_1[i].pose, pose2_2[i].pose,
+		a3spatialPoseOpBiCubic(pose_out->pose + i,
+			poseN1_n1->pose + i, poseN1_0->pose + i, poseN1_1->pose + i, poseN1_2->pose + i,
+			pose0_n1->pose + i, pose0_0->pose + i, pose0_1->pose + i, pose0_2->pose + i,
+			pose1_n1->pose + i, pose1_0->pose + i, pose1_1->pose + i, pose1_2->pose + i,
+			pose2_n1->pose + i, pose2_0->pose + i, pose2_1->pose + i, pose2_2->pose + i,
 			uN1, u0, u1, u2, u);
 	}
 	return pose_out;
