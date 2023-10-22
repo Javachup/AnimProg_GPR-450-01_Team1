@@ -142,7 +142,13 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	if (demoMode->shouldDisplayOp)
 	{
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    Current Op: %s", operationNames[demoMode->currentOp]);
+			"    Current Op (%u / %u) ('j' | 'k'): %s", demoMode->currentOp + 1, animation_op_max, operationNames[demoMode->currentOp]);
+
+		for (a3index i = 0; i < demoMode->displayInfo.numParameters; i++)
+		{
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"        Paramater %u: %f", i + 1, demoMode->displayInfo.parameters[i]);
+		}
 	}
 	else // display clip ctrl
 	{
