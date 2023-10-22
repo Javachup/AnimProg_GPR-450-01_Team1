@@ -189,6 +189,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// Set up clip controllers
 	a3clipControllerInit(demoMode->clipCtrl1, "ctrl1", demoMode->clips, 0);
 	a3clipControllerInit(demoMode->clipCtrl2, "ctrl2", demoMode->clips, 1);
+
+	demoMode->currentOp = 0;
+	demoMode->shouldDisplayOp = a3true;
 }
 
 

@@ -96,11 +96,92 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
+	if (demoState->updateAnimation)
+	{
+		i = (a3ui32)(demoState->timer_display->totalTime);
+		demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);	}
 
 	// Update clipCtrl
 	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
 	{
 		a3clipControllerUpdate(demoMode->clipCtrls + i, dt);
+	}
+
+	// Update display info
+	a3_DemoMode1_Animation_DisplayInfo* displayInfo = &demoMode->displayInfo;
+	switch (demoMode->currentOp)
+	{
+	case animation_op_invert:
+		displayInfo->numSkelToDraw = 1;
+		displayInfo->numParameters = 0;
+		break;
+
+	case animation_op_concat:
+		displayInfo->numSkelToDraw = 2;
+		displayInfo->numParameters = 0;
+		break;
+
+	case animation_op_nearest:
+		displayInfo->numSkelToDraw = 2;
+		displayInfo->numParameters = 1;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		break;
+
+	case animation_op_lerp:
+		displayInfo->numSkelToDraw = 2;
+		displayInfo->numParameters = 1;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		break;
+
+	case animation_op_cubic:
+		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 4 skeletons to draw
+		displayInfo->numParameters = 1;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		break;
+
+	case animation_op_split:
+		displayInfo->numSkelToDraw = 2;
+		displayInfo->numParameters = 0;
+		break;
+
+	case animation_op_scale:
+		displayInfo->numSkelToDraw = 1;
+		displayInfo->numParameters = 1;
+		displayInfo->parameters[0] = demoMode->displayParam + 1; // from [0, 1) to [1, 2) 
+		break;
+
+	case animation_op_triangular:
+		displayInfo->numSkelToDraw = 3; // TODO: Need to set up 3 skeletons to draw
+		displayInfo->numParameters = 2;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		displayInfo->parameters[1] = 1 - demoMode->displayParam;
+		break;
+
+	case animation_op_binearest:
+		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 3 skeletons to draw
+		displayInfo->numParameters = 3;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		displayInfo->parameters[1] = 1 - demoMode->displayParam;
+		displayInfo->parameters[2] = demoMode->displayParam;
+		break;
+
+	case animation_op_bilinear:
+		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 3 skeletons to draw
+		displayInfo->numParameters = 3;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		displayInfo->parameters[1] = 1 - demoMode->displayParam;
+		displayInfo->parameters[2] = demoMode->displayParam;
+		break;
+
+	case animation_op_bicubic:
+		displayInfo->numSkelToDraw = 1; // I am not doing 16 skeletons
+		displayInfo->numParameters = 5;
+		displayInfo->parameters[0] = demoMode->displayParam;
+		displayInfo->parameters[1] = 1 - demoMode->displayParam;
+		displayInfo->parameters[2] = demoMode->displayParam;
+		displayInfo->parameters[3] = 1 - demoMode->displayParam;
+		displayInfo->parameters[4] = demoMode->displayParam;
+		break;
 	}
 
 	// skeletal
@@ -131,7 +212,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->hierarchy_skel->numNodes);
 
 	// Add these poses to the base pose for display
-	for (a3index i = 0; i < 3; i++)
+	for (a3index i = 0; i < animationMaxCount_skeleton; i++)
 	{
 		a3_HierarchyState* hs = demoMode->hierarchyState_skel + i + 1;
 

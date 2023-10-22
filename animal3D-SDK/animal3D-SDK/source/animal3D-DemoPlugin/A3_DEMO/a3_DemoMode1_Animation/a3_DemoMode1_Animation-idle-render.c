@@ -52,6 +52,7 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
 {
+	/*
 	// display mode info
 	a3byte const* pipelineText[animation_pipeline_max] = {
 		"Forward rendering",
@@ -106,7 +107,6 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
 
-	/*
 	// demo modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, animation_pipeline_max, pipelineText[pipeline]);
@@ -124,9 +124,30 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 	*/
 
-	a3vec3 const camEuler = demoMode->projector->sceneObject->euler;
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Cam euler: (%f, %f, %f)", camEuler.x, camEuler.y, camEuler.z);
+	a3byte const* operationNames[animation_op_max] = 
+	{
+		"Invert",
+		"Concat",
+		"Nearest",
+		"Lerp",
+		"Cubic",
+		"Split",
+		"Scale",
+		"Triangular",
+		"Binearest",
+		"Bilinear",
+		"Bicubic",
+	};
+
+	if (demoMode->shouldDisplayOp)
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Current Op: %s", operationNames[demoMode->currentOp]);
+	}
+	else // display clip ctrl
+	{
+
+	}
 }
 
 
@@ -587,7 +608,8 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentHierarchy = demoMode->hierarchy_skel;
 
 			// for each skeleton
-			for (a3index i = 0; i < animationMaxCount_skeleton; i++)
+			a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_skeleton) + 1;
+			for (a3index i = 0; i < n; i++)
 			{
 				const a3real* boneColor = i == 0 ?
 					yellow : sky; // output skeleton color : all other skeletons color
