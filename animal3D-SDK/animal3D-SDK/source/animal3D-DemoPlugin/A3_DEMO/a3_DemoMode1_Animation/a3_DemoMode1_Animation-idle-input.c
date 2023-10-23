@@ -65,6 +65,8 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		*/
 
 		a3demoCtrlCasesLoop(demoMode->currentOp, animation_op_max, 'k', 'j');
+
+		a3demoCtrlCaseToggle(((a3_DemoState*)demoState)->updateAnimation, 'l');
 	}
 }
 

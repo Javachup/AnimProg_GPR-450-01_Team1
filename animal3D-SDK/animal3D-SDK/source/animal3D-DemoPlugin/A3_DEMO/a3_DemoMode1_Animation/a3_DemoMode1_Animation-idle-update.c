@@ -102,9 +102,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);	}
 
 	// Update clipCtrl
-	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
+	if (demoState->updateAnimation)
 	{
-		a3clipControllerUpdate(demoMode->clipCtrls + i, dt);
+		for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
+		{
+			a3clipControllerUpdate(demoMode->clipCtrls + i, dt);
+		}
 	}
 
 	// skeletal

@@ -139,6 +139,9 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		//"Bicubic",
 	};
 
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Playback ('l'): %s", demoState->updateAnimation ? "PLAY" : "PAUSED");
+
 	if (demoMode->shouldDisplayOp)
 	{
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
