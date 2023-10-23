@@ -142,6 +142,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton[0].position.y += -5.0f;
 	demoMode->obj_skeleton[0].euler.y += +30.0f;
 
+	//demoMode->obj_skeleton[3].position.z = +1.0f;
+
+	//demoMode->obj_skeleton[4].position.z = +1.0f;
+	//demoMode->obj_skeleton[4].position.x = -30.0f;
+	//demoMode->obj_skeleton[4].position.y += -5.0f;
+	//demoMode->obj_skeleton[4].euler.y += -30.0f;
+
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;

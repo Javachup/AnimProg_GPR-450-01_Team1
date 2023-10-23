@@ -112,6 +112,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* outputHS = demoMode->hs_output;
 	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
 	a3_HierarchyState* ctrl2HS = demoMode->hs_control_2;
+	a3_HierarchyState* ctrl3HS = demoMode->hs_control_3;
+	a3_HierarchyState* ctrl4HS = demoMode->hs_control_4;
 
 	// Copy current ctrl poses to each of the control poses
 	a3hierarchyPoseLerp(ctrl1HS->objectSpace,

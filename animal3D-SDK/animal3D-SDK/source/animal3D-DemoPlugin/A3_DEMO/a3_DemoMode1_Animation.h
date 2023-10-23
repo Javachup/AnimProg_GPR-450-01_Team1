@@ -66,7 +66,7 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
 		animationMaxCount_skeleton = 3,
-		animationMaxCount_hs = 4,
+		animationMaxCount_hs = 6,
 		animationMaxCount_clipCtrl = 2,
 		animationMaxCount_paramters = 8,
 	};
@@ -176,7 +176,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 					hs_base[1],
 					hs_output[1],
 					hs_control_1[1],
-					hs_control_2[1];
+					hs_control_2[1],
+					hs_control_3[1],
+					hs_control_4[1];
 			};
 		};
 
@@ -210,7 +212,7 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 				a3_DemoSceneObject
 					obj_skybox[1];
 				a3_DemoSceneObject
-					obj_skeleton[3];
+					obj_skeleton[animationMaxCount_skeleton];
 			};
 		};
 		union {
