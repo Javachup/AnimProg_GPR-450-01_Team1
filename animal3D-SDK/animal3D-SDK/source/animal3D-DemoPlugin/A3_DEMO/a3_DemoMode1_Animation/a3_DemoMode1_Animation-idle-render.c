@@ -614,7 +614,7 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentHierarchy = demoMode->hierarchy_skel;
 
 			// for each skeleton
-			a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_skeleton) + 1;
+			a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_skeleton - 1) + 1;
 			for (a3index i = 0; i < n; i++)
 			{
 				const a3real* boneColor = i == 0 ?

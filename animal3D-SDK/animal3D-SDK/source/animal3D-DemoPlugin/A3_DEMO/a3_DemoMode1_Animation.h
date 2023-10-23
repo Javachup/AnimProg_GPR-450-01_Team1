@@ -67,7 +67,7 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animationMaxCount_projector = 1,
 		animationMaxCount_skeleton = 3,
 		animationMaxCount_hs = 6,
-		animationMaxCount_clipCtrl = 2,
+		animationMaxCount_clipCtrl = 4,
 		animationMaxCount_paramters = 8,
 	};
 
@@ -192,7 +192,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 			{
 				a3_ClipController
 					clipCtrl1[1],
-					clipCtrl2[1];
+					clipCtrl2[1],
+					clipCtrl3[1],
+					clipCtrl4[1];
 			};
 		};
 

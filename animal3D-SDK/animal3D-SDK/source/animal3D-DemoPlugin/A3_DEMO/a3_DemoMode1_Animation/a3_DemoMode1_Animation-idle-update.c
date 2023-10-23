@@ -115,18 +115,17 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* ctrl3HS = demoMode->hs_control_3;
 	a3_HierarchyState* ctrl4HS = demoMode->hs_control_4;
 
-	// Copy current ctrl poses to each of the control poses
-	a3hierarchyPoseLerp(ctrl1HS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl1)->data,
-		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl1)->data,
-		(a3real)demoMode->clipCtrl1->keyParameter,
-		demoMode->hierarchy_skel->numNodes);
+	a3_ClipController* clipCtrl1 = demoMode->clipCtrl1;
 
-	a3hierarchyPoseLerp(ctrl2HS->objectSpace,
-		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(demoMode->clipCtrl2)->data,
-		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(demoMode->clipCtrl2)->data,
-		(a3real)demoMode->clipCtrl2->keyParameter,
-		demoMode->hierarchy_skel->numNodes);
+	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
+	{
+		// Copy current ctrl poses to each of the control poses
+		a3hierarchyPoseLerp((ctrl1HS + i)->objectSpace,
+			demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(clipCtrl1 + i)->data,
+			demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(clipCtrl1 + i)->data,
+			(a3real)(clipCtrl1 + i)->keyParameter,
+			demoMode->hierarchy_skel->numNodes);
+	}
 
 	// DO OPERATIONS HERE! (And update display info)
 	// outputHS = OPERATION(ctrl1HS, ctrl2HS);
@@ -182,12 +181,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	case animation_op_cubic:
 		u0 = demoMode->displayParam;
-		// TODO: Cubic
-		//a3hierarchyPoseOpCubic(outputHS->objectSpace, numNodes,
-		//	ctrl1HS->objectSpace,
-		//	ctrl2HS->objectSpace,
-		//	u0
-		//);
+		a3hierarchyPoseOpCubic(outputHS->objectSpace, numNodes,
+			ctrl1HS->objectSpace,
+			ctrl2HS->objectSpace,
+			ctrl3HS->objectSpace,
+			ctrl4HS->objectSpace,
+			u0
+		);
 
 		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 4 skeletons to draw
 		displayInfo->numParameters = 1;
@@ -285,7 +285,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 
 		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
-		{ outputHS, ctrl1HS, ctrl2HS };
+		{ outputHS, ctrl1HS, ctrl2HS, /*ctrl3HS, ctrl4HS*/ };
 		const a3_HierarchyState* currentHS;
 		
 		// for each skeleton
