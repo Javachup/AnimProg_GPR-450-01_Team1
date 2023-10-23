@@ -224,27 +224,40 @@ inline a3ret reversePingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime)
 
 //-----------------------------------------------------------------------------
 
-inline a3_SpatialPose* returnLerp(a3_ClipController* clipCtrl, a3_HierarchyPoseGroup* hposeGroup, const a3_HierarchyPose* pose_out, a3ui32 numNodes)
+inline a3ret returnLerp(a3_ClipController* clipCtrl, a3_HierarchyPoseGroup* hposeGroup, const a3_HierarchyPose* pose_out, a3ui32 numNodes)
 {
-	a3hierarchyPoseLerp(pose_out,
-		hposeGroup->hpose + getCurrentKeyframe(clipCtrl)->data,
-		hposeGroup->hpose + getNextKeyframe(clipCtrl)->data,
-		(a3real)(clipCtrl)->keyParameter,
-		numNodes);
+	a3hierarchyPoseLerp(pose_out, hposeGroup->hpose + getCurrentKeyframe(clipCtrl)->data,
+		hposeGroup->hpose + getNextKeyframe(clipCtrl)->data, (a3real)(clipCtrl)->keyParameter, numNodes);
+
+	return 0;
 }
 
 inline a3_HierarchyPose* a3clipLerp(a3_ClipController* clipCtrl1, a3_ClipController* clipCtrl2, a3_HierarchyPose* pose_out)
 {
+	// lerp between current node and next one for clipCtrl1
+
+	// lerp between current node and next one for clipCtrl2
+
+	// lerp between the two outputs and return
+
 	return pose_out;
 }
 
 inline a3_HierarchyPose* a3clipAdd(a3_ClipController* clipCtrl1, a3_ClipController* clipCtrl2, a3_HierarchyPose* pose_out)
 {
+	// add current node and next one for clipCtrl1
+
+	// add current node and next one for clipCtrl2
+
+	// add the two outputs and return
+
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3clipScale(a3_ClipController* clipCtrl1, a3ui32 scale, a3_HierarchyPose* pose_out)
+inline a3_HierarchyPose* a3clipScale(a3_ClipController* clipCtrl, a3ui32 scale, a3_HierarchyPose* pose_out)
 {
+	pose_out->pose->scale.x = scale * clipCtrl->clipPool->clip->keyframes->data;
+
 	return pose_out;
 }
 
