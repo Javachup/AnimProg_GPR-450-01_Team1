@@ -224,6 +224,32 @@ inline a3ret reversePingPong(a3_ClipController* clipCtrl, a3f64 leftOverTime)
 
 //-----------------------------------------------------------------------------
 
+inline a3_SpatialPose* returnLerp(a3_ClipController* clipCtrl, a3_HierarchyPoseGroup* hposeGroup, const a3_HierarchyPose* pose_out, a3ui32 numNodes)
+{
+	a3hierarchyPoseLerp(pose_out,
+		hposeGroup->hpose + getCurrentKeyframe(clipCtrl)->data,
+		hposeGroup->hpose + getNextKeyframe(clipCtrl)->data,
+		(a3real)(clipCtrl)->keyParameter,
+		numNodes);
+}
+
+inline a3_HierarchyPose* a3clipLerp(a3_ClipController* clipCtrl1, a3_ClipController* clipCtrl2, a3_HierarchyPose* pose_out)
+{
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3clipAdd(a3_ClipController* clipCtrl1, a3_ClipController* clipCtrl2, a3_HierarchyPose* pose_out)
+{
+	return pose_out;
+}
+
+inline a3_HierarchyPose* a3clipScale(a3_ClipController* clipCtrl1, a3ui32 scale, a3_HierarchyPose* pose_out)
+{
+	return pose_out;
+}
+
+//-----------------------------------------------------------------------------
+
 
 #endif	// !__ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_INL
 #endif	// __ANIMAL3D_KEYFRAMEANIMATIONCONTROLLER_H
