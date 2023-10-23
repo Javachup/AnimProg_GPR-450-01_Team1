@@ -140,21 +140,39 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	};
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Playback ('l'): %s", demoState->updateAnimation ? "PLAY" : "PAUSED");
+		"    Playback ('m'): %s", demoState->updateAnimation ? "PLAY" : "PAUSED");
 
 	if (demoMode->shouldDisplayOp)
 	{
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    Current Op (%u / %u) ('j' | 'k'): %s", demoMode->currentOp + 1, animation_op_max, operationNames[demoMode->currentOp]);
+			"    OPERATIONS ('l')");
+
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"        Current Op (%u / %u) ('j' | 'k'): %s", demoMode->currentOp + 1, animation_op_max, operationNames[demoMode->currentOp]);
 
 		for (a3index i = 0; i < demoMode->displayInfo.numParameters; i++)
 		{
 			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"        Paramater %u: %f", i + 1, demoMode->displayInfo.parameters[i]);
+				"            Paramater %u: %f", i + 1, demoMode->displayInfo.parameters[i]);
 		}
 	}
 	else // display clip ctrl
 	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    CLIP CTRL ('l')");
+		
+		a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_clipCtrl);
+		for (a3index i = 0; i < n; i++)
+		{
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"    %s:", demoMode->clipCtrls[i].name);
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"        Clip Index: %u", demoMode->clipCtrls[i].clipIndex);
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"        Key Time: %f    Key Param: %f", demoMode->clipCtrls[i].keyTime, demoMode->clipCtrls[i].keyParameter);
+			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+				"        Clip Time: %f    Clip Param: %f", demoMode->clipCtrls[i].clipTime, demoMode->clipCtrls[i].clipParameter);
+		}
 
 	}
 }
