@@ -180,7 +180,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_cubic:
-		u0 = demoMode->displayParam;
+		u0 = (a3real)demoMode->clipCtrl1->clipParameter;
 		a3hierarchyPoseOpCubic(outputHS->objectSpace, numNodes,
 			ctrl1HS->objectSpace,
 			ctrl2HS->objectSpace,
@@ -189,7 +189,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			u0
 		);
 
-		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 4 skeletons to draw
+		displayInfo->numSkelToDraw = 4;
 		displayInfo->numParameters = 1;
 		displayInfo->parameters[0] = u0;
 		break;
@@ -205,7 +205,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_scale:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter + a3real_half; // from [0, 1) to [1, 2) 
+		u0 = (a3real)demoMode->clipCtrl1->clipParameter * a3real_three - a3real_half; // from [0, 1) to [0.5, 2.5) 
 		a3hierarchyPoseOpScale(outputHS->objectSpace, numNodes,
 			ctrl1HS->objectSpace,
 			u0
@@ -217,30 +217,61 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_triangular:
-		displayInfo->numSkelToDraw = 3; // TODO: Need to set up 3 skeletons to draw
+		u0 = demoMode->displayParam;
+		u1 = 1 - demoMode->displayParam;
+		a3hierarchyPoseOpTriangular(outputHS->objectSpace, numNodes,
+			ctrl1HS->objectSpace,
+			ctrl2HS->objectSpace,
+			ctrl3HS->objectSpace,
+			u0, u1
+		);
+
+		displayInfo->numSkelToDraw = 3;
 		displayInfo->numParameters = 2;
-		displayInfo->parameters[0] = demoMode->displayParam;
-		displayInfo->parameters[1] = 1 - demoMode->displayParam;
+		displayInfo->parameters[0] = u0;
+		displayInfo->parameters[1] = u1;
 		break;
 
 	case animation_op_binearest:
-		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 3 skeletons to draw
+		u0 = demoMode->displayParam;
+		u1 = 1 - demoMode->displayParam;
+		u2 = demoMode->displayParam;
+		a3hierarchyPoseOpBiNearest(outputHS->objectSpace, numNodes,
+			ctrl1HS->objectSpace,
+			ctrl2HS->objectSpace,
+			ctrl3HS->objectSpace,
+			ctrl4HS->objectSpace,
+			u0, u1, u2
+		);
+
+		displayInfo->numSkelToDraw = 4;
 		displayInfo->numParameters = 3;
-		displayInfo->parameters[0] = demoMode->displayParam;
-		displayInfo->parameters[1] = 1 - demoMode->displayParam;
-		displayInfo->parameters[2] = demoMode->displayParam;
+		displayInfo->parameters[0] = u0;
+		displayInfo->parameters[1] = u1;
+		displayInfo->parameters[2] = u2;
 		break;
 
 	case animation_op_bilinear:
-		displayInfo->numSkelToDraw = 4; // TODO: Need to set up 3 skeletons to draw
+		u0 = demoMode->displayParam;
+		u1 = 1 - demoMode->displayParam;
+		u2 = demoMode->displayParam;
+		a3hierarchyPoseOpBiLinear(outputHS->objectSpace, numNodes,
+			ctrl1HS->objectSpace,
+			ctrl2HS->objectSpace,
+			ctrl3HS->objectSpace,
+			ctrl4HS->objectSpace,
+			u0, u1, u2
+		);
+
+		displayInfo->numSkelToDraw = 4;
 		displayInfo->numParameters = 3;
-		displayInfo->parameters[0] = demoMode->displayParam;
-		displayInfo->parameters[1] = 1 - demoMode->displayParam;
-		displayInfo->parameters[2] = demoMode->displayParam;
+		displayInfo->parameters[0] = u0;
+		displayInfo->parameters[1] = u1;
+		displayInfo->parameters[2] = u2;
 		break;
 
 	case animation_op_bicubic:
-		displayInfo->numSkelToDraw = 1; // I am not doing 16 skeletons
+		displayInfo->numSkelToDraw = 16; // I am not doing 16 skeletons
 		displayInfo->numParameters = 5;
 		displayInfo->parameters[0] = demoMode->displayParam;
 		displayInfo->parameters[1] = 1 - demoMode->displayParam;
