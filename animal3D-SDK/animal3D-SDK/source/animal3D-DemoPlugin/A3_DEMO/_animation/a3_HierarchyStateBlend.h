@@ -37,7 +37,57 @@ extern "C"
 #else	// !__cplusplus
 
 #endif	// __cplusplus
-	
+
+
+// Decouple as much as possible
+typedef a3_Hierarchy	a3_BlendTree;
+typedef a3_SpatialPose	a3_BlendData;
+typedef a3real			a3_BlendParam;
+
+typedef struct a3_BlendNode	a3_BlendNode;
+
+enum // There numbers are just examples
+{
+	blend_inputData_max = 4,
+	blend_param_max = 3,
+	blend_ops_max = 16,
+	blend_nodes_max = 16,
+};
+
+struct a3_BlendNode
+{
+	a3_BlendData result;
+
+	a3_BlendData const* inputData[blend_inputData_max];
+	a3_BlendParam const* inputParam[blend_param_max];
+
+	// Operation is separate so that this data can be called several times w different functions
+};
+
+typedef a3boolean(*a3_BlendOp)(const a3_BlendNode* node);
+
+
+// Example (lerp)
+
+a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp)
+		return a3false;
+
+	a3_BlendData* const data_out = &node_lerp->result;
+	a3_BlendData* const data0 = node_lerp->inputData[0];
+	a3_BlendData* const data1 = node_lerp->inputData[1];
+	a3_BlendParam const param0 = *(node_lerp->inputParam[0]);
+
+	a3_BlendData const* const result = a3spatialPoseOpLERP(data_out, data0, data1, param0);
+	return (result == data_out);
+}
+
+// TODO: use the hierarchy to link these operations
+a3_BlendOp operations[blend_ops_max];
+
+// TODO: use the hierarchy to link these nodes
+a3_BlendNode nodes[blend_nodes_max];
 
 //-----------------------------------------------------------------------------
 
