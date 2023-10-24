@@ -65,6 +65,26 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4
 
 }
 
+//Cubic Multiplicative
+inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t)
+{
+	a3real tp2, tp3, tpinv, tp2inv, tp3inv;
+
+	tpinv = powf(t, -1);
+	tp2 = powf(t, 2);
+	tp2inv = powf(tp2, -1);
+	tp3 = powf(t, 3);
+	tp3inv = powf(tp3, -1);
+	
+
+	/*
+	pose_out->scale.x = a3CatmullRom(pose_b->scale.x, pose0->scale.x, pose1->scale.x, pose_a->scale.x, t);
+	pose_out->scale.y = a3CatmullRom(pose_b->scale.y, pose0->scale.y, pose1->scale.y, pose_a->scale.y, t);
+	pose_out->scale.z = a3CatmullRom(pose_b->scale.z, pose0->scale.z, pose1->scale.z, pose_a->scale.z, t);
+	*/
+	return pose_out;
+}
+
 //Controls (4): pre-initial = pose_b, initial, terminal and post-terminal = pose_a.
 inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t)
 {

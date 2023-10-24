@@ -26,7 +26,7 @@
 #ifdef __ANIMAL3D_SPATIALPOSE_H
 #ifndef __ANIMAL3D_SPATIALPOSE_INL
 #define __ANIMAL3D_SPATIALPOSE_INL
-
+#include "math.h"
 
 //-----------------------------------------------------------------------------
 
@@ -184,6 +184,8 @@ inline a3_SpatialPose* a3real3LerpScaleMult(a3_SpatialPose* poseOut, const a3_Sp
 
 	temp = (pose1->scale.z * (1 / pose0->scale.z));
 	poseOut->scale.z = powf(temp, u) * (pose1->scale.z * (1 / pose0->scale.z));
+
+	return poseOut;
 }
 
 // lerp (NEEDS CHANGES FOR SCALE)
