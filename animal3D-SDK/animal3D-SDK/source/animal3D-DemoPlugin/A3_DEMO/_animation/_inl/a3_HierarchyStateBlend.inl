@@ -74,7 +74,7 @@ inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_Spati
 	tp2 = powf(t, 2);
 	tp2inv = powf(tp2, -1);
 	tp3 = powf(t, 3);
-	tp3inv = powf(tp3, -1);
+	tp3inv = powf(tp3, -1);\
 	
 
 	/*
