@@ -37,7 +37,78 @@ extern "C"
 #else	// !__cplusplus
 
 #endif	// __cplusplus
+
+#include <stdbool.h>
+
+// DECOUPLE AS MUCH AS POSSIBLE
+// MAKE IT ROBUST AND OPTIMAL
+// components: 
+//		-> the hierarcy
+//		-> the blend node (new) - pointers to input data, result data
+//		-> operation*
+//		-> function for each operation
+// stages: 
+//		-> 1. describe (in load) - could be artist-driven - make the circles (nodes)
+//		-> 2. build (in load) - link pointers to raw data - make the arrows (links)
+//		-> 3. execute (in update) - traverse the tree and do ops
+//		-> 4. clean up (in unload)
 	
+
+typedef a3_Hierarchy	a3_BlendTree;
+typedef a3_SpatialPose	a3_BlendData;
+typedef a3real			a3_BlendParam;
+
+// bilinear
+enum {
+	a3blend_data_max = 4,
+	a3blend_param_max = 3,
+};
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result;
+	a3_BlendData const* data[a3blend_data_max];	// array of pointers
+	a3_BlendParam const* param[a3blend_param_max];
+} a3_BlendNode;
+
+// can be called to perform a blend operation
+typedef bool(*a3_BlendOp)(a3_BlendNode* node);
+
+// FROM LAB 3
+// example: lerp
+a3_BlendData* a3_BlendFuncLerp(
+	a3_BlendData* const data_out,
+	a3_BlendData const* const data0,
+	a3_BlendData const* const data1,
+	a3_BlendParam const param)
+{
+	if (!data_out || !data0 || !data1)
+	{
+		return 0;
+	}
+
+	a3real3Lerp(data_out->translation.v, data0->translation.v, data1->translation.v, param);
+	// ...
+	// ...
+	return data_out;
+}
+
+// NEW FUNCTION
+bool a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp)
+	{
+		return false;
+	}
+
+	a3_BlendData* const data_out = &(node_lerp->result);
+	a3_BlendData const* const data0 = node_lerp->data[0];
+	a3_BlendData const* const data1= node_lerp->data[1];
+	a3_BlendParam const param = *(node_lerp->param[0]);
+
+	a3_BlendData const* const result = a3_BlendFuncLerp(data_out, data0, data1, param);
+	return (result == data_out);
+}
 
 //-----------------------------------------------------------------------------
 
