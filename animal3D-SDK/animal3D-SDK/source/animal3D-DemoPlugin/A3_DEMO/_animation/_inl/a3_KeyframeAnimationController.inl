@@ -254,9 +254,9 @@ inline a3_HierarchyPose* a3clipAdd(a3_ClipController* clipCtrl1, a3_ClipControll
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3clipScale(a3_ClipController* clipCtrl, a3ui32 scale, a3_HierarchyPose* pose_out)
+inline a3_HierarchyPose* a3clipScale(a3_ClipController* clipCtrl, a3real scale, a3_HierarchyPose* pose_out)
 {
-	pose_out->pose->scale.x = scale * clipCtrl->clipPool->clip->keyframes->data;
+	pose_out->pose->scale.x = scale * getCurrentKeyframe(clipCtrl)->data;
 
 	return pose_out;
 }
