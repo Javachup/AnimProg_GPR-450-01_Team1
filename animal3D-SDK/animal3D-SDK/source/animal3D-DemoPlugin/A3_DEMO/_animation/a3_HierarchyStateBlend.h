@@ -121,7 +121,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u);
 //-----------------------------------------------------------------------------
 
-
+//Wrap up convert in a node
 a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
 	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
