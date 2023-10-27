@@ -49,9 +49,8 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4
 inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in);
 inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
-inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out);
+inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
 inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out);
-inline a3_SpatialPose* a3spatialPoseOPInverseKinematics(a3_SpatialPose* pose_out);
 
 //Helper Functions
 inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
@@ -121,6 +120,13 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 	a3_SpatialPose const* pose2_n1, a3_SpatialPose const* pose2_0, a3_SpatialPose const* pose2_1, a3_SpatialPose const* pose2_2,
 	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u);
 //-----------------------------------------------------------------------------
+
+
+a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
+	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
+	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+
 
 
 #ifdef __cplusplus

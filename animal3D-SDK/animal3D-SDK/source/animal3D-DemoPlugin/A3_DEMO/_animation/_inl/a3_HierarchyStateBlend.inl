@@ -74,7 +74,7 @@ inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_Spati
 	tp2 = powf(t, 2);
 	tp2inv = powf(tp2, -1);
 	tp3 = powf(t, 3);
-	tp3inv = powf(tp3, -1);\
+	tp3inv = powf(tp3, -1);
 	
 
 	/*
@@ -153,18 +153,17 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_Spati
 }
 
 //Project3 Add On
-inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out)
+inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
 {
+
 	return pose_out;
 }
 inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out)
 {
+
 	return pose_out;
 }
-inline a3_SpatialPose* a3spatialPoseOPInverseKinematics(a3_SpatialPose* pose_out)
-{
-	return pose_out;
-}
+
 
 
 //-----------------------------------------------------------------------------
