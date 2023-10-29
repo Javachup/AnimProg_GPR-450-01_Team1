@@ -22,6 +22,64 @@
 	Hierarchy blend operations.
 */
 
+//DECOUPLE AS MUCH AS POSSIBLE
+//MAKE IT ROBUST AND OPTIMAL
+//components:
+//	->the hierarchy
+//	->the blend node (new) - pointers to input data, result data, operation*
+//	->function for each operation
+//stages:
+//	->describe (in load) - could be artist-driven - make the circles (nodes)
+//	->build (in load) - link pointers to raw data - make the arrows (links)
+//	->execute (in update) - traverse the tree and do ops
+//	->clean up (in unload)
+
+
+
+typedef a3_Hierarchy a3_BlendTree;
+typedef a3_SpatialPose a3_BlendData;
+typedef a3real a3_BlendParam;
+enum {
+	a3blend_data_max = 4,
+	a3blend_param_max = 3
+};
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result;
+	a3_BlendData const* data[a3blend_data_max];
+	a3_BlendParam const* param[a3blend_param_max];
+
+} a3_BlendNode;
+typedef bool(*a3_BlendOp)(a3_BlendNode* node);
+
+
+a3_BlendData* a3_BlendFuncLerp(
+	a3_BlendData* const data_out,
+	a3_BlendData* const data0,
+	a3_BlendData* const data1,
+	a3_BlendParam const param)
+{
+	if (!data_out || !data0 || !data1)
+	{
+		return 0;
+	}
+	a3real3Lerp(data_out->translate.v, data0->translate.v, data1->translate.v, param);
+
+
+	return data_out;
+
+
+}
+
+
+
+bool a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	return true;
+}
+
+
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_H
 
