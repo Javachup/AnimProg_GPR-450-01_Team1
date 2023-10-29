@@ -60,6 +60,18 @@
 
 //-----------------------------------------------------------------------------
 
+inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count)
+{
+	return -1;
+}
+
+inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
+{
+	return -1;
+}
+
+//-----------------------------------------------------------------------------
+
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {

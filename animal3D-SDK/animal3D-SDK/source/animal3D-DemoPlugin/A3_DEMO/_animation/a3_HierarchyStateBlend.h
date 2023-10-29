@@ -35,7 +35,7 @@
 extern "C"
 {
 #else	// !__cplusplus
-
+typedef struct a3_BlendNodePool a3_BlendNodePool;
 #endif	// __cplusplus
 
 //-----------------------------------------------------------------------------
@@ -59,6 +59,21 @@ typedef struct a3_BlendNode
 
 // can be called to perform a blend operation
 typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+
+//-----------------------------------------------------------------------------
+
+struct a3_BlendNodePool
+{
+	a3_BlendNode* nodes;
+	a3ui32 count;
+};
+
+// allocate clip pool
+a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
+
+// release clip pool
+a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
+
 
 //-----------------------------------------------------------------------------
 
