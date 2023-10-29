@@ -37,7 +37,28 @@ extern "C"
 #else	// !__cplusplus
 
 #endif	// __cplusplus
-	
+
+//-----------------------------------------------------------------------------
+
+typedef a3_Hierarchy    a3_BlendTree;
+typedef a3_SpatialPose    a3_BlendData;
+typedef a3real            a3_BlendParam;
+
+// bilinear
+enum {
+	a3blend_data_max = 4,
+	a3blend_param_max = 3,
+};
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result;
+	a3_BlendData const* data[a3blend_data_max];    // array of pointers
+	a3_BlendParam const* param[a3blend_param_max];
+} a3_BlendNode;
+
+// can be called to perform a blend operation
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
 
 //-----------------------------------------------------------------------------
 
