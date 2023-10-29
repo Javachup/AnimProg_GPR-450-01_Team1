@@ -26,7 +26,7 @@
 #ifdef __ANIMAL3D_SPATIALPOSE_H
 #ifndef __ANIMAL3D_SPATIALPOSE_INL
 #define __ANIMAL3D_SPATIALPOSE_INL
-
+#include "math.h"
 
 //-----------------------------------------------------------------------------
 
@@ -172,14 +172,30 @@ inline a3_SpatialPose* a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, cons
 	return spatialPose_out;
 }
 
-// lerp
+inline a3_SpatialPose* a3real3LerpScaleMult(a3_SpatialPose* poseOut, const a3_SpatialPose* pose0, const a3_SpatialPose* pose1, const a3real u)
+{ 
+	a3real temp;
+
+	temp = (pose1->scale.x * (1 / pose0->scale.x));
+	poseOut->scale.x = powf(temp, u) * (pose1->scale.x * (1 / pose0->scale.x));
+
+	temp = (pose1->scale.y * (1 / pose0->scale.y));
+	poseOut->scale.y = powf(temp, u) * (pose1->scale.y * (1 / pose0->scale.y));
+
+	temp = (pose1->scale.z * (1 / pose0->scale.z));
+	poseOut->scale.z = powf(temp, u) * (pose1->scale.z * (1 / pose0->scale.z));
+
+	return poseOut;
+}
+
+// lerp (NEEDS CHANGES FOR SCALE)
 inline a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u)
 {
 	if (spatialPose_out && spatialPose_0 && spatialPose_1)
 	{
 		a3real3Lerp(spatialPose_out->angles.v, spatialPose_0->angles.v, spatialPose_1->angles.v, u);
 
-		a3real3Lerp(spatialPose_out->scale.v, spatialPose_0->scale.v, spatialPose_1->scale.v, u);
+		a3real3LerpScaleMult(spatialPose_out, spatialPose_0, spatialPose_1, u); //change this for scale
 
 		a3real3Lerp(spatialPose_out->translation.v, spatialPose_0->translation.v, spatialPose_1->translation.v, u);
 
@@ -187,7 +203,6 @@ inline a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const 
 	}
 	return spatialPose_out;
 }
-
 
 //-----------------------------------------------------------------------------
 
