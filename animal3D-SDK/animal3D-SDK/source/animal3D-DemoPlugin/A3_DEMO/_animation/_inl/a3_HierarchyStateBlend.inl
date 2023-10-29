@@ -30,6 +30,57 @@
 
 //-----------------------------------------------------------------------------
 
+typedef a3_Hierarchy		a3_BlendTree;
+typedef a3_SpatialPose		a3_BlendData;
+typedef a3real				a3_BlendParam;
+
+// bilinear
+enum {
+	a3blend_data_max = 4,
+	a3blend_param_max = 3,
+};
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result;
+	a3_BlendData const* data[a3blend_data_max];    // array of pointers
+	a3_BlendParam const* param[a3blend_param_max];
+} a3_BlendNode;
+
+// can be called to perform a blend operation
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+
+//a3_BlendData* a3_BlendFuncLerp(a3_BlendData* const data_out, a3_BlendData const* const data0,
+//	a3_BlendData const* const data1, a3_BlendParam const param)
+//{
+//	if (!data_out || !data0 || !data1)
+//	{
+//		return 0;
+//	}
+//
+//	//a3spatialPoseOpLERP(data_out, data0, data1, param);
+//
+//	return data_out;
+//}
+//
+//a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+//{
+//	if (!node_lerp)
+//	{
+//		return false;
+//	}
+//
+//	a3_BlendData* const data_out = &(node_lerp->result);
+//	a3_BlendData const* const data0 = node_lerp->data[0];
+//	a3_BlendData const* const data1 = node_lerp->data[1];
+//	a3_BlendParam const param = *(node_lerp->param[0]);
+//
+//	a3_BlendData const* const result = a3_BlendFuncLerp(data_out, data0, data1, param);
+//	return (result == data_out);
+//}
+
+//-----------------------------------------------------------------------------
+
 // pointer-based reset/identity operation for single spatial pose
 inline a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out)
 {
@@ -111,7 +162,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
 
 	// LOGLERP FOR SCALE
-	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+	a3real3LerpScaleMult(pose_out, pose0, pose1, u);
 
 	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
 
