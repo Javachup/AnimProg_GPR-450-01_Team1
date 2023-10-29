@@ -170,6 +170,9 @@ a3i32 a3hierarchyPoseGroupSaveBVH(const a3_HierarchyPoseGroup* poseGroup_in, con
 //-----------------------------------------------------------------------------
 
 
+
+//----------------------------------------------
+
 #ifdef __cplusplus
 }
 #endif	// __cplusplus

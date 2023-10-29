@@ -35,7 +35,7 @@
 //	->clean up (in unload)
 
 
-
+#include "a3_KeyframeAnimationController.h"
 typedef a3_Hierarchy a3_BlendTree;
 typedef a3_SpatialPose a3_BlendData;
 typedef a3real a3_BlendParam;
@@ -51,7 +51,7 @@ typedef struct a3_BlendNode
 	a3_BlendParam const* param[a3blend_param_max];
 
 } a3_BlendNode;
-typedef bool(*a3_BlendOp)(a3_BlendNode* node);
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
 
 
 a3_BlendData* a3_BlendFuncLerp(
@@ -74,7 +74,7 @@ a3_BlendData* a3_BlendFuncLerp(
 
 
 
-bool a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 {
 	return true;
 }
@@ -185,7 +185,8 @@ a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
 a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
 	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
-
+//----------------------------------------------
+a3_HierarchyPose* getToBlendPose(a3_HierarchyPoseGroup* group, a3_ClipController* controller);
 
 #ifdef __cplusplus
 }
