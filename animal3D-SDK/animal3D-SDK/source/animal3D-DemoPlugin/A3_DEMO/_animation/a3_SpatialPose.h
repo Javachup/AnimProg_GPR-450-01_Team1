@@ -142,7 +142,7 @@ a3_SpatialPose* a3spatialPoseConcat(a3_SpatialPose* spatialPose_out, const a3_Sp
 // lerp
 a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
 
-
+a3_SpatialPose* a3real3LerpScaleMult(a3_SpatialPose* poseOut, const a3_SpatialPose* pose0, const a3_SpatialPose* pose1, const a3real u);
 //-----------------------------------------------------------------------------
 
 
