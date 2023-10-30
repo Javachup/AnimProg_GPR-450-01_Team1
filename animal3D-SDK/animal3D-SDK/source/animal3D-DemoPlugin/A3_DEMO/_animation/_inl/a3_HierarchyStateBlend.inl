@@ -550,7 +550,7 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_Hie
 
 inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
 {
-
+	
 
 
 
