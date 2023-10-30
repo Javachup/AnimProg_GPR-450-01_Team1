@@ -99,7 +99,6 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 //Project3 Add On
 inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out);
 inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out);
-inline a3_HierarchyPose* a3hierarchyPoseOpInverseKinematics(a3_HierarchyPose* pose_out);
 
 /*_______________SPATIAL POSE FUNCTIONS - POINTER BASED____________________*/
 //-----------------------------------------------------------------------------
@@ -112,6 +111,7 @@ inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4
 inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in);
 inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
 inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
+
 inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
 inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out);
 
