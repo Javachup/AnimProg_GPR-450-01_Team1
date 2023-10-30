@@ -202,6 +202,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// Blend Tree Stuff
 	a3blendNodePoolCreate(demoMode->nodePool, 4);
 
+
+
+
+
+
+
+
+
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;
 }

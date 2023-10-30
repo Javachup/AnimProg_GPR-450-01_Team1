@@ -527,28 +527,29 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 }
 
 //-----------------------------------------------------------------------------
-<<<<<<< HEAD
-inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* group, a3_ClipController* controller, a3_Hierarchy* hierarchy)
-=======
+
 inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes)
->>>>>>> 2435bb4442dfa6cbaa4e27bb37e19f1716b9b4b6
 {
 	if (!group || !controller)
 	{
 		return 0;
 	}
-<<<<<<< HEAD
-	a3ui32 currentIndex = getCurrentKeyframe(controller);
-	a3ui32 nextIndex = getNextKeyframe(controller);
-	a3hierarchyPoseOpLERP(pose_out, hierarchy->numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], controller->keyParameter); //if it doesn't work try clipParameter
-	return pose_out;
-=======
 	a3ui32 currentIndex = getCurrentKeyframe(controller)->data;
 	a3ui32 nextIndex = getNextKeyframe(controller)->data;
 	return a3hierarchyPoseOpLERP(pose_out, numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], (a3real)controller->keyParameter); //if it doesn't work try clipParameter
-
->>>>>>> 2435bb4442dfa6cbaa4e27bb37e19f1716b9b4b6
 }
+
+
+inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+{
+
+
+
+
+}
+
+
+
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
