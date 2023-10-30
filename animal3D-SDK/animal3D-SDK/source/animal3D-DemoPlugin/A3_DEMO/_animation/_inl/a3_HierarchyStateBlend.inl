@@ -27,6 +27,75 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #include "math.h"
+#include <stdlib.h>
+#include <string.h> // For memset
+
+//-----------------------------------------------------------------------------
+//a3_BlendData* a3_BlendFuncLerp(a3_BlendData* const data_out, a3_BlendData const* const data0,
+//	a3_BlendData const* const data1, a3_BlendParam const param)
+//{
+//	if (!data_out || !data0 || !data1)
+//	{
+//		return 0;
+//	}
+//
+//	//a3spatialPoseOpLERP(data_out, data0, data1, param);
+//
+//	return data_out;
+//}
+//
+//a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+//{
+//	if (!node_lerp)
+//	{
+//		return false;
+//	}
+//
+//	a3_BlendData* const data_out = &(node_lerp->result);
+//	a3_BlendData const* const data0 = node_lerp->data[0];
+//	a3_BlendData const* const data1 = node_lerp->data[1];
+//	a3_BlendParam const param = *(node_lerp->param[0]);
+//
+//	a3_BlendData const* const result = a3_BlendFuncLerp(data_out, data0, data1, param);
+//	return (result == data_out);
+//}
+
+//-----------------------------------------------------------------------------
+
+inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count)
+{
+	if (nodePool_out && count > 0)
+	{
+		nodePool_out->nodes = (a3_BlendNode*)calloc(count, sizeof(a3_BlendNode));
+		if (nodePool_out->nodes == NULL)
+			return -1;
+
+		nodePool_out->count = count;
+	}
+	return 0;
+}
+
+inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
+{
+	if (nodePool_out && nodePool_out->nodes)
+	{
+		free(nodePool_out->nodes);
+		nodePool_out->nodes = NULL;
+	}
+	return 0;
+}
+
+inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in)
+{
+	/*
+	Starting at the leaves and working towards the root,
+	Call the operations and pass each node
+	it would look something like:
+		blendNodePool_inout->blendOps[i](&blendNodePool_inout->nodes[i])
+	*/
+
+	return -1;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -111,7 +180,7 @@ inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialP
 	a3real3Lerp(pose_out->angles.v, pose0->angles.v, pose1->angles.v, u);
 
 	// LOGLERP FOR SCALE
-	a3real3Lerp(pose_out->scale.v, pose0->scale.v, pose1->scale.v, u);
+	a3real3LerpScaleMult(pose_out, pose0, pose1, u);
 
 	a3real3Lerp(pose_out->translation.v, pose0->translation.v, pose1->translation.v, u);
 

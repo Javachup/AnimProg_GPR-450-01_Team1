@@ -199,6 +199,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3clipControllerInit(demoMode->clipCtrl3, "ctrl3", demoMode->clips, 2);
 	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
+	// Blend Tree Stuff
+	a3blendNodePoolCreate(demoMode->nodePool, 4);
+
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;
 }
