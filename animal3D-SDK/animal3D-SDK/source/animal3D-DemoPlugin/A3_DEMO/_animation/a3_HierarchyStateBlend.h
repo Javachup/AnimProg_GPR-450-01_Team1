@@ -47,7 +47,8 @@
 extern "C"
 {
 #else	// !__cplusplus
-typedef struct a3_BlendNodePool a3_BlendNodePool;
+typedef struct a3_BlendNodePool	a3_BlendNodePool;
+typedef struct a3_BlendNode		a3_BlendNode;
 #endif	// __cplusplus
 
 //-----------------------------------------------------------------------------
@@ -62,15 +63,16 @@ enum {
 	a3blend_param_max = 3,
 };
 
+// can be called to perform a blend operation
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+
 typedef struct a3_BlendNode
 {
 	a3_BlendData result;
 	a3_BlendData const* data[a3blend_data_max];    // array of pointers
 	a3_BlendParam const* param[a3blend_param_max];
+	a3_BlendOp op;
 } a3_BlendNode;
-
-// can be called to perform a blend operation
-typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
 
 //-----------------------------------------------------------------------------
 

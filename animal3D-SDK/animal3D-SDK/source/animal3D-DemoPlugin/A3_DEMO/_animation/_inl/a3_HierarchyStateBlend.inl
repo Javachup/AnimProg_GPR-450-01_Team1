@@ -91,7 +91,9 @@ inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_
 	Starting at the leaves and working towards the root,
 	Call the operations and pass each node
 	it would look something like:
-		blendNodePool_inout->blendOps[i](&blendNodePool_inout->nodes[i])
+
+	a3_BlendNode* blendNode = blendNodePool_inout->nodes + i;
+	blendNode->op(blendNode);
 	*/
 
 	return -1;
