@@ -198,6 +198,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 			};
 		};
 
+		// For blend tree
+		a3_BlendNodePool nodePool[1];
+
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
 
