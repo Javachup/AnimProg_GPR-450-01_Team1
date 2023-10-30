@@ -62,6 +62,12 @@
 
 //-----------------------------------------------------------------------------
 
+inline a3i32 a3blendNodeSetOp(a3_BlendNode* node_inout, const a3_BlendOp op)
+{
+	node_inout->op = op;
+	return 0;
+}
+
 inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count)
 {
 	if (nodePool_out && count > 0)

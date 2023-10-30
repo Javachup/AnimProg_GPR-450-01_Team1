@@ -74,6 +74,8 @@ struct a3_BlendNode
 	a3_BlendOp op;
 };
 
+a3i32 a3blendNodeSetOp(a3_BlendNode* node_inout, const a3_BlendOp op);
+
 //-----------------------------------------------------------------------------
 
 struct a3_BlendNodePool
