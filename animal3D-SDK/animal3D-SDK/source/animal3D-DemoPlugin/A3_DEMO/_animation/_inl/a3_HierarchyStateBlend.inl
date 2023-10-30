@@ -28,36 +28,59 @@
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #include "math.h"
 
+//BlendOps
 //-----------------------------------------------------------------------------
-//a3_BlendData* a3_BlendFuncLerp(a3_BlendData* const data_out, a3_BlendData const* const data0,
-//	a3_BlendData const* const data1, a3_BlendParam const param)
-//{
-//	if (!data_out || !data0 || !data1)
-//	{
-//		return 0;
-//	}
-//
-//	//a3spatialPoseOpLERP(data_out, data0, data1, param);
-//
-//	return data_out;
-//}
-//
-//a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
-//{
-//	if (!node_lerp)
-//	{
-//		return false;
-//	}
-//
-//	a3_BlendData* const data_out = &(node_lerp->result);
-//	a3_BlendData const* const data0 = node_lerp->data[0];
-//	a3_BlendData const* const data1 = node_lerp->data[1];
-//	a3_BlendParam const param = *(node_lerp->param[0]);
-//
-//	a3_BlendData const* const result = a3_BlendFuncLerp(data_out, data0, data1, param);
-//	return (result == data_out);
-//}
+inline a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
+{
+	if (!node_concat)
+	{
+		return false;
+	}
 
+	a3_BlendData* const data_out = &(node_concat->result);
+	a3_BlendData const* const data0 = node_concat->data[0];
+	a3_BlendData const* const data1 = node_concat->data[1];
+	a3_BlendNumNodes const numNodes = node_concat->numNodes;
+
+	a3_BlendData const* const result = a3hierarchyPoseOpConcat(data_out, numNodes, data0, data1);
+
+	return (result == data_out);
+}
+inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp)
+	{
+		return false;
+	}
+
+	a3_BlendData* const data_out = &(node_lerp->result); 
+	a3_BlendData const* const data0 = node_lerp->data[0];
+	a3_BlendData const* const data1 = node_lerp->data[1];
+	a3_BlendParam const param = *(node_lerp->param[0]);
+	a3_BlendNumNodes const numNodes = node_lerp->numNodes;
+
+	a3_BlendData const* const result = a3hierarchyPoseOpLERP(data_out, numNodes, data0, data1, param);
+
+	return (result == data_out);
+}
+
+inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
+{
+	if (!node_scale)
+	{
+		return false;
+	}
+
+	a3_BlendData* const data_out = &(node_scale->result);
+	a3_BlendData* const data_in = &(node_scale->result);
+	a3_BlendData const* const data0 = node_scale->data[0];
+	a3_BlendParam const param = *(node_scale->param[0]);
+	a3_BlendNumNodes const numNodes = node_scale->numNodes;
+
+	a3_BlendData const* const result = a3hierarchyPoseOpScale(data_out, numNodes, data_in,param);
+
+	return (result == data_out);
+}
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose
@@ -199,21 +222,21 @@ inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out)
 //-----------------------------------------------------------------------------
 
 // data-based reset/identity
-inline a3_SpatialPose a3spatialPoseDOpIdentity()
-{
-	a3_SpatialPose const result = { a3mat4_identity /*, ...*/ };
-	return result;
-}
-
-// data-based LERP
-inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
-{
-	a3_SpatialPose result = { 0 };
-	// ...
-
-	// done
-	return result;
-}
+//inline a3_SpatialPose a3spatialPoseDOpIdentity()
+//{
+//	a3_SpatialPose const result = { a3mat4_identity /*, ...*/ };
+//	return result;
+//}
+//
+//// data-based LERP
+//inline a3_SpatialPose a3spatialPoseDOpLERP(a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
+//{
+//	a3_SpatialPose result = { 0 };
+//	// ...
+//
+//	// done
+//	return result;
+//}
 
 
 //-----------------------------------------------------------------------------
@@ -283,7 +306,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseLerp(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
+		a3spatialPoseOpLERP(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 	}
 	return pose_out;
 }
