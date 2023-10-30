@@ -200,8 +200,11 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
 	// Blend Tree Stuff
-	a3blendNodePoolCreate(demoMode->nodePool, 4);
+	a3blendNodePoolCreate(demoMode->nodePool, 3);
 
+	//a3blendNodeSetOp(demoMode->nodePool + 0, a3_BlendOpConcat);
+	//a3blendNodeSetOp(demoMode->nodePool + 1, a3_BlendOpLerp);
+	//a3blendNodeSetOp(demoMode->nodePool + 2, a3_BlendOpScale);
 
 
 
