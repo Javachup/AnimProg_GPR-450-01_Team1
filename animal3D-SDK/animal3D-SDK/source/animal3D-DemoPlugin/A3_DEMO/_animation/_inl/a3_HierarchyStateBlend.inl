@@ -66,15 +66,9 @@ inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 
 {
 	if (nodePool_out && count > 0)
 	{
-		a3ui32 memSize = sizeof(a3_BlendNode) * count + sizeof(a3_BlendOp) * count;
-		void* mem = malloc(memSize);
-		if (mem == NULL)
+		nodePool_out->nodes = (a3_BlendNode*)calloc(count, sizeof(a3_BlendNode));
+		if (nodePool_out->nodes == NULL)
 			return -1;
-
-		nodePool_out->nodes = (a3_BlendNode*)mem;
-		nodePool_out->blendOps = (a3_BlendOp*)(nodePool_out->nodes + count);
-
-		memset(nodePool_out->nodes, 0, memSize);
 
 		nodePool_out->count = count;
 	}
