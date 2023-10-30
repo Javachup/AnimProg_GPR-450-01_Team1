@@ -527,16 +527,15 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 }
 
 //-----------------------------------------------------------------------------
-inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPoseGroup* group, a3_ClipController* controller, a3_Hierarchy* hierarchy)
+inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes)
 {
 	if (!group || !controller)
 	{
 		return 0;
 	}
-	a3ui32 currentIndex = getCurrentKeyframe(controller);
-	a3ui32 nextIndex = getNextKeyframe(controller);
-	a3_HierarchyPose* temp;
-	return a3hierarchyPoseOpLERP(temp, hierarchy->numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], controller->keyParameter); //if it doesn't work try clipParameter
+	a3ui32 currentIndex = getCurrentKeyframe(controller)->data;
+	a3ui32 nextIndex = getNextKeyframe(controller)->data;
+	return a3hierarchyPoseOpLERP(pose_out, numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], (a3real)controller->keyParameter); //if it doesn't work try clipParameter
 
 }
 
