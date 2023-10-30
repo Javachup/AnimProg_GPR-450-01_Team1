@@ -28,6 +28,7 @@
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #include "math.h"
 #include <stdlib.h>
+#include <string.h> // For memset
 
 //-----------------------------------------------------------------------------
 //a3_BlendData* a3_BlendFuncLerp(a3_BlendData* const data_out, a3_BlendData const* const data0,
@@ -65,10 +66,15 @@ inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 
 {
 	if (nodePool_out && count > 0)
 	{
-		// Use calloc to initialize the memory (everything happens to have a default of 0)
-		nodePool_out->nodes = (a3_BlendNode*)calloc(count, sizeof(a3_BlendNode));
-		if (nodePool_out->nodes == NULL)
+		a3ui32 memSize = sizeof(a3_BlendNode) * count + sizeof(a3_BlendOp) * count;
+		void* mem = malloc(memSize);
+		if (mem == NULL)
 			return -1;
+
+		nodePool_out->nodes = (a3_BlendNode*)mem;
+		nodePool_out->blendOps = (a3_BlendOp*)(nodePool_out->nodes + count);
+
+		memset(nodePool_out->nodes, 0, memSize);
 
 		nodePool_out->count = count;
 	}
@@ -83,6 +89,18 @@ inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
 		nodePool_out->nodes = NULL;
 	}
 	return 0;
+}
+
+inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in)
+{
+	/*
+	Starting at the leaves and working towards the root,
+	Call the operations and pass each node
+	it would look something like:
+		blendNodePool_inout->blendOps[i](&blendNodePool_inout->nodes[i])
+	*/
+
+	return -1;
 }
 
 //-----------------------------------------------------------------------------

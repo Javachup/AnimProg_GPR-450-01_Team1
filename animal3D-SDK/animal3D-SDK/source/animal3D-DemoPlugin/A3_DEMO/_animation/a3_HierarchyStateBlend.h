@@ -65,6 +65,7 @@ typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
 struct a3_BlendNodePool
 {
 	a3_BlendNode* nodes;
+	a3_BlendOp* blendOps;
 	a3ui32 count;
 };
 
@@ -73,6 +74,8 @@ a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
 
 // release blend node pool
 a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
+
+a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in);
 
 //-----------------------------------------------------------------------------
 
