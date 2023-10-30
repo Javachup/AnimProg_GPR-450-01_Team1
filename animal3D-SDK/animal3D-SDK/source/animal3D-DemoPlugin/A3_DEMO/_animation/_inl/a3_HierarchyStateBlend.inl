@@ -41,22 +41,22 @@
 //
 //	return data_out;
 //}
-//
-//a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
-//{
-//	if (!node_lerp)
-//	{
-//		return false;
-//	}
-//
-//	a3_BlendData* const data_out = &(node_lerp->result);
-//	a3_BlendData const* const data0 = node_lerp->data[0];
-//	a3_BlendData const* const data1 = node_lerp->data[1];
-//	a3_BlendParam const param = *(node_lerp->param[0]);
-//
-//	a3_BlendData const* const result = a3_BlendFuncLerp(data_out, data0, data1, param);
-//	return (result == data_out);
-//}
+
+inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
+{
+	if (!node_lerp)
+	{
+		return false;
+	}
+
+	a3_BlendData* const data_out = &(node_lerp->result);
+	a3_BlendData const* const data0 = node_lerp->data[0];
+	a3_BlendData const* const data1 = node_lerp->data[1];
+	a3_BlendParam const param = *(node_lerp->param[0]);
+
+	a3_BlendData const* const result = a3spatialPoseOpLERP(data_out, data0, data1, param);
+	return (result == data_out);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -283,7 +283,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
-		a3spatialPoseLerp(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
+		a3spatialPoseOpLERP(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
 	}
 	return pose_out;
 }
