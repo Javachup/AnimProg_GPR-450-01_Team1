@@ -209,6 +209,8 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		a3boolean shouldDisplayOp; // Either display operation info or clip ctrls info
 		a3_DemoMode1_Animation_DisplayInfo displayInfo;
 		a3real displayParam;
+		a3i32 clip;
+		a3i32 clipOther;
 
 		// objects
 		union {

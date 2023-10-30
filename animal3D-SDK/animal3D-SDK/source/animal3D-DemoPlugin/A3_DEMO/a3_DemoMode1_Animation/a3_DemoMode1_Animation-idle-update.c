@@ -120,6 +120,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3_ClipController* clipCtrl1 = demoMode->clipCtrl1;
 
+	if (demoMode->clip != demoMode->clipOther)
+	{
+		a3clipControllerSetClip(demoMode->clipCtrl1, demoMode->clips, demoMode->clip);
+		demoMode->clipOther = demoMode->clip;
+	}
+
 	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
 	{
 		// Copy current ctrl poses to each of the control poses
