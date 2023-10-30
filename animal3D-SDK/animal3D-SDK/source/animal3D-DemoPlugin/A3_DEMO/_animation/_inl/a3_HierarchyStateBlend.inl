@@ -458,7 +458,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 }
 
 //-----------------------------------------------------------------------------
-inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPoseGroup* group, a3_ClipController* controller, a3_Hierarchy* hierarchy)
+inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, a3_HierarchyPoseGroup* group, a3_ClipController* controller, a3_Hierarchy* hierarchy)
 {
 	if (!group || !controller)
 	{
@@ -466,9 +466,8 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPoseGroup* group, a3_ClipCon
 	}
 	a3ui32 currentIndex = getCurrentKeyframe(controller);
 	a3ui32 nextIndex = getNextKeyframe(controller);
-	a3_HierarchyPose* temp;
-	return a3hierarchyPoseOpLERP(temp, hierarchy->numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], controller->keyParameter); //if it doesn't work try clipParameter
-
+	a3hierarchyPoseOpLERP(pose_out, hierarchy->numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], controller->keyParameter); //if it doesn't work try clipParameter
+	return pose_out;
 }
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
