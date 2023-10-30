@@ -93,9 +93,46 @@ a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
 extern "C"
 {
 #else	// !__cplusplus
-
+typedef struct a3_BlendNodePool a3_BlendNodePool;
 #endif	// __cplusplus
-	
+
+//-----------------------------------------------------------------------------
+
+typedef a3_Hierarchy    a3_BlendTree;
+typedef a3_SpatialPose    a3_BlendData;
+typedef a3real            a3_BlendParam;
+
+// bilinear
+enum {
+	a3blend_data_max = 4,
+	a3blend_param_max = 3,
+};
+
+typedef struct a3_BlendNode
+{
+	a3_BlendData result;
+	a3_BlendData const* data[a3blend_data_max];    // array of pointers
+	a3_BlendParam const* param[a3blend_param_max];
+} a3_BlendNode;
+
+// can be called to perform a blend operation
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+
+//-----------------------------------------------------------------------------
+
+struct a3_BlendNodePool
+{
+	a3_BlendNode* nodes;
+	a3ui32 count;
+};
+
+// allocate blend node pool
+a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
+
+// release blend node pool
+a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
+
+a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in);
 
 //-----------------------------------------------------------------------------
 
