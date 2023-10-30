@@ -54,7 +54,7 @@ typedef struct a3_BlendNode		a3_BlendNode;
 //-----------------------------------------------------------------------------
 
 typedef a3_Hierarchy    a3_BlendTree;
-typedef a3_SpatialPose    a3_BlendData;
+typedef a3_HierarchyPose    a3_BlendData;
 typedef a3real            a3_BlendParam;
 
 // bilinear

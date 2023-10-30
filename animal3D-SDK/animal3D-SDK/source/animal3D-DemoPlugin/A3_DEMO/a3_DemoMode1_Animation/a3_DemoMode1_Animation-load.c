@@ -202,10 +202,16 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// Blend Tree Stuff
 	a3blendNodePoolCreate(demoMode->nodePool, 4);
 
-
-
-
-
+	a3hierarchyCreate(demoMode->blendTree, 3, 0); //initializing the tree
+	/*
+	a3ui32 treeIndex = 0, treeParentIndex = -1;
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Concat");
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Lerp");
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Scale");
+	*/
+	a3hierarchySetNode(demoMode->blendTree, 0, -1, "Concat");
+	a3hierarchySetNode(demoMode->blendTree, 1, 0, "Lerp");
+	a3hierarchySetNode(demoMode->blendTree, 2, 0, "Scale");
 
 
 
