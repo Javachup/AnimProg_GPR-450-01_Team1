@@ -66,13 +66,13 @@ enum {
 // can be called to perform a blend operation
 typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
 
-typedef struct a3_BlendNode
+struct a3_BlendNode
 {
 	a3_BlendData result;
 	a3_BlendData const* data[a3blend_data_max];    // array of pointers
 	a3_BlendParam const* param[a3blend_param_max];
 	a3_BlendOp op;
-} a3_BlendNode;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -180,6 +180,8 @@ a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
 
 //----------------------------------------------
 a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes);
+
+a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
 
 #ifdef __cplusplus
 }

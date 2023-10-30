@@ -529,6 +529,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 }
 
 //-----------------------------------------------------------------------------
+
 inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes)
 {
 	if (!group || !controller)
@@ -538,8 +539,19 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_Hie
 	a3ui32 currentIndex = getCurrentKeyframe(controller)->data;
 	a3ui32 nextIndex = getNextKeyframe(controller)->data;
 	return a3hierarchyPoseOpLERP(pose_out, numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], (a3real)controller->keyParameter); //if it doesn't work try clipParameter
+}
+
+
+inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+{
+
+
+
 
 }
+
+
+
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #endif	// __ANIMAL3D_HIERARCHYSTATEBLEND_H
