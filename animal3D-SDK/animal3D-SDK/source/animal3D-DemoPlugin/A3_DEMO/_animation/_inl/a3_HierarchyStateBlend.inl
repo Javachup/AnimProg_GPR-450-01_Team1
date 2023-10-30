@@ -27,6 +27,7 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #include "math.h"
+#include <stdlib.h>
 
 //-----------------------------------------------------------------------------
 //a3_BlendData* a3_BlendFuncLerp(a3_BlendData* const data_out, a3_BlendData const* const data0,
@@ -62,12 +63,26 @@
 
 inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count)
 {
-	return -1;
+	if (nodePool_out && count > 0)
+	{
+		// Use calloc to initialize the memory (everything happens to have a default of 0)
+		nodePool_out->nodes = (a3_BlendNode*)calloc(count, sizeof(a3_BlendNode));
+		if (nodePool_out->nodes == NULL)
+			return -1;
+
+		nodePool_out->count = count;
+	}
+	return 0;
 }
 
 inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
 {
-	return -1;
+	if (nodePool_out && nodePool_out->nodes)
+	{
+		free(nodePool_out->nodes);
+		nodePool_out->nodes = NULL;
+	}
+	return 0;
 }
 
 //-----------------------------------------------------------------------------

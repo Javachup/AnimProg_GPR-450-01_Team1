@@ -68,12 +68,11 @@ struct a3_BlendNodePool
 	a3ui32 count;
 };
 
-// allocate clip pool
+// allocate blend node pool
 a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
 
-// release clip pool
+// release blend node pool
 a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
-
 
 //-----------------------------------------------------------------------------
 
