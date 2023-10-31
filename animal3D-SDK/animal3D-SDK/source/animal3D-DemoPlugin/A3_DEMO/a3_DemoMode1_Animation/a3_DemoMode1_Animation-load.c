@@ -197,7 +197,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3clipControllerInit(demoMode->clipCtrl1, "ctrl1", demoMode->clips, 0);
 	a3clipControllerInit(demoMode->clipCtrl2, "ctrl2", demoMode->clips, 1);
 	a3clipControllerInit(demoMode->clipCtrl3, "ctrl3", demoMode->clips, 2);
-	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
+	//a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
 	// Blend Tree Stuff
 	a3blendNodePoolCreate(demoMode->nodePool, 3);
@@ -216,9 +216,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchySetNode(demoMode->blendTree, 0, -1, "Concat");
 	a3hierarchySetNode(demoMode->blendTree, 1, 0, "Lerp");
 	a3hierarchySetNode(demoMode->blendTree, 2, 0, "Scale");
-
-	demoMode->currentOp = 0;
-	demoMode->shouldDisplayOp = a3true;
 }
 
 

@@ -46,14 +46,12 @@ extern "C"
 {
 #else	// !__cplusplus
 typedef struct a3_DemoMode1_Animation						a3_DemoMode1_Animation;
-typedef struct a3_DemoMode1_Animation_DisplayInfo			a3_DemoMode1_Animation_DisplayInfo;
 typedef enum a3_DemoMode1_Animation_RenderProgramName		a3_DemoMode1_Animation_RenderProgramName;
 typedef enum a3_DemoMode1_Animation_DisplayProgramName		a3_DemoMode1_Animation_DisplayProgramName;
 typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_ActiveCameraName;
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
-typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operation;
 #endif	// __cplusplus
 
 
@@ -65,10 +63,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animationMaxCount_sceneObject = 8,
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
-		animationMaxCount_skeleton = 3,
-		animationMaxCount_hs = 6,
-		animationMaxCount_clipCtrl = 4,
-		animationMaxCount_paramters = 8,
+		animationMaxCount_skeleton = 1,
+		animationMaxCount_hs = 5,
+		animationMaxCount_clipCtrl = 3,
 	};
 
 	// scene object rendering program names
@@ -122,30 +119,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animation_scene_fragdepth,		// fragment depth
 	
 		animation_target_scene_max,
-	};
-
-	enum a3_DemoMode1_Animation_Operation
-	{
-		animation_op_invert,
-		animation_op_concat,
-		animation_op_nearest,
-		animation_op_lerp,
-		animation_op_cubic,
-		animation_op_split,
-		animation_op_scale,
-		animation_op_triangular,
-		animation_op_binearest,
-		animation_op_bilinear,
-		animation_op_bicubic,
-
-		animation_op_max = 10 // ignore bicubic
-	};
-
-	struct a3_DemoMode1_Animation_DisplayInfo
-	{
-		a3ui32 numSkelToDraw;
-		a3ui32 numParameters;
-		a3real parameters[animationMaxCount_paramters];
 	};
 
 
@@ -205,12 +178,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
-
-		// for display
-		a3_DemoMode1_Animation_Operation currentOp;
-		a3boolean shouldDisplayOp; // Either display operation info or clip ctrls info
-		a3_DemoMode1_Animation_DisplayInfo displayInfo;
-		a3real displayParam;
 
 		// objects
 		union {

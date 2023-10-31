@@ -96,11 +96,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	if (demoState->updateAnimation)
-	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
-		demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);	}
-
 	// Update clipCtrl
 	if (demoState->updateAnimation)
 	{
@@ -116,12 +111,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
 	a3_HierarchyState* ctrl2HS = demoMode->hs_control_2;
 	a3_HierarchyState* ctrl3HS = demoMode->hs_control_3;
-	a3_HierarchyState* ctrl4HS = demoMode->hs_control_4;
 
 	a3_ClipController* clipCtrl1 = demoMode->clipCtrl1;
 
+	
+
 	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
 	{
+		//getToBlendPose((ctrl1HS + i)->objectSpace, 
+		//	demoMode->hierarchyPoseGroup_skel, 
+		//	clipCtrl1 + i, 
+		//	demoMode->hierarchy_skel->numNodes);
+
 		// Copy current ctrl poses to each of the control poses
 		a3hierarchyPoseLerp((ctrl1HS + i)->objectSpace,
 			demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(clipCtrl1 + i)->data,
@@ -130,179 +131,27 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchy_skel->numNodes);
 	}
 
-	// DO OPERATIONS HERE! (And update display info)
-	// outputHS = OPERATION(ctrl1HS, ctrl2HS);
-	a3_DemoMode1_Animation_DisplayInfo* displayInfo = &demoMode->displayInfo;
-	a3ui32 numNodes = outputHS->hierarchy->numNodes;
-	a3real u0 = 0, u1 = 0, u2 = 0, u3 = 0, u4 = 0;
-	switch (demoMode->currentOp)
-	{
-	case animation_op_invert:
-		a3hierarchyPoseOpInvert(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace
-		);
+	// BLEND TREE EXECUTION HAPPENS HERE!
 
-		displayInfo->numSkelToDraw = 1;
-		displayInfo->numParameters = 0;
-		break;
+	// Copy blend tree result to output HS
+	// TEMP Copy one of the ctrlPoses to output for now
+	a3hierarchyPoseCopy(outputHS->localSpace,
+		ctrl1HS->objectSpace,
+		demoMode->hierarchy_skel->numNodes);
 
-	case animation_op_concat:
-		a3hierarchyPoseOpConcat(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace
-		);
+	a3hierarchyPoseConcat(outputHS->localSpace,
+		baseHS->localSpace,
+		outputHS->objectSpace,
+		demoMode->hierarchy_skel->numNodes);
 
-		displayInfo->numSkelToDraw = 2;
-		displayInfo->numParameters = 0;
-		break;
+	a3hierarchyPoseConvert(outputHS->localSpace,
+		demoMode->hierarchy_skel->numNodes,
+		demoMode->hierarchyPoseGroup_skel->channel,
+		demoMode->hierarchyPoseGroup_skel->order);
 
-	case animation_op_nearest:
-		u0 = demoMode->displayParam;
-		a3hierarchyPoseOpNearest(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			u0
-		);
-
-		displayInfo->numSkelToDraw = 2;
-		displayInfo->numParameters = 1;
-		displayInfo->parameters[0] = u0;
-		break;
-
-	case animation_op_lerp:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter;
-		a3hierarchyPoseOpLERP(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			u0
-		);
-
-		displayInfo->numSkelToDraw = 2;
-		displayInfo->numParameters = 1;
-		displayInfo->parameters[0] = u0;
-		break;
-
-	case animation_op_cubic:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter;
-		a3hierarchyPoseOpCubic(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			ctrl3HS->objectSpace,
-			ctrl4HS->objectSpace,
-			u0
-		);
-
-		displayInfo->numSkelToDraw = 4;
-		displayInfo->numParameters = 1;
-		displayInfo->parameters[0] = u0;
-		break;
-
-	case animation_op_split:
-		a3hierarchyPoseOpSplit(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace
-		);
-
-		displayInfo->numSkelToDraw = 2;
-		displayInfo->numParameters = 0;
-		break;
-
-	case animation_op_scale:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter * a3real_three - a3real_half; // from [0, 1) to [0.5, 2.5) 
-		a3hierarchyPoseOpScale(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			u0
-		);
-
-		displayInfo->numSkelToDraw = 1;
-		displayInfo->numParameters = 1;
-		displayInfo->parameters[0] = u0;
-		break;
-
-	case animation_op_triangular:
-		u0 = demoMode->displayParam;
-		u1 = 1 - demoMode->displayParam;
-		a3hierarchyPoseOpTriangular(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			ctrl3HS->objectSpace,
-			u0, u1
-		);
-
-		displayInfo->numSkelToDraw = 3;
-		displayInfo->numParameters = 2;
-		displayInfo->parameters[0] = u0;
-		displayInfo->parameters[1] = u1;
-		break;
-
-	case animation_op_binearest:
-		u0 = demoMode->displayParam;
-		u1 = 1 - demoMode->displayParam;
-		u2 = demoMode->displayParam;
-		a3hierarchyPoseOpBiNearest(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			ctrl3HS->objectSpace,
-			ctrl4HS->objectSpace,
-			u0, u1, u2
-		);
-
-		displayInfo->numSkelToDraw = 4;
-		displayInfo->numParameters = 3;
-		displayInfo->parameters[0] = u0;
-		displayInfo->parameters[1] = u1;
-		displayInfo->parameters[2] = u2;
-		break;
-
-	case animation_op_bilinear:
-		u0 = demoMode->displayParam;
-		u1 = 1 - demoMode->displayParam;
-		u2 = demoMode->displayParam;
-		a3hierarchyPoseOpBiLinear(outputHS->objectSpace, numNodes,
-			ctrl1HS->objectSpace,
-			ctrl2HS->objectSpace,
-			ctrl3HS->objectSpace,
-			ctrl4HS->objectSpace,
-			u0, u1, u2
-		);
-
-		displayInfo->numSkelToDraw = 4;
-		displayInfo->numParameters = 3;
-		displayInfo->parameters[0] = u0;
-		displayInfo->parameters[1] = u1;
-		displayInfo->parameters[2] = u2;
-		break;
-
-	case animation_op_bicubic:
-		displayInfo->numSkelToDraw = 16; // I am not doing 16 skeletons
-		displayInfo->numParameters = 5;
-		displayInfo->parameters[0] = demoMode->displayParam;
-		displayInfo->parameters[1] = 1 - demoMode->displayParam;
-		displayInfo->parameters[2] = demoMode->displayParam;
-		displayInfo->parameters[3] = 1 - demoMode->displayParam;
-		displayInfo->parameters[4] = demoMode->displayParam;
-		break;
-	}
-
-	// Add these poses to the base pose for display
-	for (a3index i = 0; i < animationMaxCount_skeleton; i++)
-	{
-		a3_HierarchyState* hs = demoMode->hierarchyState_skel + i + 1;
-
-		a3hierarchyPoseConcat(hs->localSpace,	// goal to calculate
-			baseHS->localSpace, // holds base pose
-			hs->objectSpace, // temp storage
-			demoMode->hierarchy_skel->numNodes);
-
-		a3hierarchyPoseConvert(hs->localSpace,
-			demoMode->hierarchy_skel->numNodes,
-			demoMode->hierarchyPoseGroup_skel->channel,
-			demoMode->hierarchyPoseGroup_skel->order);
-
-		a3kinematicsSolveForward(hs);
-		a3hierarchyStateUpdateObjectInverse(hs);
-		a3hierarchyStateUpdateObjectBindToCurrent(hs, baseHS);
-	}
+		a3kinematicsSolveForward(outputHS);
+		a3hierarchyStateUpdateObjectInverse(outputHS);
+		a3hierarchyStateUpdateObjectBindToCurrent(outputHS, baseHS);
 
 	// prepare and upload graphics data
 	{
@@ -319,7 +168,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3i32 p;
 
 		const a3_HierarchyState* states[animationMaxCount_skeleton] = 
-		{ outputHS, ctrl1HS, ctrl2HS, /*ctrl3HS, ctrl4HS*/ };
+		{ outputHS, /*ctrl1HS, ctrl2HS, ctrl3HS, ctrl4HS */ };
 		const a3_HierarchyState* currentHS;
 		
 		// for each skeleton
