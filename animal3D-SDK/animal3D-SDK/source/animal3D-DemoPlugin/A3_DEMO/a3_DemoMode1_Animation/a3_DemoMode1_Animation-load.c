@@ -222,6 +222,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	populateTree(demoMode->blendTree, demoMode->nodePool);
 	// Set leaf pointers
+	demoMode->nodePool->nodes[0].data[0] = /*???*/demoMode->hs_control_short1->objectSpace;
+	demoMode->nodePool->nodes[0].data[1] = /*???*/demoMode->hs_control_short2->objectSpace;
+
 	demoMode->nodePool->nodes[1].data[0] = demoMode->hs_control_short1->objectSpace;
 	demoMode->nodePool->nodes[1].data[1] = demoMode->hs_control_short2->objectSpace;
 

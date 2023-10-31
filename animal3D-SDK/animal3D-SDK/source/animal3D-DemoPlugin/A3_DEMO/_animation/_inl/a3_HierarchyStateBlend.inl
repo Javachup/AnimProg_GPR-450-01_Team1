@@ -101,7 +101,7 @@ inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 
 inline a3i32 a3blendNodeCreate(a3_BlendNode* node_inout, const a3_BlendOp op, const a3ui32 numNodes)
 {
-	node_inout->result.pose = (a3_SpatialPose*)malloc(numNodes * sizeof(a3_SpatialPose));
+	node_inout->result.pose = (a3_SpatialPose*)calloc(numNodes, sizeof(a3_SpatialPose));
 	node_inout->op = op;
 	return 0;
 }
