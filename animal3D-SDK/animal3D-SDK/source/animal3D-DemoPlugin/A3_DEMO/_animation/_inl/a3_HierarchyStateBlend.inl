@@ -548,12 +548,31 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_Hie
 }
 
 
-inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool, a3ui32* numChildren)
 {
-	
+	//each BlendNode in the Pool is tied to a HierarchyNode in the Tree - defines its index in their respective pools, and which index the parent is in
+	//so for blendnode at index 2, its parent is the parent of the HierarchyNode at index 2
+	//currentHandSize is tied to whether the current node is the left or right hand of the parent
+	//numChildren will keep track of how many children there are, and which side of the node is currently being applied
+	// will start at the max, and so apply to the right hand side first (or the right-most side if there are more than 2)
+	//will be reduced each time, so will move 1 to the left
+	//if the currentHandSide goes below 0 then that means too many nodes were assigning themselves to the same parent
 
-
-
+	//for setting up: The higher the node index, the farther from the root it is. For a node with 2 children (ex. a lerp or concat node)
+	//the child node with the smaller index will be the left hand side, higher index will be right. Tree is built right to left, top to bottom
+	a3ui32 currentIndex, currentParentIndex, currentHandSide;
+	for (currentIndex = 2; currentIndex > 0; currentIndex--)
+	{
+		currentParentIndex = tree_in->nodes[currentIndex].parentIndex;
+		currentHandSide = numChildren[currentParentIndex] - 1;
+		if (currentHandSide < 0)
+		{
+			//too many nodes have the same parent node
+			return -1;
+		}
+		pool[currentParentIndex].nodes->data[currentHandSide] = &pool->nodes[currentIndex].result;
+		numChildren[currentParentIndex]--;
+	}	
 }
 
 
