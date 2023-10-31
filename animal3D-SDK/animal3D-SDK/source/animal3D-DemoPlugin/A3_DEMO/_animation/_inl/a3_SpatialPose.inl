@@ -134,7 +134,7 @@ inline a3_SpatialPose* a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a
 {
 	if (spatialPose)
 	{
-
+		
 	}
 	return spatialPose;
 }

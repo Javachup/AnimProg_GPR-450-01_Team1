@@ -201,13 +201,80 @@ inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_Spati
 
 
 /*--------------------------Project 3: Spatial Poses Funcs--------------------------------*/
-inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u)
+inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, 
+	a3_SpatialPose const* pose1, a3real const u)
 {
+	if (u == 0.0f)
+	{
+		pose_out->angles.x = pose0->angles.x;
+		pose_out->angles.y = pose0->angles.y;
+		pose_out->angles.z = pose0->angles.z;
+
+		pose_out->translation.x = pose0->translation.x;
+		pose_out->translation.y = pose0->translation.y;
+		pose_out->translation.z = pose0->translation.z;
+
+		pose_out->scale.x = pose0->scale.x;
+		pose_out->scale.y = pose0->scale.y;
+		pose_out->scale.z = pose0->scale.z;
+	}
+	else if ( u == 1.0f)
+	{
+		pose_out->angles.x = pose1->angles.x;
+		pose_out->angles.y = pose1->angles.y;
+		pose_out->angles.z = pose1->angles.z;
+
+		pose_out->translation.x = pose1->translation.x;
+		pose_out->translation.y = pose1->translation.y;
+		pose_out->translation.z = pose1->translation.z;
+
+		pose_out->scale.x = pose1->scale.x;
+		pose_out->scale.y = pose1->scale.y;
+		pose_out->scale.z = pose1->scale.z;
+	}
+	else
+	{
+		// temp value for safety reasons
+		a3real temp = 0.0f;
+
+		//Clamp Values
+		temp = a3clamp(pose0->angles.x, pose1->angles.x, u);
+		pose_out->angles.x = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->angles.y, pose1->angles.y, u);
+		pose_out->angles.y = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->angles.z, pose1->angles.z, u);
+		pose_out->angles.z = temp * temp * (3.0f - 2.0f * temp);
+
+		temp = a3clamp(pose0->translation.x, pose1->translation.x, u);
+		pose_out->translation.x = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->translation.y, pose1->translation.y, u);
+		pose_out->translation.y = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->translation.z, pose1->translation.z, u);
+		pose_out->translation.z = temp * temp * (3.0f - 2.0f * temp);
+
+		temp = a3clamp(pose0->scale.x, pose1->scale.x, u);
+		pose_out->scale.x = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->scale.y, pose1->scale.y, u);
+		pose_out->scale.y = temp * temp * (3.0f - 2.0f * temp);
+		temp = a3clamp(pose0->scale.z, pose1->scale.z, u);
+		pose_out->scale.z = temp * temp * (3.0f - 2.0f * temp);
+	}
 
 	return pose_out;
 }
-inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out)
+inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in, a3real const u)
 {
+	pose_out->angles.x = pose_in->angles.x / u;
+	pose_out->angles.y = pose_in->angles.y / u;
+	pose_out->angles.z = pose_in->angles.z / u;
+
+	pose_out->scale.x = powf(pose_in->scale.x, (1/u));
+	pose_out->scale.y = powf(pose_in->scale.y, (1/u));
+	pose_out->scale.z = powf(pose_in->scale.z, (1/u));
+
+	pose_out->translation.x = pose_in->translation.x / u;
+	pose_out->translation.y = pose_in->translation.y / u;
+	pose_out->translation.z = pose_in->translation.z / u;
 
 	return pose_out;
 }
@@ -230,10 +297,29 @@ inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out)
 //	// done
 //	return result;
 //}
-
-
 //-----------------------------------------------------------------------------
 
+/*--------------------------Project 3: Hierarchy Pose Funcs--------------------------------*/
+inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3ui32 numNodes, 
+	a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u)
+{
+	for (a3ui32 i = 0; i < numNodes; ++i)
+	{
+		a3spatialPoseOpLERP(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
+	}
+	return pose_out;
+}
+inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* pose_in, a3real const u)
+{
+	for (a3ui32 i = 0; i < numNodes; ++i)
+	{
+		a3spatialPoseOPDescale(pose_out->pose + i, pose_in->pose + i, u);
+	}
+	return pose_out;
+}
+
+//-----------------------------------------------------------------------------
+// 
 // pointer-based reset/identity operation for hierarchical pose
 inline a3_HierarchyPose* a3hierarchyPoseOpIdentity(a3_HierarchyPose* pose_out, a3ui32 numNodes)
 {
@@ -383,21 +469,6 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 	return pose_out;
 }
 
-
-/*--------------------------Project 3: Hierarchy Pose Funcs--------------------------------*/
-inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out)
-{
-	return pose_out;
-}
-inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out)
-{
-	return pose_out;
-}
-
-
-
-//-----------------------------------------------------------------------------
-
 /*__________DERIVATIVE BLEND OPERATIONS - POINTER BASED__________*/
 
 // calculates the difference between the two control poses
@@ -504,17 +575,21 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 /*_______________FUNCTIONS TO NODE____________________*/
 //-----------------------------------------------------------------------------
 //Wrap up convert in a node
-a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
-	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
-{
-
-}
-
-a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
-	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes)
-{
-
-}
+//a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
+//	a3_HierarchyState const* hierarchyState, a3ui32 const nodeCount)
+//{ 
+//	object_out = a3kinematicsSolveForwardPartial(hierarchyState, 0, nodeCount);
+//
+//	return object_out;
+//}
+//
+//a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_out,
+//	a3_HierarchyState const* hierarchyState, a3ui32 const nodeCount)
+//{
+//	local_out = a3kinematicsSolveForwardPartial(hierarchyState, 0, nodeCount);
+//
+//	return local_out;
+//}
 //-----------------------------------------------------------------------------
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
