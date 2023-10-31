@@ -114,10 +114,8 @@ struct a3_SpatialPose
 
 // set rotation values for a single node pose
 a3_SpatialPose* a3spatialPoseSetRotation(a3_SpatialPose* spatialPose, const a3f32 rx_degrees, const a3f32 ry_degrees, const a3f32 rz_degrees);
-
 // scale
 a3_SpatialPose* a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a3f32 sy, const a3f32 sz);
-
 // translation
 a3_SpatialPose* a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
 
