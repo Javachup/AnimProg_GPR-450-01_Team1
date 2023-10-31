@@ -217,6 +217,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchySetNode(demoMode->blendTree, 1, 0, "Lerp");
 	a3hierarchySetNode(demoMode->blendTree, 2, 0, "Scale");
 
+	populateTree(demoMode->blendTree, demoMode->nodePool);
+
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;
 }

@@ -552,7 +552,7 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_Hie
 }
 
 
-inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+inline a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
 {
 	//each BlendNode in the Pool is tied to a HierarchyNode in the Tree - defines its index in their respective pools, and which index the parent is in
 	//so for blendnode at index 2, its parent is the parent of the HierarchyNode at index 2
@@ -580,6 +580,7 @@ inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
 	}	
 
 	free(numChildren);
+	return 0;
 }
 
 

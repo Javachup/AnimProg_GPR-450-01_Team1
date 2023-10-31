@@ -183,7 +183,7 @@ a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
 //----------------------------------------------
 a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes);
 
-a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
+a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
 
 #ifdef __cplusplus
 }
