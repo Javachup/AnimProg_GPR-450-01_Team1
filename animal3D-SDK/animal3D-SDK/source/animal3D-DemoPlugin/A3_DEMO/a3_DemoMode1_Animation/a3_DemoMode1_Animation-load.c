@@ -205,9 +205,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	a3blendNodePoolCreate(demoMode->nodePool, 3);
 
-	a3blendNodeSetOp(demoMode->nodePool->nodes + 0, a3_BlendOpConcat);
-	a3blendNodeSetOp(demoMode->nodePool->nodes + 1, a3_BlendOpLerp);
-	a3blendNodeSetOp(demoMode->nodePool->nodes + 2, a3_BlendOpScale);
+	a3blendNodeCreate(demoMode->nodePool->nodes + 0, a3_BlendOpConcat, demoMode->hierarchy_skel->numNodes);
+	a3blendNodeCreate(demoMode->nodePool->nodes + 1, a3_BlendOpLerp, demoMode->hierarchy_skel->numNodes);
+	a3blendNodeCreate(demoMode->nodePool->nodes + 2, a3_BlendOpScale, demoMode->hierarchy_skel->numNodes);
 
 	a3hierarchyCreate(demoMode->blendTree, 3, 0); //initializing the tree
 	/*

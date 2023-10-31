@@ -45,22 +45,6 @@
 //	return data_out;
 //}
 
-inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp)
-{
-	if (!node_lerp)
-	{
-		return false;
-	}
-
-	a3_BlendData* const data_out = &(node_lerp->result);
-	a3_BlendData const* const data0 = node_lerp->data[0];
-	a3_BlendData const* const data1 = node_lerp->data[1];
-	a3_BlendParam const param = *(node_lerp->param[0]);
-
-	a3_BlendData const* const result = a3spatialPoseOpLERP(data_out, data0, data1, param);
-	return (result == data_out);
-}
-
 inline a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat)
 {
 	if (!node_concat)
