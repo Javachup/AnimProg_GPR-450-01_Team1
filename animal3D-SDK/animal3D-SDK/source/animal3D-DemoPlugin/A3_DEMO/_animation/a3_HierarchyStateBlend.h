@@ -79,7 +79,9 @@ struct a3_BlendNode
 
 a3i32 a3blendNodeCreate(a3_BlendNode* node_inout, const a3_BlendOp op, const a3ui32 numNodes);
 
-//-----------------------------------------------------------------------------
+inline a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
+inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
+inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
 
 struct a3_BlendNodePool
 {
@@ -90,6 +92,7 @@ struct a3_BlendNodePool
 // allocate blend node pool
 a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
 
+a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in);
 // release blend node pool
 a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
 
@@ -143,7 +146,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpLERP(a3_HierarchyPose* pose_out, a3ui3
 inline a3_HierarchyPose* a3hierarchyPoseOpCubic(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose_b, a3_HierarchyPose const* pose0,
 	a3_HierarchyPose const* pose1, a3_HierarchyPose const* pose_a, a3real const t);
 inline a3_HierarchyPose* a3hierarchyPoseOpSplit(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* poseL, a3_HierarchyPose const* poseR);
-inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* pose_in, a3real const u);
+inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose_in, a3real const u);
 inline a3_HierarchyPose* a3hierarchyPoseOpTriangular(a3_HierarchyPose* pose_out, a3ui32 numNodes,
 	a3_HierarchyPose* pose0, a3_HierarchyPose* pose1, a3_HierarchyPose* pose2, a3real const u1, a3real const u2);
 inline a3_HierarchyPose* a3hierarchyPoseOpBiNearest(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose0_0,
@@ -158,9 +161,9 @@ inline a3_HierarchyPose* a3hierarchyPoseOpBiCubic(a3_HierarchyPose* pose_out, a3
 	a3real const uN1, a3real const u0, a3real const u1, a3real const u2, a3real const u);
 
 //Project3 Add On
-inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out);
-inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out);
-inline a3_HierarchyPose* a3hierarchyPoseOpInverseKinematics(a3_HierarchyPose* pose_out);
+inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out, a3ui32 numNodes,
+	a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u);
+inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* pose_in, a3real const u);
 
 /*_______________SPATIAL POSE FUNCTIONS - POINTER BASED____________________*/
 //-----------------------------------------------------------------------------
@@ -171,10 +174,16 @@ a3_SpatialPose* a3spatialPoseOpIdentity(a3_SpatialPose* pose_out);
 inline a3_SpatialPose* a3spatialPoseOpLERP(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
 inline a3_SpatialPose* a3spatialPoseOPConstruct(a3_SpatialPose* pose_out, a3vec4 angles, a3vec4 scale, a3vec4 translation);
 inline a3_SpatialPose* a3spatialPoseOPInvert(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_in);
-inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
-inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3real const u);
-inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const pose0, a3_SpatialPose const pose1, a3real const u);
-inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out);
+inline a3_SpatialPose* a3spatialPoseOPCubic(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, 
+	a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
+
+inline a3_SpatialPose* a3spatialPoseOpNearest(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0, 
+	a3_SpatialPose const* pose1, a3real const u);
+
+/*--------Project 3 Funcs--------*/
+inline a3_SpatialPose* a3spatialPoseOPSmoothStep(a3_SpatialPose* pose_out, a3_SpatialPose const* pose0,
+	a3_SpatialPose const* pose1, a3real const u);
+inline a3_SpatialPose* a3spatialPoseOPDescale(a3_SpatialPose* pose_out, a3_SpatialPose* pose_in, a3real const u);
 
 //Helper Functions
 inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_SpatialPose const* pose_b, a3_SpatialPose const* pose0, a3_SpatialPose const* pose1, a3_SpatialPose const* pose_a, a3real const t);
@@ -211,11 +220,11 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 /*_______________FUNCTIONS TO NODE____________________*/
 //-----------------------------------------------------------------------------
 //Wrap up convert in a node
-a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
-	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
-
-a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
-	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+//a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
+//	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
+//
+//a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
+//	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
 //----------------------------------------------
 a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes);
