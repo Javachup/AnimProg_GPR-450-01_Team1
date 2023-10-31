@@ -113,12 +113,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal
 	a3_HierarchyState* baseHS = demoMode->hs_base;
 	a3_HierarchyState* outputHS = demoMode->hs_output;
-	a3_HierarchyState* ctrl1HS = demoMode->hs_control_1;
-	a3_HierarchyState* ctrl2HS = demoMode->hs_control_2;
-	a3_HierarchyState* ctrl3HS = demoMode->hs_control_3;
+	a3_HierarchyState* ctrl1HS = demoMode->hs_control_short1;
+	a3_HierarchyState* ctrl2HS = demoMode->hs_control_short2;
+	a3_HierarchyState* ctrl3HS = demoMode->hs_control_hug;
 	a3_HierarchyState* ctrl4HS = demoMode->hs_control_4;
 
-	a3_ClipController* clipCtrl1 = demoMode->clipCtrl1;
+	a3_ClipController* clipCtrl1 = demoMode->short1;
 
 	for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
 	{
@@ -170,7 +170,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_lerp:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter;
+		u0 = (a3real)demoMode->short1->clipParameter;
 		a3hierarchyPoseOpLERP(outputHS->objectSpace, numNodes,
 			ctrl1HS->objectSpace,
 			ctrl2HS->objectSpace,
@@ -183,7 +183,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_cubic:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter;
+		u0 = (a3real)demoMode->short1->clipParameter;
 		a3hierarchyPoseOpCubic(outputHS->objectSpace, numNodes,
 			ctrl1HS->objectSpace,
 			ctrl2HS->objectSpace,
@@ -208,7 +208,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		break;
 
 	case animation_op_scale:
-		u0 = (a3real)demoMode->clipCtrl1->clipParameter * a3real_three - a3real_half; // from [0, 1) to [0.5, 2.5) 
+		u0 = (a3real)demoMode->short1->clipParameter * a3real_three - a3real_half; // from [0, 1) to [0.5, 2.5) 
 		a3hierarchyPoseOpScale(outputHS->objectSpace, numNodes,
 			ctrl1HS->objectSpace,
 			u0
@@ -283,6 +283,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		displayInfo->parameters[4] = demoMode->displayParam;
 		break;
 	}
+
+	a3blendTreeExecute(demoMode->nodePool, demoMode->blendTree);
 
 	// Add these poses to the base pose for display
 	for (a3index i = 0; i < animationMaxCount_skeleton; i++)

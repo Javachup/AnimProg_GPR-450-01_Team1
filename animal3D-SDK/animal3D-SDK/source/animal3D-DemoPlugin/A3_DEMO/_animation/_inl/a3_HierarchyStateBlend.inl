@@ -74,12 +74,12 @@ inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 	}
 
 	a3_BlendData* const data_out = &(node_scale->result);
-	a3_BlendData* const data_in = &(node_scale->result);
-	a3_BlendData const* const data0 = node_scale->data[0];
+	//a3_BlendData* const data_in = &(node_scale->result);
+	a3_BlendData const* data0 = node_scale->data[0];
 	a3_BlendParam const param = *(node_scale->param[0]);
 	a3_BlendNumNodes const numNodes = node_scale->numNodes;
 
-	a3_BlendData const* const result = a3hierarchyPoseOpScale(data_out, numNodes, data_in,param);
+	a3_BlendData const* const result = a3hierarchyPoseOpScale(data_out, numNodes, data0,param);
 
 	return (result == data_out);
 }
@@ -122,7 +122,8 @@ inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_
 		// Call the operations and pass each node
 
 		// start at the last node and begin execution
-		for (a3index i = blendTree_in->numNodes - 1; i < 0; i--)
+		a3i32 i;
+		for (i = blendTree_in->numNodes - 1; i >= 0; i--)
 		{
 			a3_BlendNode* blendNode = blendNodePool_inout->nodes + i;
 			blendNode->op(blendNode);
@@ -460,7 +461,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpSplit(a3_HierarchyPose* pose_out, a3ui
 	return pose_out;
 }
 
-inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* pose_in, a3real const u)
+inline a3_HierarchyPose* a3hierarchyPoseOpScale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose_in, a3real const u)
 {
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{

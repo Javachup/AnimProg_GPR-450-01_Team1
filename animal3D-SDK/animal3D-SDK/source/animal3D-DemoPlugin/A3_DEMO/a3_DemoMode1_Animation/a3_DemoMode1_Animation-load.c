@@ -194,12 +194,15 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipCalculateDuration(demoMode->clips->clip + i);
 
 	// Set up clip controllers
-	a3clipControllerInit(demoMode->clipCtrl1, "ctrl1", demoMode->clips, 0);
-	a3clipControllerInit(demoMode->clipCtrl2, "ctrl2", demoMode->clips, 1);
-	a3clipControllerInit(demoMode->clipCtrl3, "ctrl3", demoMode->clips, 2);
+	a3clipControllerInit(demoMode->short1, "short 1", demoMode->clips, 0);
+	a3clipControllerInit(demoMode->short2, "short 2", demoMode->clips, 1);
+	a3clipControllerInit(demoMode->hug, "hug", demoMode->clips, 3);
 	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
 	// Blend Tree Stuff
+	demoMode->hugScaleAmount = 0.5f;
+	demoMode->shortsLerpAmount = 0.5f;
+
 	a3blendNodePoolCreate(demoMode->nodePool, 3);
 
 	a3blendNodeSetOp(demoMode->nodePool->nodes + 0, a3_BlendOpConcat);
@@ -218,6 +221,15 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchySetNode(demoMode->blendTree, 2, 0, "Scale");
 
 	populateTree(demoMode->blendTree, demoMode->nodePool);
+	// Set leaf pointers
+	demoMode->nodePool->nodes[1].data[0] = demoMode->hs_control_short1->objectSpace;
+	demoMode->nodePool->nodes[1].data[1] = demoMode->hs_control_short2->objectSpace;
+
+	demoMode->nodePool->nodes[2].data[0] = demoMode->hs_control_hug->objectSpace;
+
+	// Set param pointers
+	demoMode->nodePool->nodes[1].param[0] = &demoMode->shortsLerpAmount;
+	demoMode->nodePool->nodes[2].param[0] = &demoMode->hugScaleAmount;
 
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;

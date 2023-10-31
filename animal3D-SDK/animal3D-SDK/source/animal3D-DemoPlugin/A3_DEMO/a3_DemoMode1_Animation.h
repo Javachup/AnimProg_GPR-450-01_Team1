@@ -175,9 +175,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 				a3_HierarchyState
 					hs_base[1],
 					hs_output[1],
-					hs_control_1[1],
-					hs_control_2[1],
-					hs_control_3[1],
+					hs_control_short1[1],
+					hs_control_short2[1],
+					hs_control_hug[1],
 					hs_control_4[1];
 			};
 		};
@@ -191,9 +191,9 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 			struct
 			{
 				a3_ClipController
-					clipCtrl1[1],
-					clipCtrl2[1],
-					clipCtrl3[1],
+					short1[1],
+					short2[1],
+					hug[1],
 					clipCtrl4[1];
 			};
 		};
@@ -202,6 +202,8 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		a3_BlendNodePool nodePool[1];
 		a3_BlendTree blendTree[1];
 
+		a3real hugScaleAmount;
+		a3real shortsLerpAmount;
 
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
