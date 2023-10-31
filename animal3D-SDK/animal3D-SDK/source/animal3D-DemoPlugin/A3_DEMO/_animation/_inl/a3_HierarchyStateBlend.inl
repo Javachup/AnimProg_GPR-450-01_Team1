@@ -306,7 +306,7 @@ inline a3_HierarchyPose* a3hierarchyPoseOpSmoothStep(a3_HierarchyPose* pose_out,
 	for (a3ui32 i = 0; i < numNodes; ++i)
 	{
 		a3spatialPoseOpLERP(pose_out->pose + i, pose0->pose + i, pose1->pose + i, u);
-	}
+	} 
 	return pose_out;
 }
 inline a3_HierarchyPose* a3hierarchyPoseOpDescale(a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose* pose_in, a3real const u)
