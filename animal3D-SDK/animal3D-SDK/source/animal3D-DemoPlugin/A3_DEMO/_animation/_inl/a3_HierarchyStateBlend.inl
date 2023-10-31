@@ -93,15 +93,19 @@ inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
 
 inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in)
 {
-	/*
-	Starting at the leaves and working towards the root,
-	Call the operations and pass each node
-	it would look something like:
+	if (blendNodePool_inout && blendTree_in)
+	{
+		// Starting at the leaves and working towards the root,
+		// Call the operations and pass each node
 
-	a3_BlendNode* blendNode = blendNodePool_inout->nodes + i;
-	blendNode->op(blendNode);
-	*/
-
+		// start at the last node and begin execution
+		for (a3index i = blendTree_in->numNodes - 1; i < 0; i--)
+		{
+			a3_BlendNode* blendNode = blendNodePool_inout->nodes + i;
+			blendNode->op(blendNode);
+		}
+		return 0;
+	}
 	return -1;
 }
 
