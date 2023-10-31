@@ -286,6 +286,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	a3blendTreeExecute(demoMode->nodePool, demoMode->blendTree);
 
+	// Copy blendTree result to output hs
+	a3hierarchyPoseCopy(outputHS->localSpace,
+		&demoMode->nodePool->nodes[0].result,
+		demoMode->hierarchy_skel->numNodes);
+
 	// Add these poses to the base pose for display
 	for (a3index i = 0; i < animationMaxCount_skeleton; i++)
 	{
