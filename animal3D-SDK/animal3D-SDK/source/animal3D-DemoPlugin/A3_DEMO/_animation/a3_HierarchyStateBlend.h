@@ -75,9 +75,9 @@ struct a3_BlendNode
 	a3_BlendNumNodes numNodes;
     a3_BlendOp op;
 	//a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u
-} a3_BlendNode;
+};
 
-a3i32 a3blendNodeSetOp(a3_BlendNode* node_inout, const a3_BlendOp op);
+a3i32 a3blendNodeCreate(a3_BlendNode* node_inout, const a3_BlendOp op, const a3ui32 numNodes);
 
 //-----------------------------------------------------------------------------
 
