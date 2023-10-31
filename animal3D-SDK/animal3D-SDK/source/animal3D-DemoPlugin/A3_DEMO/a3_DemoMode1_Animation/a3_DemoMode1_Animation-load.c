@@ -199,6 +199,26 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3clipControllerInit(demoMode->clipCtrl3, "ctrl3", demoMode->clips, 2);
 	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
+	// Blend Tree Stuff
+	a3blendNodePoolCreate(demoMode->nodePool, 3);
+
+	//a3blendNodeSetOp(demoMode->nodePool + 0, a3_BlendOpConcat);
+	//a3blendNodeSetOp(demoMode->nodePool + 1, a3_BlendOpLerp);
+	//a3blendNodeSetOp(demoMode->nodePool + 2, a3_BlendOpScale);
+
+	a3hierarchyCreate(demoMode->blendTree, 3, 0); //initializing the tree
+	/*
+	a3ui32 treeIndex = 0, treeParentIndex = -1;
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Concat");
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Lerp");
+	treeParentIndex = a3hierarchySetNode(demoMode->blendTree, treeIndex++, treeParentIndex, "Scale");
+	*/
+	a3hierarchySetNode(demoMode->blendTree, 0, -1, "Concat");
+	a3hierarchySetNode(demoMode->blendTree, 1, 0, "Lerp");
+	a3hierarchySetNode(demoMode->blendTree, 2, 0, "Scale");
+
+	populateTree(demoMode->blendTree, demoMode->nodePool);
+
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;
 }

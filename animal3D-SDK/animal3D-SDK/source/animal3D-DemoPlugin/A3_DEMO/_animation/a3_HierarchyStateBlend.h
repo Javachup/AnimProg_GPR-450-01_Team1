@@ -22,11 +22,24 @@
 	Hierarchy blend operations.
 */
 
+//DECOUPLE AS MUCH AS POSSIBLE
+//MAKE IT ROBUST AND OPTIMAL
+//components:
+//	->the hierarchy
+//	->the blend node (new) - pointers to input data, result data, operation*
+//	->function for each operation
+//stages:
+//	->describe (in load) - could be artist-driven - make the circles (nodes)
+//	->build (in load) - link pointers to raw data - make the arrows (links)
+//	->execute (in update) - traverse the tree and do ops
+//	->clean up (in unload)
+
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_H
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_H
 
 
 #include "a3_HierarchyState.h"
+#include "a3_KeyframeAnimationController.h"
 #include "a3_Kinematics.h"
 
 
@@ -34,7 +47,8 @@
 extern "C"
 {
 #else	// !__cplusplus
-
+typedef struct a3_BlendNodePool	a3_BlendNodePool;
+typedef struct a3_BlendNode		a3_BlendNode;
 #endif	// __cplusplus
 
 //-----------------------------------------------------------------------------
@@ -50,18 +64,36 @@ enum {
 	a3blend_param_max = 3,
 };
 
-typedef struct a3_BlendNode
+// can be called to perform a blend operation
+typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+
+struct a3_BlendNode
 {
 	a3_BlendData result; //p_out
 	a3_BlendData const* data[a3blend_data_max];    // array of pose pointers
 	a3_BlendParam const* param[a3blend_param_max];
 	a3_BlendNumNodes numNodes;
-
+    a3_BlendOp op;
 	//a3_HierarchyPose* pose_out, a3ui32 numNodes, a3_HierarchyPose const* pose0, a3_HierarchyPose const* pose1, a3real const u
 } a3_BlendNode;
 
-// can be called to perform a blend operation
-typedef a3boolean(*a3_BlendOp)(a3_BlendNode* node);
+a3i32 a3blendNodeSetOp(a3_BlendNode* node_inout, const a3_BlendOp op);
+
+//-----------------------------------------------------------------------------
+
+struct a3_BlendNodePool
+{
+	a3_BlendNode* nodes;
+	a3ui32 count;
+};
+
+// allocate blend node pool
+a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count);
+
+// release blend node pool
+a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out);
+
+a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in);
 
 inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 
@@ -185,7 +217,10 @@ a3mat4* a3matrixOpFK(a3mat4* object_out, a3mat4 const* local_in,
 a3mat4* a3matrixOpIK(a3mat4* local_out, a3mat4 const* object_in,
 	a3_HierarchyNode const* hierarchyNodes, a3ui32 const numNodes);
 
+//----------------------------------------------
+a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes);
 
+a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
 
 #ifdef __cplusplus
 }

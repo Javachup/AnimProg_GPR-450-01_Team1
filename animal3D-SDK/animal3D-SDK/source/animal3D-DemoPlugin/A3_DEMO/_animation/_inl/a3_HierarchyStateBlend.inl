@@ -27,6 +27,8 @@
 #ifndef __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #define __ANIMAL3D_HIERARCHYSTATEBLEND_INL
 #include "math.h"
+#include <stdlib.h>
+#include <string.h> // For memset
 
 //BlendOps
 //-----------------------------------------------------------------------------
@@ -111,6 +113,55 @@ inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 
 	return (result == data_out);
 }
+//-----------------------------------------------------------------------------
+
+inline a3i32 a3blendNodeSetOp(a3_BlendNode* node_inout, const a3_BlendOp op)
+{
+	node_inout->op = op;
+	return 0;
+}
+
+inline a3i32 a3blendNodePoolCreate(a3_BlendNodePool* nodePool_out, const a3ui32 count)
+{
+	if (nodePool_out && count > 0)
+	{
+		nodePool_out->nodes = (a3_BlendNode*)calloc(count, sizeof(a3_BlendNode));
+		if (nodePool_out->nodes == NULL)
+			return -1;
+
+		nodePool_out->count = count;
+	}
+	return 0;
+}
+
+inline a3i32 a3blendNodePoolRelease(a3_BlendNodePool* nodePool_out)
+{
+	if (nodePool_out && nodePool_out->nodes)
+	{
+		free(nodePool_out->nodes);
+		nodePool_out->nodes = NULL;
+	}
+	return 0;
+}
+
+inline a3i32 a3blendTreeExecute(a3_BlendNodePool* blendNodePool_inout, const a3_BlendTree* blendTree_in)
+{
+	if (blendNodePool_inout && blendTree_in)
+	{
+		// Starting at the leaves and working towards the root,
+		// Call the operations and pass each node
+
+		// start at the last node and begin execution
+		for (a3index i = blendTree_in->numNodes - 1; i < 0; i--)
+		{
+			a3_BlendNode* blendNode = blendNodePool_inout->nodes + i;
+			blendNode->op(blendNode);
+		}
+		return 0;
+	}
+	return -1;
+}
+
 //-----------------------------------------------------------------------------
 
 // pointer-based reset/identity operation for single spatial pose
@@ -541,6 +592,51 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 }
 
 //-----------------------------------------------------------------------------
+
+inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes)
+{
+	if (!group || !controller)
+	{
+		return 0;
+	}
+	a3ui32 currentIndex = getCurrentKeyframe(controller)->data;
+	a3ui32 nextIndex = getNextKeyframe(controller)->data;
+	return a3hierarchyPoseOpLERP(pose_out, numNodes, &group->hpose[currentIndex], &group->hpose[nextIndex], (a3real)controller->keyParameter); //if it doesn't work try clipParameter
+}
+
+
+inline a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+{
+	//each BlendNode in the Pool is tied to a HierarchyNode in the Tree - defines its index in their respective pools, and which index the parent is in
+	//so for blendnode at index 2, its parent is the parent of the HierarchyNode at index 2
+	//currentHandSize is tied to whether the current node is the left or right hand of the parent
+	//numChildren will keep track of how many children there are, and which side of the node is currently being applied
+	// will start at 0, and so apply to the left hand side first (or the left-most side if there are more than 2)
+	//will be increased each time, so will move 1 to the right
+	//if the currentHandSide goes above 4 then that means too many nodes were assigning themselves to the same parent
+
+
+	a3ui32* numChildren = (a3ui32*)calloc(tree_in->numNodes, sizeof(a3ui32));
+
+	a3ui32 currentIndex, currentParentIndex, currentHandSide;
+	for (currentIndex = tree_in->numNodes - 1; currentIndex > 0; currentIndex--)
+	{
+		currentParentIndex = tree_in->nodes[currentIndex].parentIndex;
+		currentHandSide = numChildren[currentParentIndex];
+		if (currentHandSide > 3)
+		{
+			//too many nodes have the same parent node
+			return -1;
+		}
+		pool[currentParentIndex].nodes->data[currentHandSide] = &pool->nodes[currentIndex].result;
+		numChildren[currentParentIndex]++;
+	}	
+
+	free(numChildren);
+	return 0;
+}
+
+
 
 
 #endif	// !__ANIMAL3D_HIERARCHYSTATEBLEND_INL
