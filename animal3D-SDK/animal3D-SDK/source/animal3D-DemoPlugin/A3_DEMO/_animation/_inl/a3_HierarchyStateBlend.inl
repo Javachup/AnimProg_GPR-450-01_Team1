@@ -559,7 +559,7 @@ inline a3_BlendTree* populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
 	//if the currentHandSide goes above 4 then that means too many nodes were assigning themselves to the same parent
 
 
-	a3ui32* numChildren = (a3ui32*)cmalloc(tree_in->numNodes, sizeof(a3ui32));
+	a3ui32* numChildren = (a3ui32*)calloc(tree_in->numNodes, sizeof(a3ui32));
 
 	a3ui32 currentIndex, currentParentIndex, currentHandSide;
 	for (currentIndex = tree_in->numNodes - 1; currentIndex > 0; currentIndex--)
