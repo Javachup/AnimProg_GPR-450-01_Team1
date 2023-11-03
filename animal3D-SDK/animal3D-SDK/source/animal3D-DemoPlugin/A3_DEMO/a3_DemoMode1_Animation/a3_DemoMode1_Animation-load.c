@@ -71,15 +71,19 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// not streaming or stream doesn't exist
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
-		// set up scenegraph
+		// set up scenegraph - describes objects in the scene
 		a3hierarchyCreate(demoMode->sceneGraph,
 			(animationMaxCount_sceneObject + animationMaxCount_cameraObject + 1), 0);
 		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
 		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
 		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
+		// locomotion - parent of animation
 		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
 		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
+		// animation, controlled through this
 		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
+
+		a3spatialPoseReset(&demoMode->directTranslate);
 
 	/*
 		// manually set up a skeleton

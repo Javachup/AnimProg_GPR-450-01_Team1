@@ -179,9 +179,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		// process input
 
 		// apply input
-		demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
+		/*demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 		demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
-		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);
+		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);*/
+		demoMode->obj_skeleton_ctrl->position.x = demoMode->directTranslate.translate.x;
+		demoMode->obj_skeleton_ctrl->position.y = demoMode->directTranslate.translate.y;
 	}
 
 
