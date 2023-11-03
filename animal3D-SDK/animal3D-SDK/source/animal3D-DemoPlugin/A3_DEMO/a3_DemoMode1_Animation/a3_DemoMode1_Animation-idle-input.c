@@ -131,28 +131,30 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		}
 		else
 		{
-			// calculate normalized vectors given keyboard state
-			// store in the state, update idle-update
-			// spatial pose defines position and rotation
-				// inputs are given to spatial pose and
-				// the scene object is drawn given the info
 			switch (demoMode->ctrl_position)
 			{
-			case animation_input_direct:
-				demoMode->directTranslate.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-				demoMode->directTranslate.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-				break;
-			case animation_input_euler:
-				break;
-			case animation_input_kinematic:
-				break;
-			case animation_input_interpolate1:
-				break;
-			case animation_input_interpolate2:
-					break;
-				// scale velocityPose by delta time and concat
-			}
+				case animation_input_direct:
+					// direct translation assignment
+					demoMode->directAssignment.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+					demoMode->directAssignment.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
+					// direct rotation assignment
+					demoMode->directAssignment.rotate.x = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+					demoMode->directAssignment.rotate.y = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					break;
+
+				case animation_input_euler:
+					break;
+
+				case animation_input_kinematic:
+					break;
+
+				case animation_input_interpolate1:
+					break;
+
+				case animation_input_interpolate2:
+					break;
+			}
 		}
 		break;
 	}

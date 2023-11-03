@@ -154,7 +154,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
 
-		a3_SpatialPose directTranslate;
+		a3_SpatialPose directAssignment;
 
 		// scene graph
 		a3_Hierarchy sceneGraph[1];

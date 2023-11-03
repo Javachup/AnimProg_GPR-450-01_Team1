@@ -182,8 +182,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		/*demoMode->obj_skeleton_ctrl->position.x = +(demoMode->pos.x);
 		demoMode->obj_skeleton_ctrl->position.y = +(demoMode->pos.y);
 		demoMode->obj_skeleton_ctrl->euler.z = -a3trigValid_sind(demoMode->rot);*/
-		demoMode->obj_skeleton_ctrl->position.x = demoMode->directTranslate.translate.x;
-		demoMode->obj_skeleton_ctrl->position.y = demoMode->directTranslate.translate.y;
+
+		// calculate normalized vectors given keyboard state
+			// store in the state, update idle-update
+			// spatial pose defines position and rotation
+				// inputs are given to spatial pose and
+				// the scene object is drawn given the info
+			// scale velocityPose by delta time and concat
+
+		demoMode->obj_skeleton_ctrl->position.x = demoMode->directAssignment.translate.x;
+		demoMode->obj_skeleton_ctrl->position.y = demoMode->directAssignment.translate.y;
+		demoMode->obj_skeleton_ctrl->euler.x = demoMode->directAssignment.rotate.x;
+		demoMode->obj_skeleton_ctrl->euler.y = demoMode->directAssignment.rotate.y;
 	}
 
 

@@ -83,7 +83,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		// animation, controlled through this
 		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
 
-		a3spatialPoseReset(&demoMode->directTranslate);
+		a3spatialPoseReset(&demoMode->directAssignment);
 
 	/*
 		// manually set up a skeleton
