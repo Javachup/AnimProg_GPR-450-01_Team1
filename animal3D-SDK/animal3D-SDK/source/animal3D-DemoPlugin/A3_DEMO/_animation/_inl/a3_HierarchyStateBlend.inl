@@ -103,6 +103,7 @@ inline a3i32 a3blendNodeCreate(a3_BlendNode* node_inout, const a3_BlendOp op, co
 {
 	node_inout->result.pose = (a3_SpatialPose*)calloc(numNodes, sizeof(a3_SpatialPose));
 	node_inout->op = op;
+	node_inout->numNodes = numNodes;
 	return 0;
 }
 
