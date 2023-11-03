@@ -162,9 +162,25 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_ClipController clipCtrl[1], clipCtrlA[1], clipCtrlB[1];
 		a3_ClipPool clipPool[1];
 
+		// blend tree
+		a3_BlendTree blendTree[1];
+		a3_BlendNodePool blendNodePool[1];
+
 		// skeletal animation
+		union
+		{
+			a3_HierarchyState hierarchyState_skel[4];
+			struct
+			{
+				a3_HierarchyState
+					baseHS[1],
+					outputHS[1],
+					ctrl0HS[1],
+					ctrl1HS[1];
+			};
+		};
+
 		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyState hierarchyState_skel[2];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];

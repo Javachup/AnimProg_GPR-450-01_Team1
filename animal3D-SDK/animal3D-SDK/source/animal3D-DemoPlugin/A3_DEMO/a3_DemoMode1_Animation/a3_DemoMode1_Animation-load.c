@@ -404,9 +404,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyStateUpdateObjectInverse(hierarchyState);
 
 	// real-time state
-	hierarchyState = demoMode->hierarchyState_skel + 1;
-	hierarchyState->hierarchy = 0;
-	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	for (a3index i = 1; i < 4; i++)
+	{
+		hierarchyState = demoMode->hierarchyState_skel + i;
+		hierarchyState->hierarchy = 0;
+		a3hierarchyStateCreate(hierarchyState, hierarchy);
+	}
 
 
 	// clips and controllers
@@ -468,10 +471,19 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot");
 		a3clipControllerInit(demoMode->clipCtrl, "xbot_ctrl", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_idle_pistol");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_ymca");
 		a3clipControllerInit(demoMode->clipCtrlA, "xbot_ctrlA", demoMode->clipPool, j, rate, fps);
-		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_skintest");
+		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
 		a3clipControllerInit(demoMode->clipCtrlB, "xbot_ctrlB", demoMode->clipPool, j, rate, fps);
+	}
+
+	// Blend Nodes and Tree
+	{
+		a3blendNodePoolCreate(demoMode->blendNodePool, 1);
+		a3blendNodeCreate(demoMode->blendNodePool->nodes, a3_BlendOpConcat, demoMode->hierarchy_skel->numNodes);
+
+		demoMode->blendNodePool->nodes[0].data[0] = demoMode->ctrl0HS->animPose;
+		demoMode->blendNodePool->nodes[0].data[1] = demoMode->ctrl1HS->animPose;
 	}
 }
 
