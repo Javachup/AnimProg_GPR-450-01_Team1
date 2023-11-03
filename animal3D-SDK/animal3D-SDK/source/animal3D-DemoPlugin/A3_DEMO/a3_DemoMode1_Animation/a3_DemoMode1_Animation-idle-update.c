@@ -194,6 +194,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		demoMode->obj_skeleton_ctrl->position.y = demoMode->directAssignment.translate.y;
 		demoMode->obj_skeleton_ctrl->euler.x = demoMode->directAssignment.rotate.x;
 		demoMode->obj_skeleton_ctrl->euler.y = demoMode->directAssignment.rotate.y;
+
+		demoMode->obj_skeleton_ctrl->position.x = demoMode->controlVelocity.translate.x;
+		demoMode->obj_skeleton_ctrl->position.y = demoMode->controlVelocity.translate.y;
+		demoMode->obj_skeleton_ctrl->euler.x = demoMode->controlVelocity.rotate.x;
+		demoMode->obj_skeleton_ctrl->euler.y = demoMode->controlVelocity.rotate.y;
 	}
 
 

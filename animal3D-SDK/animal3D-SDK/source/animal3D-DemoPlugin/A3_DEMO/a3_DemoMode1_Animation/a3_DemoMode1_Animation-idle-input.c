@@ -134,6 +134,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			switch (demoMode->ctrl_position)
 			{
 				case animation_input_direct:
+				{
 					// direct translation assignment
 					demoMode->directAssignment.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 					demoMode->directAssignment.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
@@ -142,17 +143,48 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					demoMode->directAssignment.rotate.x = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
 					demoMode->directAssignment.rotate.y = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 					break;
+				}
 
 				case animation_input_euler:
+				{
+					// control velocity translation
+					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+					//demoMode->controlVelocity.translate.x = fIntegrateEuler(demoMode->controlVelocity.translate.x, dirX, demoState->dt_timer);
+					//demoMode->controlVelocity.translate.y = fIntegrateEuler(demoMode->controlVelocity.translate.x, dirY, demoState->dt_timer);
+
+					// control velocity rotation
+					// horizontal angular velocity -> euler integration
 					break;
+				}
 
 				case animation_input_kinematic:
+					// control acceleration translation
+					// locomotion vec2 acceleration
+						// integrate current veloctiy and acceleration -> kinematic integration
+						// integrate acceleration into velocity -> euler's integration
+					// control acceleration rotation
+					// horizontal angular acceleration
+						// integrate current velocity and acceleration -> kinematic integration
+						// integrate angular acceleration -> euler integration
 					break;
 
 				case animation_input_interpolate1:
+					// fake velocity translation
+						// vec2 position in world space -> interpolation
+					// fake velocity rotation
+						// horizontal target rotation -> interpolation
 					break;
 
 				case animation_input_interpolate2:
+					// fake acceleration translation
+					// target velocity in world space 
+						// integrate current velocity -> euler
+						// integrate velocity -> interpolation
+					// fake acceleration rotation
+					// target angular velocity
+						// integrate current angular velocity -> euler
+						// integrate angular velocity -> interpolation
 					break;
 			}
 		}
