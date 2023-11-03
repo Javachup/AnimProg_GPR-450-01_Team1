@@ -114,53 +114,16 @@ void a3demo_unloadValidate(a3_DemoState const* demoState);
 //-----------------------------------------------------------------------------
 
 void a3starter_load(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
 void a3starter_loadValidate(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_loadValidate(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
-void a3demoMode_loadValidate(a3_DemoState* demoState)
-{
-	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
-	a3starter_loadValidate(demoState, demoState->demoMode0_starter);
-}
+void a3starter_unload(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_unload(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
-void a3demo_load(a3_DemoState* demoState)
-{
-	// geometry
-	a3demo_loadGeometry(demoState);
-
-	// shaders
-	a3demo_loadShaders(demoState);
-
-	// textures
-	a3demo_loadTextures(demoState);
-
-
-	// set flags
-	demoState->displayGrid = a3true;
-	demoState->displayWorldAxes = a3true;
-	demoState->displayObjectAxes = a3true;
-	demoState->displayTangentBases = a3false;
-	demoState->displayWireframe = a3false;
-	demoState->displaySkybox = a3true;
-	demoState->displayHiddenVolumes = a3true;
-	demoState->updateAnimation = a3true;
-	demoState->stencilTest = a3false;
-	demoState->skipIntermediatePasses = a3false;
-
-
-	// demo modes
-	demoState->demoMode = demoState_modeStarter;
-	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
-	a3starter_load(demoState, demoState->demoMode0_starter);
-}
-
-void a3demo_unload(a3_DemoState* demoState)
-{
-	a3demo_unloadGeometry(demoState);
-	a3demo_unloadShaders(demoState);
-	a3demo_unloadTextures(demoState);
-	a3demo_unloadFramebuffers(demoState);
-}
+void a3starter_unloadValidate(a3_DemoState const* demoState, a3_DemoMode0_Starter* demoMode);
+void a3animation_unloadValidate(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode);
 
 
 //-----------------------------------------------------------------------------
@@ -190,6 +153,123 @@ inline void a3demo_releaseText(a3_DemoState* demoState)
 {
 	a3textRelease(demoState->text + 0);
 	a3textRelease(demoState->text + 1);
+}
+
+
+//-----------------------------------------------------------------------------
+
+void a3demo_load(a3_DemoState* demoState)
+{
+	// demo modes
+	demoState->demoMode = demoState_modeAnimation;
+	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
+	a3starter_load(demoState, demoState->demoMode0_starter);
+	a3animation_load(demoState, demoState->demoMode1_animation);
+
+
+	// geometry
+	a3demo_loadGeometry(demoState);
+
+	// shaders
+	a3demo_loadShaders(demoState);
+
+	// textures
+	a3demo_loadTextures(demoState);
+
+
+	// set flags
+	demoState->displayGrid = a3true;
+	demoState->displayWorldAxes = a3true;
+	demoState->displayObjectAxes = a3true;
+	demoState->displayTangentBases = a3false;
+	demoState->displayWireframe = a3false;
+	demoState->displaySkybox = a3true;
+	demoState->displayHiddenVolumes = a3true;
+	demoState->updateAnimation = a3true;
+	demoState->stencilTest = a3false;
+	demoState->skipIntermediatePasses = a3false;
+}
+
+void a3demo_unload(a3_DemoState* demoState)
+{
+	a3demo_unloadGeometry(demoState);
+	a3demo_unloadShaders(demoState);
+	a3demo_unloadTextures(demoState);
+	a3demo_unloadFramebuffers(demoState);
+
+	a3starter_unload(demoState, demoState->demoMode0_starter);
+	a3animation_unload(demoState, demoState->demoMode1_animation);
+}
+
+void a3demoMode_loadValidate(a3_DemoState* demoState)
+{
+	demoState->demoModeCallbacksPtr = demoState->demoModeCallbacks + demoState->demoMode;
+	a3starter_loadValidate(demoState, demoState->demoMode0_starter);
+	a3animation_loadValidate(demoState, demoState->demoMode1_animation);
+}
+
+void a3demoMode_unloadValidate(a3_DemoState* demoState)
+{
+	a3starter_unloadValidate(demoState, demoState->demoMode0_starter);
+	a3animation_unloadValidate(demoState, demoState->demoMode1_animation);
+}
+
+void a3demo_idle(a3_DemoState* demoState, a3f64 const dt)
+{
+	// track updates
+	if (demoState->timer->totalTime > 2.0)
+	{
+		demoState->n_timer += 1;
+		demoState->dt_timer = demoState->timer_display->totalTime - demoState->t_timer;
+		demoState->dt_timer_tot += demoState->dt_timer;
+		demoState->t_timer = demoState->timer_display->totalTime;
+	}
+	else
+	{
+		demoState->n_timer = 0;
+		demoState->dt_timer = demoState->timer_display->totalTime;
+		demoState->dt_timer_tot = 0.0;
+		demoState->t_timer = demoState->timer_display->totalTime;
+	}
+
+	// main idle loop
+	a3demo_input(demoState, dt);
+	a3demo_update(demoState, dt);
+	a3demo_render(demoState, dt);
+
+	// update input
+	a3mouseUpdate(demoState->mouse);
+	a3keyboardUpdate(demoState->keyboard);
+	a3XboxControlUpdate(demoState->xcontrol);
+
+	// extra controls
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_up))
+			a3demoCtrlIncLoop(demoState->textMode, demoState_text_max);
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_DPAD_down))
+			a3demoCtrlDecLoop(demoState->textMode, demoState_text_max);
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_back))
+		{
+			if (!a3textIsInitialized(demoState->text))
+			{
+				a3demo_initializeText(demoState);
+				demoState->textInit = a3true;
+			}
+			else
+			{
+				a3demo_releaseText(demoState);
+				demoState->textInit = a3false;
+			}
+		}
+
+		if (a3XboxControlIsPressed(demoState->xcontrol, a3xbox_start))
+		{
+			a3demo_unloadShaders(demoState);
+			a3demo_loadShaders(demoState);
+		}
+	}
 }
 
 
@@ -235,32 +315,28 @@ A3DYLIBSYMBOL a3_DemoState *a3demoCB_load(a3_DemoState *demoState, a3boolean hot
 		// set up trig table (A3DM)
 		a3trigInit(trigSamplesPerDegree, demoState->trigTable);
 
-		// initialize state variables
-		// e.g. timer, thread, etc.
-		a3timerSet(demoState->timer_display, 30.0);
-		a3timerStart(demoState->timer_display);
-
 		// text
 		a3demo_initializeText(demoState);
 		demoState->textInit = a3true;
 		demoState->textMode = demoState_textControls;
 
-
 		// enable asset streaming between loads
-		//demoState->streaming = a3true;
-
+		demoState->streaming = a3true;
 
 		// create directory for data
 		a3fileStreamMakeDirectory("./data");
 
-
 		// set default GL state
 		a3demo_setDefaultGraphicsState();
-
 
 		// demo modes
 		a3demoMode_loadValidate(demoState);
 		a3demo_load(demoState);
+
+		// initialize state variables
+		// e.g. timer, thread, etc.
+		a3timerSet(demoState->timer_display, 30.0);
+		a3timerStart(demoState->timer_display);
 	}
 
 	// return persistent state pointer
@@ -290,6 +366,7 @@ A3DYLIBSYMBOL a3_DemoState *a3demoCB_unload(a3_DemoState *demoState, a3boolean h
 			a3demo_unload(demoState);
 
 			// validate unload
+			a3demoMode_unloadValidate(demoState);
 			a3demo_unloadValidate(demoState);
 
 			// erase other stuff
@@ -324,32 +401,7 @@ A3DYLIBSYMBOL a3i32 a3demoCB_idle(a3_DemoState *demoState)
 		{
 			// render timer ticked, update demo state and draw
 			a3f64 const dt = demoState->timer_display->secondsPerTick;
-
-			// track updates
-			if (demoState->timer->totalTime > 2.0)
-			{
-				demoState->n_timer += 1;
-				demoState->dt_timer = demoState->timer_display->totalTime - demoState->t_timer;
-				demoState->dt_timer_tot += demoState->dt_timer;
-				demoState->t_timer = demoState->timer_display->totalTime;
-			}
-			else
-			{
-				demoState->n_timer = 0;
-				demoState->dt_timer = demoState->timer_display->totalTime;
-				demoState->dt_timer_tot = 0.0;
-				demoState->t_timer = demoState->timer_display->totalTime;
-			}
-
-			// main idle loop
-			a3demo_input(demoState, dt);
-			a3demo_update(demoState, dt);
-			a3demo_render(demoState, dt);
-
-			// update input
-			a3mouseUpdate(demoState->mouse);
-			a3keyboardUpdate(demoState->keyboard);
-			a3XboxControlUpdate(demoState->xcontrol);
+			a3demo_idle(demoState, dt);
 
 			// render occurred this idle: return +1
 			return +1;

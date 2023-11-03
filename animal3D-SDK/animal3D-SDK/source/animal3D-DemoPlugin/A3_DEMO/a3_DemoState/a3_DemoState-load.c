@@ -149,7 +149,7 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 {
 	// tmp descriptor for loaded model
 	typedef struct a3_TAG_DEMOSTATELOADEDMODEL {
-		const a3byte *filePath;
+		const a3byte *modelFilePath, *skinWeightsFilePath;
 		const a3real *transform;
 		a3_ModelLoaderFlag flag;
 	} a3_DemoStateLoadedModel;
@@ -161,6 +161,12 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		+0.05f,  0.00f,  0.00f,  0.00f,
 		 0.00f,  0.00f,  0.00f, +1.00f,
 	};
+	static const a3mat4 scale1x_z2y = {
+		+0.05f,  0.00f,  0.00f,  0.00f,
+		 0.00f,  0.00f, -0.05f,  0.00f,
+		 0.00f, +0.05f,  0.00f,  0.00f,
+		 0.00f,  0.00f,  0.00f, +1.00f,
+	};
 
 	// pointer to shared vbo/ibo
 	a3_VertexBuffer *vbo_ibo;
@@ -168,21 +174,28 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3_VertexDrawable *currentDrawable;
 	a3ui32 sharedVertexStorage = 0, sharedIndexStorage = 0;
 	a3ui32 numVerts = 0;
-	a3ui32 i;
-//	a3ui32 j;
+	a3ui32 i, j;
 
 
 	// file streaming (if requested)
 	a3_FileStream fileStream[1] = { 0 };
-	const a3byte *const geometryStream = "./data/geom_data_gpro_coursebase.dat";
+	const a3byte *const geometryStream = "./data/gpro_base_geom.dat";
 
 	// geometry data
-	a3_GeometryData displayShapesData[2] = { 0 };
+	a3_GeometryData displayShapesData[4] = { 0 };
 	a3_GeometryData proceduralShapesData[6] = { 0 };
-	a3_GeometryData loadedModelsData[1] = { 0 };
+	a3_GeometryData loadedModelsData[3] = { 0 };
+	a3_GeometryData morphTargetsData[1][5] = { 0 };
 	const a3ui32 displayShapesCount = sizeof(displayShapesData) / sizeof(a3_GeometryData);
 	const a3ui32 proceduralShapesCount = sizeof(proceduralShapesData) / sizeof(a3_GeometryData);
 	const a3ui32 loadedModelsCount = sizeof(loadedModelsData) / sizeof(a3_GeometryData);
+	const a3ui32 morphTargetsPerModel = sizeof(*morphTargetsData) / sizeof(a3_GeometryData);
+	const a3ui32 morphModelsCount = sizeof(morphTargetsData) / sizeof(*morphTargetsData);
+
+	// morphing vertex format
+	a3_VertexFormatDescriptor morphFormat[1] = { 0 };
+	a3_VertexAttributeDescriptor morphAttrib[16] = { 0 };
+	a3ui32 const morphAttribCount = sizeof(morphAttrib) / sizeof(a3_VertexAttributeDescriptor);
 
 	// common index format
 	a3_IndexFormatDescriptor sceneCommonIndexFormat[1] = { 0 };
@@ -207,6 +220,11 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		for (i = 0; i < loadedModelsCount; ++i)
 			a3fileStreamReadObject(fileStream, loadedModelsData + i, (a3_FileStreamReadFunc)a3geometryLoadDataBinary);
 
+		// morphing objects
+		for (i = 0; i < morphModelsCount; ++i)
+			for (j = 0; j < morphTargetsPerModel; ++j)
+				a3fileStreamReadObject(fileStream, morphTargetsData[i] + j, (a3_FileStreamReadFunc)a3geometryLoadDataBinary);
+
 		// done
 		a3fileStreamClose(fileStream);
 	}
@@ -214,16 +232,30 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
 		// create new data
-		a3_ProceduralGeometryDescriptor displayShapes[2] = { a3geomShape_none };
+		a3_ProceduralGeometryDescriptor displayShapes[4] = { a3geomShape_none };
 		a3_ProceduralGeometryDescriptor proceduralShapes[6] = { a3geomShape_none };
-		const a3_DemoStateLoadedModel loadedShapes[1] = {
-			{ A3_DEMO_OBJ"teapot/teapot.obj", downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+		const a3_DemoStateLoadedModel loadedShapes[3] = {
+			{ A3_DEMO_OBJ"teapot/teapot.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+			//{ A3_DEMO_OBJ"egnaro/egnaro_mesh.obj", A3_DEMO_OBJ"egnaro/egnaro_skin.xml", a3mat4_identity.mm, a3model_calculateVertexTangents },
+			{ A3_DEMO_OBJ"xbot/xbot_surface.obj", A3_DEMO_OBJ"xbot/xbot_surface.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
+			{ A3_DEMO_OBJ"xbot/xbot_joints.obj", A3_DEMO_OBJ"xbot/xbot_joints.xml", scale1x_z2y.mm, a3model_calculateVertexTangents },
+		};
+		const a3_DemoStateLoadedModel morphShapes[1][5] = {
+			{
+				{ A3_DEMO_OBJ"teapot/morph/teapot_base.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+				{ A3_DEMO_OBJ"teapot/morph/teapot_scale.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+				{ A3_DEMO_OBJ"teapot/morph/teapot_scale_x.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+				{ A3_DEMO_OBJ"teapot/morph/teapot_scale_y.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+				{ A3_DEMO_OBJ"teapot/morph/teapot_scale_z.obj", 0, downscale20x_y2z_x2y.mm, a3model_calculateVertexTangents },
+			},
 		};
 
 		// static scene procedural objects
 		//	(axes, grid)
 		a3proceduralCreateDescriptorAxes(displayShapes + 0, a3geomFlag_wireframe, 0.0f, 1);
 		a3proceduralCreateDescriptorPlane(displayShapes + 1, a3geomFlag_wireframe, a3geomAxis_default, 20.0f, 20.0f, 20, 20);
+		a3proceduralCreateDescriptorCone(displayShapes + 2, a3geomFlag_wireframe, a3geomAxis_default, 0.25f, 1.0f, 4, 1, 1);
+		a3proceduralCreateDescriptorSphere(displayShapes + 3, a3geomFlag_wireframe, a3geomAxis_default, 0.25f, 4, 2);
 		for (i = 0; i < displayShapesCount; ++i)
 		{
 			a3proceduralGenerateGeometryData(displayShapesData + i, displayShapes + i, 0);
@@ -246,9 +278,26 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		// objects loaded from mesh files
 		for (i = 0; i < loadedModelsCount; ++i)
 		{
-			a3modelLoadOBJ(loadedModelsData + i, loadedShapes[i].filePath, loadedShapes[i].flag, loadedShapes[i].transform);
+			if (loadedShapes[i].skinWeightsFilePath)
+			{
+				a3byte *nodeNames[128] = { 0 };
+				a3ui32 nodeCount = a3hierarchyGetNodeNames(nodeNames, demoState->demoMode1_animation->hierarchy_skel);
+				a3modelLoadOBJSkinWeights(loadedModelsData + i, loadedShapes[i].modelFilePath, loadedShapes[i].flag, loadedShapes[i].skinWeightsFilePath, nodeNames, nodeCount, loadedShapes[i].transform);
+			}
+			else
+			{
+				a3modelLoadOBJ(loadedModelsData + i, loadedShapes[i].modelFilePath, loadedShapes[i].flag, loadedShapes[i].transform);
+			}
 			a3fileStreamWriteObject(fileStream, loadedModelsData + i, (a3_FileStreamWriteFunc)a3geometrySaveDataBinary);
 		}
+
+		// morphing objects
+		for (i = 0; i < morphModelsCount; ++i)
+			for (j = 0; j < morphTargetsPerModel; ++j)
+			{
+				a3modelLoadOBJ(morphTargetsData[i] + j, morphShapes[i][j].modelFilePath, morphShapes[i][j].flag, morphShapes[i][j].transform);
+				a3fileStreamWriteObject(fileStream, morphTargetsData[i] + j, (a3_FileStreamWriteFunc)a3geometrySaveDataBinary);
+			}
 
 		// done
 		a3fileStreamClose(fileStream);
@@ -280,6 +329,30 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	}
 
 
+	// morph targets setup
+	//	- add required data from each model to new data descriptor
+	{
+		a3_VertexAttributeDescriptor* morphAttribPtr;
+		a3_VertexAttributeName attribName;
+		a3ui32 morphModelIndex = 0;
+
+		for (i = 0, morphAttribPtr = morphAttrib, attribName = a3attrib_user00; i < morphTargetsPerModel; ++i)
+			for (j = 0; j < 3; ++j, ++morphAttribPtr, ++attribName)
+				// create descriptors for position, normal and tangent
+				a3vertexAttribCreateDescriptor(morphAttribPtr, (a3_VertexAttributeName)attribName, a3attrib_vec3);
+		// the final attribute will be for texture coordinates
+		a3vertexAttribCreateDescriptor(morphAttribPtr, a3attrib_user15, a3attrib_vec2);
+
+		// make format
+		a3vertexFormatCreateDescriptor(morphFormat, morphAttrib, morphAttribCount);
+		for (i = 0; i < morphModelsCount; ++i)
+		{
+			sharedVertexStorage += a3vertexFormatGetStorageSpaceRequired(morphFormat, morphTargetsData[i]->numVertices);
+			numVerts += morphTargetsData[i]->numVertices;
+		}
+	}
+
+
 	// common index format required for shapes that share vertex formats
 	a3geometryCreateIndexFormat(sceneCommonIndexFormat, numVerts);
 	sharedIndexStorage = 0;
@@ -289,6 +362,8 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		sharedIndexStorage += a3indexFormatGetStorageSpaceRequired(sceneCommonIndexFormat, proceduralShapesData[i].numIndices);
 	for (i = 0; i < loadedModelsCount; ++i)
 		sharedIndexStorage += a3indexFormatGetStorageSpaceRequired(sceneCommonIndexFormat, loadedModelsData[i].numIndices);
+	for (i = 0; i < morphModelsCount; ++i)
+		sharedIndexStorage += a3indexFormatGetStorageSpaceRequired(sceneCommonIndexFormat, morphTargetsData[i]->numIndices);
 
 	// create shared buffer
 	vbo_ibo = demoState->vbo_staticSceneObjectDrawBuffer;
@@ -309,6 +384,10 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	a3geometryGenerateVertexArray(vao, "vao:pos", displayShapesData + 1, vbo_ibo, sharedVertexStorage);
 	currentDrawable = demoState->draw_grid;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 1, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_link;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 2, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_node;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, displayShapesData + 3, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
 
 	// models
 	vao = demoState->vao_tangentbasis_texcoord;
@@ -328,6 +407,34 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 	
 	currentDrawable = demoState->draw_teapot;
 	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 0, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+
+	// skinned models
+	vao = demoState->vao_tangentbasis_texcoord_skin;
+	a3geometryGenerateVertexArray(vao, "vao:tb+tc+skin", loadedModelsData + 1, vbo_ibo, sharedVertexStorage);
+	currentDrawable = demoState->draw_character_skin;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 1, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+	currentDrawable = demoState->draw_character_skin_alt;
+	sharedVertexStorage += a3geometryGenerateDrawable(currentDrawable, loadedModelsData + 2, vao, vbo_ibo, sceneCommonIndexFormat, 0, 0);
+
+	// morphing models
+	vao = demoState->vao_tangentbasis_texcoord_morph5;
+	a3vertexArrayCreateDescriptor(vao, "vao:tb+tc+morph5", vbo_ibo, morphFormat, sharedVertexStorage);
+	{
+		a3_VertexAttributeDataDescriptor morphAttribData[16] = { 0 }, * morphAttribDataPtr;
+		a3_VertexAttributeName attribName;
+		a3ui32 morphModelIndex = 0;
+
+		for (i = 0, morphAttribDataPtr = morphAttribData, attribName = a3attrib_user00; i < morphTargetsPerModel; ++i)
+			for (j = 0; j < 3; ++j, ++morphAttribDataPtr, ++attribName)
+				a3vertexAttribDataCreateDescriptor(morphAttribDataPtr, (a3_VertexAttributeName)attribName, morphTargetsData[morphModelIndex][i].attribData[j * j]);
+		a3vertexAttribDataCreateDescriptor(morphAttribDataPtr, a3attrib_user15, morphTargetsData[morphModelIndex]->attribData[a3attrib_geomTexcoord]);
+
+		a3vertexArrayStore(vao, morphAttribData, morphTargetsData[morphModelIndex]->numVertices, 0, 0);
+		a3indexBufferStore(vbo_ibo, sceneCommonIndexFormat, morphTargetsData[morphModelIndex]->indexData, morphTargetsData[morphModelIndex]->numIndices, 0, &i, 0);
+
+		currentDrawable = demoState->draw_teapot_morph;
+		a3vertexDrawableCreateIndexed(currentDrawable, vao, vbo_ibo, sceneCommonIndexFormat, morphTargetsData[morphModelIndex]->primType, i, morphTargetsData[morphModelIndex]->numIndices);
+	}
 	
 
 	// release data when done
@@ -337,6 +444,9 @@ void a3demo_loadGeometry(a3_DemoState *demoState)
 		a3geometryReleaseData(proceduralShapesData + i);
 	for (i = 0; i < loadedModelsCount; ++i)
 		a3geometryReleaseData(loadedModelsData + i);
+	for (i = 0; i < morphModelsCount; ++i)
+		for (j = 0; j < morphTargetsPerModel; ++j)
+			a3geometryReleaseData(morphTargetsData[i] + j);
 
 
 	// dummy
@@ -393,12 +503,12 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			a3_DemoStateShader
 				passTexcoord_transform_vs[1],
 				passTangentBasis_transform_vs[1],
-			//	passTangentBasis_morph5_transform_vs[1],
-			//	passTangentBasis_skin_transform_vs[1],
+				passTangentBasis_morph5_transform_vs[1],
+				passTangentBasis_skin_transform_vs[1],
 				passTexcoord_transform_instanced_vs[1],
-				passTangentBasis_transform_instanced_vs[1];//,
-			//	passTangentBasis_morph5_transform_instanced_vs[1],
-			//	passTangentBasis_skin_transform_instanced_vs[1];
+				passTangentBasis_transform_instanced_vs[1],
+				passTangentBasis_morph5_transform_instanced_vs[1],
+				passTangentBasis_skin_transform_instanced_vs[1];
 
 			// geometry shaders
 			// 00-common
@@ -412,9 +522,9 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 				drawColorAttrib_fs[1];
 			// 00-common
 			a3_DemoStateShader
-				drawTexture_fs[1];//,
-			//	drawLambert_fs[1],
-			//	drawPhong_fs[1];
+				drawTexture_fs[1],
+				drawLambert_fs[1],
+				drawPhong_fs[1];
 		};
 	} shaderList = {
 		{
@@ -431,12 +541,16 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			// 00-common
 			{ { { 0 },	"shdr-vs:pass-tex-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_vs4x.glsl" } } },
 			{ { { 0 },	"shdr-vs:pass-tb-trans",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tb-morph5-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
+			{ { { 0 },	"shdr-vs:pass-tb-skin-t",			a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
 			{ { { 0 },	"shdr-vs:pass-tex-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTexcoord_transform_instanced_vs4x.glsl" } } },
-			{ { { 0 },	"shdr-vs:pass-tbn-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tb-trans-inst",		a3shader_vertex  ,	1,{ A3_DEMO_VS"00-common/e/passTangentBasis_transform_instanced_vs4x.glsl" } } },
+			{ { { 0 },	"shdr-vs:pass-tb-morph5-t-inst",	a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_morph5_transform_instanced_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
+			{ { { 0 },	"shdr-vs:pass-tb-skin-t-inst",		a3shader_vertex  ,	2,{ A3_DEMO_VS"00-common/e/passTangentBasis_skin_transform_instanced_vs4x.glsl",
+																					A3_DEMO_VS"00-common/e/utilCommon_vs4x.glsl",} } },
 
 			// gs
 			// 00-common
@@ -449,8 +563,10 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 			{ { { 0 },	"shdr-fs:draw-col-attr",			a3shader_fragment,	1,{ A3_DEMO_FS"e/drawColorAttrib_fs4x.glsl" } } },
 			// 00-common
 			{ { { 0 },	"shdr-fs:draw-tex",					a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawTexture_fs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl" } } },
-		//	{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	1,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl" } } },
+			{ { { 0 },	"shdr-fs:draw-Lambert",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawLambert_fs4x.glsl",
+																					A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
+			{ { { 0 },	"shdr-fs:draw-Phong",				a3shader_fragment,	2,{ A3_DEMO_FS"00-common/e/drawPhong_fs4x.glsl",
+																					A3_DEMO_FS"00-common/e/utilCommon_fs4x.glsl",} } },
 		}
 	};
 	a3_DemoStateShader *const shaderListPtr = (a3_DemoStateShader *)(&shaderList), *shaderPtr;
@@ -520,6 +636,47 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tex-inst");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTexcoord_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTexture_fs->shader);
+	// Lambert
+	currentDemoProg = demoState->prog_drawLambert;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Lambert");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawLambert_fs->shader);
+	// Lambert with instancing
+	currentDemoProg = demoState->prog_drawLambert_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Lambert-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawLambert_fs->shader);
+	// Phong
+	currentDemoProg = demoState->prog_drawPhong;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+	// Phong with instancing
+	currentDemoProg = demoState->prog_drawPhong_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+	// Phong for 5-target morphing
+	currentDemoProg = demoState->prog_drawPhong_morph5;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-morph5");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+	// Phong for 5-target morphing with instancing
+	currentDemoProg = demoState->prog_drawPhong_morph5_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-morph5-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+	// Phong for skinning
+	currentDemoProg = demoState->prog_drawPhong_skin;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-skin");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_skin_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+	// Phong for skinning with instancing
+	currentDemoProg = demoState->prog_drawPhong_skin_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-Phong-skin-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_skin_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawPhong_fs->shader);
+
 	// tangent basis
 	currentDemoProg = demoState->prog_drawTangentBasis;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb");
@@ -530,6 +687,30 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 	currentDemoProg = demoState->prog_drawTangentBasis_instanced;
 	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-inst");
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	// tangent basis for 5-target morphing
+	currentDemoProg = demoState->prog_drawTangentBasis_morph5;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-morph5");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	// tangent basis for 5-target morphing with instancing
+	currentDemoProg = demoState->prog_drawTangentBasis_morph5_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-morph5-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_morph5_transform_instanced_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	// tangent basis for skinning
+	currentDemoProg = demoState->prog_drawTangentBasis_skin;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-skin");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_skin_transform_vs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
+	// tangent basis for skinning with instancing
+	currentDemoProg = demoState->prog_drawTangentBasis_skin_instanced;
+	a3shaderProgramCreate(currentDemoProg->program, "prog:draw-tb-skin-inst");
+	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.passTangentBasis_skin_transform_instanced_vs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawTangentBasis_gs->shader);
 	a3shaderProgramAttachShader(currentDemoProg->program, shaderList.drawColorAttrib_fs->shader);
 
@@ -611,9 +792,19 @@ void a3demo_loadShaders(a3_DemoState *demoState)
 
 		// transformation uniform blocks
 		a3demo_setUniformDefaultBlock(currentDemoProg, ubTransformStack, 0);
+		a3demo_setUniformDefaultBlock(currentDemoProg, ubTransformBlend, 1);
 		a3demo_setUniformDefaultBlock(currentDemoProg, ubTransformMVP, 0);
 		a3demo_setUniformDefaultBlock(currentDemoProg, ubTransformMVPB, 1);
 	}
+
+
+	// allocate uniform buffers
+	a3bufferCreate(demoState->ubo_transformStack, "ubo:transformStack", a3buffer_uniform, a3index_countMaxShort, 0);
+	a3bufferCreate(demoState->ubo_transformBlend, "ubo:transformBlend", a3buffer_uniform, a3index_countMaxShort, 0);
+	a3bufferCreate(demoState->ubo_transformMVP, "ubo:transformMVP", a3buffer_uniform, a3index_countMaxShort, 0);
+	a3bufferCreate(demoState->ubo_transformMVPB, "ubo:transformMVPB", a3buffer_uniform, a3index_countMaxShort, 0);
+	for (i = 0; i < 4; ++i)
+		a3bufferCreate(demoState->ubo_transformSkelMVP + i, "ubo:transformSkelMVP", a3buffer_uniform, a3index_countMaxShort, 0);
 
 
 	printf("\n\n---------------- LOAD SHADERS FINISHED ---------------- \n");
@@ -775,6 +966,8 @@ void a3demo_loadValidate(a3_DemoState* demoState)
 		* const endVAO = currentVAO + demoStateMaxCount_vertexArray;
 	a3_DemoStateShaderProgram* currentProg = demoState->shaderProgram,
 		* const endProg = currentProg + demoStateMaxCount_shaderProgram;
+	a3_UniformBuffer* currentUBO = demoState->uniformBuffer,
+		* const endUBO = currentUBO + demoStateMaxCount_uniformBuffer;
 	a3_Texture* currentTex = demoState->texture,
 		* const endTex = currentTex + demoStateMaxCount_texture;
 	a3_Framebuffer* currentFBO = demoState->framebuffer,
@@ -787,6 +980,8 @@ void a3demo_loadValidate(a3_DemoState* demoState)
 		a3vertexArrayHandleUpdateReleaseCallback(currentVAO++);
 	while (currentProg < endProg)
 		a3shaderProgramHandleUpdateReleaseCallback((currentProg++)->program);
+	while (currentUBO < endUBO)
+		a3bufferHandleUpdateReleaseCallback(currentUBO++);
 	while (currentTex < endTex)
 		a3textureHandleUpdateReleaseCallback(currentTex++);
 	while (currentFBO < endFBO)
@@ -811,8 +1006,15 @@ void a3demo_loadValidate(a3_DemoState* demoState)
 	a3_refreshDrawable_internal(demoState->draw_unit_cylinder, currentVAO, currentBuff);
 	a3_refreshDrawable_internal(demoState->draw_unit_capsule, currentVAO, currentBuff);
 	a3_refreshDrawable_internal(demoState->draw_unit_torus, currentVAO, currentBuff);
-
 	a3_refreshDrawable_internal(demoState->draw_teapot, currentVAO, currentBuff);
+
+	currentVAO = demoState->vao_tangentbasis_texcoord_skin;
+	currentVAO->vertexBuffer = currentBuff;
+	a3_refreshDrawable_internal(demoState->draw_character_skin, currentVAO, currentBuff);
+
+	currentVAO = demoState->vao_tangentbasis_texcoord_morph5;
+	currentVAO->vertexBuffer = currentBuff;
+	a3_refreshDrawable_internal(demoState->draw_teapot_morph, currentVAO, currentBuff);
 
 	a3demo_initDummyDrawable_internal(demoState);
 }

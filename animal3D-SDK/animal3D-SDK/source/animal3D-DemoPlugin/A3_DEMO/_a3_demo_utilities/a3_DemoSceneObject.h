@@ -80,7 +80,8 @@ extern "C"
 		a3vec3 euler;		// euler angles for direct rotation control
 		a3vec3 position;	// scene position for direct control
 		a3vec3 scale;		// scale (not accounted for in update)
-		a3i32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
+		a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
+		a3ui32 sceneGraphIndex;	// index in scene graph
 	};
 
 	// projector/camera/viewer
@@ -105,10 +106,10 @@ extern "C"
 		a3vec4 worldPos;					// position in world space
 		a3vec4 viewPos;						// position in viewer space
 		a3vec4 color;						// RGB color with padding
-		a3real radiusSq;					// radius squared (if needed)
 		a3real radius;						// radius (distance of effect from center)
-		a3real radiusInvSq;					// radius inverse squared (attenuation factor)
+		a3real radiusSq;					// radius squared (if needed)
 		a3real radiusInv;					// radius inverse (also used for attenuation sometimes)
+		a3real radiusInvSq;					// radius inverse squared (attenuation factor)
 	};
 
 

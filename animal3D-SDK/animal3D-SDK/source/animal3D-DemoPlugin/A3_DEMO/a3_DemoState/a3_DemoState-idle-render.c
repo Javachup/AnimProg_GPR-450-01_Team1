@@ -51,7 +51,39 @@
 void a3starter_render_controls(a3_DemoState const* demoState, a3_DemoMode0_Starter const* demoMode,
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset);
+void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Animation const* demoMode,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset);
 
+
+// display current mode controls
+void a3demo_render_controls_global(a3_DemoState const* demoState,
+	a3_TextRenderer const* text, a3vec4 const col,
+	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
+{
+	if (a3XboxControlIsConnected(demoState->xcontrol))
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Xbox controller target object control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Right joystick = rotate | Left joystick & triggers = move");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Toggle text display:        'Dpad up/down' (toggle) | 'Select/back' (alloc/dealloc) ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Reload all shader programs: 'Start' ****CHECK CONSOLE FOR ERRORS!**** ");
+	}
+	else
+	{
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Keyboard/mouse target object control: ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"    Left click & drag = rotate | WASDEQ = move | wheel = zoom");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
+		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+			"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+	}
+}
 
 // display current mode controls
 void a3demo_render_controls(a3_DemoState const* demoState,
@@ -61,6 +93,7 @@ void a3demo_render_controls(a3_DemoState const* demoState,
 	// display mode info
 	a3byte const* modeText[demoState_mode_max] = {
 		"STARTER SCENE",
+		"ANIMATION SCENE",
 	};
 
 	// demo mode
@@ -76,14 +109,15 @@ void a3demo_render_controls(a3_DemoState const* demoState,
 	case demoState_modeStarter:
 		a3starter_render_controls(demoState, demoState->demoMode0_starter, text, col, textAlign, textDepth, textOffsetDelta, textOffset);
 		break;
+	case demoState_modeAnimation:
+		a3animation_render_controls(demoState, demoState->demoMode1_animation, text, col, textAlign, textDepth, textOffsetDelta, textOffset);
+		break;
 	}
 
-	// global controls
-	textOffset = -0.8f;
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+	// global/input-dependent controls
+	textOffset = -0.6f;
+	a3demo_render_controls_global(demoState, text, col,
+		textAlign, textDepth, textOffsetDelta, textOffset);
 }
 
 
@@ -112,29 +146,10 @@ void a3demo_render_controls_gen(a3_DemoState const* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"SKIP INTERMEDIATE PASSES (toggle 'I') %s", boolText[demoState->skipIntermediatePasses]);
 
-	// global controls
-	textOffset = -0.8f;
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
-
-	// input-dependent controls
+	// global/input-dependent controls
 	textOffset = -0.6f;
-	if (a3XboxControlIsConnected(demoState->xcontrol))
-	{
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"Xbox controller camera control: ");
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    Left joystick = rotate | Right joystick, triggers = move");
-	}
-	else
-	{
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"Keyboard/mouse camera control: ");
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    Left click & drag = rotate | WASDEQ = move | wheel = zoom");
-	}
+	a3demo_render_controls_global(demoState, text, col,
+		textAlign, textDepth, textOffsetDelta, textOffset);
 }
 
 
@@ -155,12 +170,10 @@ void a3demo_render_data(const a3_DemoState* demoState,
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"t_render = %07.4lf s | n_render = %lu", demoState->timer_display->totalTime, demoState->n_timer);//demoState->timer_display->totalTime, demoState->timer_display->ticks);
 
-	// global controls
-	textOffset = -0.8f;
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Toggle text display:        't' (toggle) | 'T' (alloc/dealloc) ");
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"Reload all shader programs: 'P' ****CHECK CONSOLE FOR ERRORS!**** ");
+	// global/input-dependent controls
+	textOffset = -0.6f;
+	a3demo_render_controls_global(demoState, text, col,
+		textAlign, textDepth, textOffsetDelta, textOffset);
 }
 
 /*

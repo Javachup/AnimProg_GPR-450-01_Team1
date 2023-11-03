@@ -66,6 +66,8 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 	{
 		starter_renderSolid,			// solid color
 		starter_renderTexture,			// textured
+		starter_renderLambert,			// Lambert shading model
+		starter_renderPhong,			// Phong shading model
 
 		starter_render_max
 	};
@@ -109,7 +111,7 @@ typedef enum a3_DemoMode0_Starter_TargetName				a3_DemoMode0_Starter_TargetName;
 		starter_scene_finalcolor = 0,	// final display color
 		starter_scene_fragdepth,		// fragment depth
 	
-		starter_target_scene_max,
+		starter_target_scene_max
 	};
 
 
