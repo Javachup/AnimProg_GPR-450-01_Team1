@@ -165,13 +165,18 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 				case animation_input_kinematic:
 				{
 					// control acceleration translation
+					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 					// locomotion vec2 acceleration
 						// integrate current veloctiy and acceleration -> kinematic integration
 						// integrate acceleration into velocity -> euler's integration
+						
 					// control acceleration rotation
+					
 					// horizontal angular acceleration
 						// integrate current velocity and acceleration -> kinematic integration
 						// integrate angular acceleration -> euler integration
+					
 					break;
 				}
 
