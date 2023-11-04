@@ -155,6 +155,10 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 					// control velocity rotation
 					// horizontal angular velocity -> euler integration
+					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					//demoMode->inputNode.rotate.x = fIntegrateEuler(demoMode->inputNode.rotate.x, rotX, demoState->dt_timer);
+					//demoMode->inputNode.rotate.y = fIntegrateEuler(demoMode->inputNode.rotate.y, rotY, demoState->dt_timer);
 					break;
 				}
 
