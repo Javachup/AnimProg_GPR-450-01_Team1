@@ -128,6 +128,7 @@ inline a3_SpatialPose* a3_cubicMultiplicative(a3_SpatialPose* pose_out, a3_Spati
 inline a3boolean a3_BlendOpConcat(a3_BlendNode* const node_concat);
 inline a3boolean a3_BlendOpLerp(a3_BlendNode* const node_lerp);
 inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale);
+inline a3boolean a3_BlendOpNearest(a3_BlendNode* const node_scale);
 
 /*____________________Hierarchy POSE FUNCTIONS - POINTER BASED____________________*/
 //-----------------------------------------------------------------------------
@@ -227,7 +228,7 @@ inline a3_SpatialPose* a3spatialPoseOpBiCubic(a3_SpatialPose* pose_out,
 //----------------------------------------------
 a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_HierarchyPoseGroup* group, const a3_ClipController* controller, const a3i32 numNodes);
 
-a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
+a3i32 a3blendTreePopulate(a3_BlendTree* tree_in, a3_BlendNodePool* pool);
 
 #ifdef __cplusplus
 }

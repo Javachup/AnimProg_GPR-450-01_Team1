@@ -173,6 +173,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
+		*demoMode->blendParam = 1;
+
 		// Execute the blend tree
 		a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
 

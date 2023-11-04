@@ -165,6 +165,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// blend tree
 		a3_BlendTree blendTree[1];
 		a3_BlendNodePool blendNodePool[1];
+		a3_BlendParam blendParam[1];
 
 		// skeletal animation
 		union

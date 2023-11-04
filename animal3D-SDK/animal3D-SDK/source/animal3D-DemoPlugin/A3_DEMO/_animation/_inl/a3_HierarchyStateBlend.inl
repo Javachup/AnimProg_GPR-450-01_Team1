@@ -97,6 +97,24 @@ inline a3boolean a3_BlendOpScale(a3_BlendNode* const node_scale)
 
 	return (result == data_out);
 }
+
+inline a3boolean a3_BlendOpNearest(a3_BlendNode* const node_scale)
+{
+	if (!node_scale)
+	{
+		return false;
+	}
+
+	a3_BlendData* const data_out = &(node_scale->result);
+	a3_BlendData const* data0 = node_scale->data[0];
+	a3_BlendData const* data1 = node_scale->data[1];
+	a3_BlendParam const param = *(node_scale->param[0]);
+	a3_BlendNumNodes const numNodes = node_scale->numNodes;
+
+	a3_BlendData const* const result = a3hierarchyPoseOpNearest(data_out, numNodes, data0, data1, param);
+
+	return (result == data_out);
+}
 //-----------------------------------------------------------------------------
 
 inline a3i32 a3blendNodeCreate(a3_BlendNode* node_inout, const a3_BlendOp op, const a3ui32 numNodes)
@@ -672,7 +690,7 @@ inline a3_HierarchyPose* getToBlendPose(a3_HierarchyPose* pose_out, const a3_Hie
 }
 
 
-inline a3i32 populateTree(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
+inline a3i32 a3blendTreePopulate(a3_BlendTree* tree_in, a3_BlendNodePool* pool)
 {
 	//each BlendNode in the Pool is tied to a HierarchyNode in the Tree - defines its index in their respective pools, and which index the parent is in
 	//so for blendnode at index 2, its parent is the parent of the HierarchyNode at index 2
