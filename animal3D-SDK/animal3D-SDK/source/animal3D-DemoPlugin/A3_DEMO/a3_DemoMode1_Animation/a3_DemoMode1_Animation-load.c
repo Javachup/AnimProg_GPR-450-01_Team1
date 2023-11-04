@@ -83,9 +83,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		// animation, controlled through this
 		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
 
-		// spatial poses for positioning the character
-		a3spatialPoseReset(&demoMode->directAssignment);
-		a3spatialPoseReset(&demoMode->controlVelocity);
+		// spatial pose for positioning the character
+		a3spatialPoseReset(&demoMode->inputNode);
 
 		// load skeletal data from file
 		hierarchyPoseGroup->hierarchy = 0;
