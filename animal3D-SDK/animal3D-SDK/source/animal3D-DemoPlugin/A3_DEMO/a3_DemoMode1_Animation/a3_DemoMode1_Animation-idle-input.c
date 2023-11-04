@@ -197,14 +197,14 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					// fake velocity translation
 					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) -(a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-					fIntegrateInterpolated(demoMode->inputNode.translate.x, dirX, demoState->dt_timer);
-					fIntegrateInterpolated(demoMode->inputNode.translate.y, dirY, demoState->dt_timer);
+					//fIntegrateInterpolated(demoMode->inputNode.translate.x, dirX, demoState->dt_timer);
+					//fIntegrateInterpolated(demoMode->inputNode.translate.y, dirY, demoState->dt_timer);
 
 					// fake velocity rotation
 					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
 					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-					fIntegrateInterpolated(demoMode->inputNode.rotate.x, rotX, demoState->dt_timer);
-					fIntegrateInterpolated(demoMode->inputNode.rotate.y, rotY, demoState->dt_timer);
+					//fIntegrateInterpolated(demoMode->inputNode.rotate.x, rotX, demoState->dt_timer);
+					//fIntegrateInterpolated(demoMode->inputNode.rotate.y, rotY, demoState->dt_timer);
 					break;
 				}
 
