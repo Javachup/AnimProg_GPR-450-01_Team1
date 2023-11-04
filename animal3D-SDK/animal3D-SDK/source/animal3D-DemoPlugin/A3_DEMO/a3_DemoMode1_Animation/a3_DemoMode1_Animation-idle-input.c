@@ -136,12 +136,16 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 				case animation_input_direct:
 				{
 					// direct translation assignment
-					demoMode->inputNode.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-					demoMode->inputNode.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+					demoMode->inputNode.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) 
+						- (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+					demoMode->inputNode.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) 
+						- (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
 					// direct rotation assignment
-					demoMode->inputNode.rotate.x = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					demoMode->inputNode.rotate.y = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					demoMode->inputNode.rotate.x = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) 
+						- (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+					demoMode->inputNode.rotate.y = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) 
+						- (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 					break;
 				}
 
