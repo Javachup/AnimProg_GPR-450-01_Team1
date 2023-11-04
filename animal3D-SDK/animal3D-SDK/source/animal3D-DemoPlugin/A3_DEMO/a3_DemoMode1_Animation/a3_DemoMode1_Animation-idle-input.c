@@ -151,7 +151,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 					//demoMode->inputNode.translate.x = fIntegrateEuler(demoMode->inputNode.translate.x, dirX, demoState->dt_timer);
-					//demoMode->inputNode.translate.y = fIntegrateEuler(demoMode->inputNode.translate.x, dirY, demoState->dt_timer);
+					//demoMode->inputNode.translate.y = fIntegrateEuler(demoMode->inputNode.translate.y, dirY, demoState->dt_timer);
 
 					// control velocity rotation
 					// horizontal angular velocity -> euler integration
@@ -159,6 +159,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 				}
 
 				case animation_input_kinematic:
+				{
 					// control acceleration translation
 					// locomotion vec2 acceleration
 						// integrate current veloctiy and acceleration -> kinematic integration
@@ -168,15 +169,19 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 						// integrate current velocity and acceleration -> kinematic integration
 						// integrate angular acceleration -> euler integration
 					break;
+				}
 
 				case animation_input_interpolate1:
+				{
 					// fake velocity translation
 						// vec2 position in world space -> interpolation
 					// fake velocity rotation
 						// horizontal target rotation -> interpolation
 					break;
+				}
 
 				case animation_input_interpolate2:
+				{
 					// fake acceleration translation
 					// target velocity in world space 
 						// integrate current velocity -> euler
@@ -186,6 +191,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 						// integrate current angular velocity -> euler
 						// integrate angular velocity -> interpolation
 					break;
+				}
 			}
 		}
 		break;
