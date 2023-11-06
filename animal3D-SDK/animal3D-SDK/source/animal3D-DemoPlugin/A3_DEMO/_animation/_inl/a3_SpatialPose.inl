@@ -27,6 +27,7 @@
 #ifndef __ANIMAL3D_SPATIALPOSE_INL
 #define __ANIMAL3D_SPATIALPOSE_INL
 
+#include <math.h>
 
 //-----------------------------------------------------------------------------
 
@@ -214,6 +215,25 @@ inline a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_Spatial
 	return -1;
 }
 
+inline a3i32 a3real3LerpScaleMult(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u)
+{
+	if (spatialPose_out && spatialPose_0 && spatialPose_1)
+	{
+		a3real temp;
+
+		temp = (spatialPose_1->scale.x * (1 / spatialPose_0->scale.x));
+		spatialPose_out->scale.x = powf(temp, u) * (spatialPose_1->scale.x * (1 / spatialPose_0->scale.x));
+
+		temp = (spatialPose_1->scale.y * (1 / spatialPose_0->scale.y));
+		spatialPose_out->scale.y = powf(temp, u) * (spatialPose_1->scale.y * (1 / spatialPose_0->scale.y));
+
+		temp = (spatialPose_1->scale.z * (1 / spatialPose_0->scale.z));
+		spatialPose_out->scale.z = powf(temp, u) * (spatialPose_1->scale.z * (1 / spatialPose_0->scale.z));
+
+		return 1;
+	}
+	return -1;
+}
 
 //-----------------------------------------------------------------------------
 
