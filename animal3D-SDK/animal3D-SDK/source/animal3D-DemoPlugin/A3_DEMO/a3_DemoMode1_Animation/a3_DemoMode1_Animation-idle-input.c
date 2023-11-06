@@ -80,6 +80,35 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 //
 //	}
 }
+//-----------------------------------------------------------------------------
+//locomotion algorithms
+
+//Euler Integration
+a3real fIntegrateEuler(a3real x, a3real dx_dt, a3real dt)
+{
+	a3real x_tdt;
+	x_tdt = x + (dx_dt * dt);
+
+	return 0;
+}
+
+//Kinematic Integration
+a3real fIntegrateKinematics(a3real x, a3real dx_dt, a3real dx_dt2, a3real dt)
+{
+
+
+
+	return 0;
+}
+
+//Interpolation-based Integration
+a3real fIntegrateInterpolated(a3real x, a3real x_c, a3real u)
+{
+
+
+
+	return 0;
+}
 
 
 //-----------------------------------------------------------------------------

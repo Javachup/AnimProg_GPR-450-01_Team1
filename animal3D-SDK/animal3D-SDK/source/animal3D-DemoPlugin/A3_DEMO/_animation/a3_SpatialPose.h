@@ -159,6 +159,7 @@ a3i32 a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* s
 a3i32 a3real3LerpScaleMult(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3_SpatialPose* spatialPose_1, const a3real u);
 
 //-----------------------------------------------------------------------------
+/*
 //locomotion algorithms:
 
 //Euler Integration
@@ -169,7 +170,7 @@ a3real fIntegrateKinematics(a3real x, a3real dx_dt, a3real dx_dt2, a3real dt);
 
 //Interpolation-based Intergration
 a3real fIntegrateInterpolated(a3real x, a3real x_c, a3real u);
-
+*/
 #ifdef __cplusplus
 }
 #endif	// __cplusplus
