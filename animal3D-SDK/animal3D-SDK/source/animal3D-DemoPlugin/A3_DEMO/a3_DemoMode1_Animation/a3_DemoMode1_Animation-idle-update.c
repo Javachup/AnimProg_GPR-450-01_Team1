@@ -145,6 +145,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	{
 		a3real const dtr = (a3real)dt;
 
+		a3ui32 const rate = 24;
+		a3f64 const fps = (a3f64)rate;
+		if (demoMode->oldClipIndexA != demoMode->clipIndexA)
+		{
+			a3clipControllerSetClip(demoMode->clipCtrlA, demoMode->clipPool, demoMode->clipIndexA, rate, fps);
+			demoMode->oldClipIndexA = demoMode->clipIndexA;
+		}
+
 		// update controllers
 		a3clipControllerUpdate(demoMode->clipCtrl, dt);
 		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
@@ -176,11 +184,17 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		*demoMode->blendParam = 1;
 
 		// Execute the blend tree
-		a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
+		//a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
 
-		// Copy result to activeHS
+		//// Copy result to activeHS
+		//a3hierarchyPoseCopy(activeHS->animPose, 
+		//	&demoMode->blendNodePool->nodes[0].result, 
+		//	//demoMode->ctrl1HS->animPose,
+		//	demoMode->hierarchy_skel->numNodes);
+
+		// TEMP: Copy pose A to activeHS
 		a3hierarchyPoseCopy(activeHS->animPose, 
-			&demoMode->blendNodePool->nodes[0].result, 
+			demoMode->ctrl0HS->animPose, 
 			//demoMode->ctrl1HS->animPose,
 			demoMode->hierarchy_skel->numNodes);
 

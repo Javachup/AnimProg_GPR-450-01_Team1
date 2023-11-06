@@ -141,6 +141,42 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	// control and input modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
 		"    Control target (%u / %u) (';'/Dpad L | '\''/Dpad R): %s", ctrlTarget + 1, animation_ctrlmode_max, ctrlTargetName[ctrlTarget]);
+	
+	a3byte const* clipName[] = {
+	"xbot",
+	"xbot_base",
+	"xbot_ymca",
+	"xbot_idle_pistol",
+	"xbot_skintest",
+	"xbot_gangnam",
+	"xbot_samba",
+	"xbot_backflip",
+	"xbot_idle_f",
+	"xbot_jump_f",
+	"xbot_walk_f",
+	"xbot_run_f",
+	"xbot_walk_s_l_f",
+	"xbot_strafe_l_f",
+	"xbot_turn_l_f",
+	"xbot_walk_s_r_f",
+	"xbot_strafe_r_f",
+	"xbot_turn_r_f",
+	"xbot_idle_m",
+	"xbot_jump_m",
+	"xbot_walk_m",
+	"xbot_run_m",
+	"xbot_walk_s_l_m",
+	"xbot_strafe_l_m",
+	"xbot_turn_l_m",
+	"xbot_walk_s_r_m",
+	"xbot_strafe_r_m",
+	"xbot_turn_r_m",
+	};
+
+	// clip index
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    Clip Index ('n' | 'm'): (%u / %u) %s", demoMode->clipIndexA + 1, 28, clipName[demoMode->clipIndexA]);
+
 	if (ctrlTarget)
 	{
 		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,

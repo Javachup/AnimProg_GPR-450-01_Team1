@@ -164,6 +164,8 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// animation controllers
 		a3_ClipController clipCtrl[1], clipCtrlA[1], clipCtrlB[1];
 		a3_ClipPool clipPool[1];
+		a3ui32 clipIndexA;
+		a3ui32 oldClipIndexA;
 
 		// blend tree
 		a3_BlendTree blendTree[1];
