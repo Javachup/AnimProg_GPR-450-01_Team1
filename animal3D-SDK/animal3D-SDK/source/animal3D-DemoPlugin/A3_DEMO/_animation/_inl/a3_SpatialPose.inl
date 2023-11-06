@@ -236,7 +236,24 @@ inline a3i32 a3real3LerpScaleMult(a3_SpatialPose* spatialPose_out, const a3_Spat
 }
 
 //-----------------------------------------------------------------------------
+inline a3real fIntegrateEuler(a3real x, a3real dx_dt, a3real dx)
+{
 
+}
+
+inline a3real fIntegrateKinematics(a3real x, a3real dx_dt, a3real dx_dt2, a3real dt)
+{
+
+}
+
+inline a3real fIntegrateInterpolated(a3real x, a3real x_c, a3real u)
+{
+
+}
+
+
+
+//-------------------------------------------------------------------------
 
 #endif	// !__ANIMAL3D_SPATIALPOSE_INL
 #endif	// __ANIMAL3D_SPATIALPOSE_H
