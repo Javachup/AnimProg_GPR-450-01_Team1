@@ -218,6 +218,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 				// the scene object is drawn given the info
 			// scale velocityPose by delta time and concat
 
+		demoMode->obj_skeleton_ctrl->euler.z = demoMode->inputNode.rotate.z;
 		demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translate.x;
 		demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translate.y;
 		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.rotate.x;
