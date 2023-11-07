@@ -96,7 +96,7 @@ a3real fIntegrateEuler(a3real x, a3real dx_dt, a3real dt)
 a3real fIntegrateKinematics(a3real x, a3real dx_dt, a3real dx_dt2, a3real dt)
 {
 	a3real x_tdt;
-	x_tdt = x + dx_dt * (dt) + (dx_dt2 * (a3real)pow(dt, 2))/2;
+	x_tdt = x + dx_dt * (dt) + dx_dt2 * ((a3real)pow(dt, 2))/2;
 	return x_tdt;
 	//return 0;
 }
