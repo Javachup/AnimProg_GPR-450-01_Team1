@@ -176,7 +176,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			inputPos.y = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
 			inputRot.x = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-			inputRot.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+			inputRot.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 		}
 
 		switch (demoMode->ctrl_position)
