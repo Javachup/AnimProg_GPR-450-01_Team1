@@ -159,7 +159,14 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		{
 			// ****TO-DO:
 			// get directly from joysticks
-		
+			a3f64 xinput[2];
+			a3XboxControlGetLeftJoystick(demoState->xcontrol, xinput);
+			inputPos.x = (a3real)xinput[0];
+			inputPos.y = (a3real)xinput[1];
+
+			a3XboxControlGetRightJoystick(demoState->xcontrol, xinput);
+			inputRot.x = (a3real)xinput[0];
+			inputRot.y = (a3real)xinput[1];
 		}
 		else
 		{
