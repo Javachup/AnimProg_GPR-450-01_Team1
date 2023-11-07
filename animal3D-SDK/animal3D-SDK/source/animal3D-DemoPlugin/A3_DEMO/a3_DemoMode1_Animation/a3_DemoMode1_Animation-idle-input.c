@@ -143,9 +143,12 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	}
 	
 	a3vec2 inputPos = { a3real_zero, a3real_zero };
-	a3vec2 inputRot = { a3real_zero, a3real_zero };
+	//a3vec2 inputRot = { a3real_zero, a3real_zero };
+	a3real inputRot = a3real_zero;
 	a3real scalePos = a3real_two;
-	a3real scaleRot = a3real_fortyfive;
+	a3real scaleRot = a3real_oneeighty;
+	a3real fakeVel = 0.5f;
+	a3real fakeAcc = 0.5f;
 
 	// choose control target
 	switch (demoMode->ctrl_target)
@@ -156,6 +159,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
 		break;
 	case animation_ctrl_character:
+	{
 		// capture axes
 		if (a3XboxControlIsConnected(demoState->xcontrol))
 		{
@@ -167,121 +171,136 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			inputPos.y = scalePos * (a3real)xinput[1];
 
 			a3XboxControlGetRightJoystick(demoState->xcontrol, xinput);
-			inputRot.x = scaleRot * (a3real)xinput[0];
-			inputRot.y = scaleRot * (a3real)xinput[1];
+			inputRot = scaleRot * (a3real)xinput[0];
 		}
 		else
 		{
 			inputPos.x = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 			inputPos.y = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
-			inputRot.x = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-			inputRot.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+			//inputRot.x = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+			inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 		}
 
 		switch (demoMode->ctrl_position)
 		{
-			case animation_input_direct:
-			{
-				// direct translation assignment
-				demoMode->positionNode.translate.xy = inputPos;
-
-				// direct rotation assignment
-				demoMode->positionNode.rotate.xy = inputRot;
-				break;
-			}
-
-			case animation_input_euler:
-			{
-				// control velocity translation
-				demoMode->velocityNode.translate.x = inputPos.x;
-				demoMode->velocityNode.translate.y = inputPos.y;
-
-				demoMode->positionNode.translate.x += demoMode->velocityNode.translate.x * (a3real)demoState->dt_timer;
-				demoMode->positionNode.translate.y += demoMode->velocityNode.translate.y * (a3real)demoState->dt_timer;
-
-				// control velocity rotation
-				demoMode->velocityNode.rotate.x = inputRot.x;
-				demoMode->velocityNode.rotate.y = inputRot.y;
-
-				demoMode->positionNode.rotate.x += demoMode->velocityNode.rotate.x * (a3real)demoState->dt_timer;
-				demoMode->positionNode.rotate.y += demoMode->velocityNode.rotate.y * (a3real)demoState->dt_timer;
-				break;
-			}
-
-			case animation_input_kinematic:
-			{
-				// control acceleration translation
-				demoMode->velocityNode.translate.x += inputPos.x * (a3real)demoState->dt_timer;
-				demoMode->velocityNode.translate.y += inputPos.y * (a3real)demoState->dt_timer;
-
-				demoMode->positionNode.translate.x += demoMode->velocityNode.translate.x * (a3real)demoState->dt_timer;
-				demoMode->positionNode.translate.y += demoMode->velocityNode.translate.y * (a3real)demoState->dt_timer;
-						
-				// control acceleration rotation
-				demoMode->velocityNode.rotate.x += inputRot.x * (a3real)demoState->dt_timer;
-				demoMode->velocityNode.rotate.y += inputRot.y * (a3real)demoState->dt_timer;
-
-				demoMode->positionNode.rotate.x += demoMode->velocityNode.rotate.x * (a3real)demoState->dt_timer;
-				demoMode->positionNode.rotate.y += demoMode->velocityNode.rotate.y * (a3real)demoState->dt_timer;
-				break;
-			}
-
-			// TODO:
-			case animation_input_interpolate1: //two lines
-			{
-				// fake velocity translation
-				a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) -(a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-				a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-				demoMode->positionNode.translate.x = fIntegrateInterpolated(demoMode->positionNode.translate.x, dirX, (a3real)demoState->dt_timer);
-				demoMode->positionNode.translate.y = fIntegrateInterpolated(demoMode->positionNode.translate.y, dirY, (a3real)demoState->dt_timer);
-
-				// fake velocity rotation
-				a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-				a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-				demoMode->positionNode.rotate.x = (demoMode->positionNode.rotate.y, rotY, (a3real)demoState->dt_timer);
-				demoMode->positionNode.rotate.y = fIntegrateInterpolated(demoMode->positionNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-				break;
-			}
-
-			// TODO:
-			case animation_input_interpolate2: //three lines
-			{
-				// fake acceleration translation
-				a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-				a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-				// target velocity in world space 
-					// integrate current velocity -> euler
-					// integrate velocity -> interpolation
-				demoMode->positionNode.translate.x = fIntegrateEuler(demoMode->positionNode.translate.x, dirX, (a3real)demoState->dt_timer);
-				demoMode->positionNode.translate.y = fIntegrateEuler(demoMode->positionNode.translate.y, dirY, (a3real)demoState->dt_timer);
-				demoMode->positionNode.translate.x = fIntegrateInterpolated(demoMode->positionNode.translate.x, dirX, (a3real)demoState->dt_timer);
-				demoMode->positionNode.translate.y = fIntegrateInterpolated(demoMode->positionNode.translate.y, dirY, (a3real)demoState->dt_timer);
-
-				// fake acceleration rotation
-				a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-				a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-				// target angular velocity
-					// integrate current angular velocity -> euler
-					// integrate angular velocity -> interpolation
-
-				demoMode->positionNode.rotate.x = fIntegrateEuler(demoMode->positionNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-				demoMode->positionNode.rotate.y = fIntegrateEuler(demoMode->positionNode.rotate.y, rotY, (a3real)demoState->dt_timer);
-				demoMode->positionNode.rotate.x = fIntegrateInterpolated(demoMode->positionNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-				demoMode->positionNode.rotate.y = fIntegrateInterpolated(demoMode->positionNode.rotate.y, rotY, (a3real)demoState->dt_timer);
-				break;
-			}
-
-			// find the magnitude of (x, y) and send it to the branching transformation blend tree
-			/*
-			make a new member variable in demoMode to hold 'x'
-			find the magnitude of the vector in each input
-			the blend tree is a member var of demoMode
-			*/
-			demoMode->branchTransParam = a3sqrt((inputPos.x * inputPos.x) + (inputPos.y * inputPos.y));
-			demoMode->branchTransParamInv = 1 - demoMode->branchTransParam;
+		case animation_input_direct:
+		{
+			// direct translation assignment
+			demoMode->positionNode.translate.xy = inputPos;
+			break;
 		}
+
+		case animation_input_euler:
+		{
+			// control velocity translation
+			demoMode->velocityNode.translate.x = inputPos.x;
+			demoMode->velocityNode.translate.y = inputPos.y;
+
+			demoMode->positionNode.translate.x += demoMode->velocityNode.translate.x * (a3real)demoState->dt_timer;
+			demoMode->positionNode.translate.y += demoMode->velocityNode.translate.y * (a3real)demoState->dt_timer;
+			break;
+		}
+
+		case animation_input_kinematic:
+		{
+			// control acceleration translation
+			demoMode->velocityNode.translate.x += inputPos.x * (a3real)demoState->dt_timer;
+			demoMode->velocityNode.translate.y += inputPos.y * (a3real)demoState->dt_timer;
+
+			demoMode->positionNode.translate.x += demoMode->velocityNode.translate.x * (a3real)demoState->dt_timer;
+			demoMode->positionNode.translate.y += demoMode->velocityNode.translate.y * (a3real)demoState->dt_timer;
+			break;
+		}
+
+		case animation_input_interpolate1: //two lines
+		{
+			// fake velocity translation
+			demoMode->positionNode.translate.x = a3lerp(demoMode->positionNode.translate.x, inputPos.x, fakeVel);
+			demoMode->positionNode.translate.y = a3lerp(demoMode->positionNode.translate.y, inputPos.y, fakeVel);
+			break;
+		}
+
+		// TODO:
+		case animation_input_interpolate2: //three lines
+		{
+			//// fake acceleration translation
+			//a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+			//a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+			//// target velocity in world space 
+			//	// integrate current velocity -> euler
+			//	// integrate velocity -> interpolation
+			//demoMode->positionNode.translate.x = fIntegrateEuler(demoMode->positionNode.translate.x, dirX, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.translate.y = fIntegrateEuler(demoMode->positionNode.translate.y, dirY, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.translate.x = fIntegrateInterpolated(demoMode->positionNode.translate.x, dirX, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.translate.y = fIntegrateInterpolated(demoMode->positionNode.translate.y, dirY, (a3real)demoState->dt_timer);
+
+			//// fake acceleration rotation
+			//a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+			//a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+			//// target angular velocity
+			//	// integrate current angular velocity -> euler
+			//	// integrate angular velocity -> interpolation
+
+			//demoMode->positionNode.rotate.x = fIntegrateEuler(demoMode->positionNode.rotate.x, rotX, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.rotate.y = fIntegrateEuler(demoMode->positionNode.rotate.y, rotY, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.rotate.x = fIntegrateInterpolated(demoMode->positionNode.rotate.x, rotX, (a3real)demoState->dt_timer);
+			//demoMode->positionNode.rotate.y = fIntegrateInterpolated(demoMode->positionNode.rotate.y, rotY, (a3real)demoState->dt_timer);
+			break;
+		}
+		}
+
+		switch (demoMode->ctrl_rotation)
+		{
+		case animation_input_direct:
+		{
+			// direct rotation assignment
+			demoMode->positionNode.rotate.z = inputRot;
+			break;
+		}
+
+		case animation_input_euler:
+		{
+			// control velocity rotation
+			demoMode->velocityNode.rotate.z = inputRot;
+
+			demoMode->positionNode.rotate.z += demoMode->velocityNode.rotate.z * (a3real)demoState->dt_timer;
+			break;
+		}
+
+		case animation_input_kinematic:
+		{
+			// control acceleration rotation
+			demoMode->velocityNode.rotate.z += inputRot * (a3real)demoState->dt_timer;
+
+			demoMode->positionNode.rotate.z += demoMode->velocityNode.rotate.z * (a3real)demoState->dt_timer;
+			break;
+		}
+
+		case animation_input_interpolate1: //two lines
+		{
+			// fake velocity rotation
+			demoMode->positionNode.rotate.z = a3lerp(demoMode->positionNode.rotate.z, inputRot, fakeVel);
+			break;
+		}
+
+		// TODO:
+		case animation_input_interpolate2: //three lines
+		{
+			break;
+		}
+		}
+
+		// find the magnitude of (x, y) and send it to the branching transformation blend tree
+		/*
+		make a new member variable in demoMode to hold 'x'
+		find the magnitude of the vector in each input
+		the blend tree is a member var of demoMode
+		*/
+		demoMode->branchTransParam = a3sqrt((inputPos.x * inputPos.x) + (inputPos.y * inputPos.y));
+		demoMode->branchTransParamInv = 1 - demoMode->branchTransParam;
 		break;
+	}
 	}
 
 	// allow the controller, if connected, to change control targets
