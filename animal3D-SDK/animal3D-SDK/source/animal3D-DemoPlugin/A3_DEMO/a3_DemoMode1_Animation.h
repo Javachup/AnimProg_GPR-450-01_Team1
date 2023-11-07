@@ -158,7 +158,8 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
 
 		// spatial pose node
-		a3_SpatialPose inputNode;
+		a3_SpatialPose positionNode;
+		a3_SpatialPose velocityNode;
 
 		// input for branching transition
 		a3real branchTransParam;
