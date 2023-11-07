@@ -251,7 +251,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		demoMode->blendNodePool->nodes[1].data[0] = demoMode->ctrlHS_Walk->animPose;
 		demoMode->blendNodePool->nodes[1].data[1] = demoMode->ctrlHS_Run->animPose;
-		//demoMode->blendNodePool->nodes[1].param[0] = demoMode->blendParam;
+
+		demoMode->blendNodePool->nodes[0].param[0] = &demoMode->branchTransParamInv;
+		demoMode->blendNodePool->nodes[1].param[0] = &demoMode->branchTransParam;
 
 		a3blendTreePopulate(demoMode->blendTree, demoMode->blendNodePool);
 	}
