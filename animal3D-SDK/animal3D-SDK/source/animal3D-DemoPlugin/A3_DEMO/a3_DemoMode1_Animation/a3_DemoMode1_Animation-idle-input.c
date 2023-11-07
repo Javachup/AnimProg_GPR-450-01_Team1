@@ -284,7 +284,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		find the magnitude of the vector in each input
 		the blend tree is a member var of demoMode
 		*/
-		demoMode->branchTransParam = a3sqrt((inputPos.x * inputPos.x) + (inputPos.y * inputPos.y));
+		demoMode->branchTransParam = a3sqrt((inputPos.x * inputPos.x) + (inputPos.y * inputPos.y)) / scalePos;
 		demoMode->branchTransParamInv = 1 - demoMode->branchTransParam;
 		break;
 	}
