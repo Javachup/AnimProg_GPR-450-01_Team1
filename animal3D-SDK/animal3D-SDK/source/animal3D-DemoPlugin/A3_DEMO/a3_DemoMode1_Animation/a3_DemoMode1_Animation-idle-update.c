@@ -147,8 +147,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 		// update controllers
 		a3clipControllerUpdate(demoMode->clipCtrl, dt);
-		a3clipControllerUpdate(demoMode->clipCtrlA, dt);
-		a3clipControllerUpdate(demoMode->clipCtrlB, dt);
+		a3clipControllerUpdate(demoMode->clipCtrl_Idle, dt);
+		a3clipControllerUpdate(demoMode->clipCtrl_Walk, dt);
+		a3clipControllerUpdate(demoMode->clipCtrl_Run, dt);
 
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,
@@ -159,29 +160,40 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		a3_HierarchyState* ctrlHS;
 		a3_ClipController* clipCtrl;
 
-		ctrlHS = demoMode->ctrl0HS;
-		clipCtrl = demoMode->clipCtrlA;
+		ctrlHS = demoMode->ctrlHS_Idle;
+		clipCtrl = demoMode->clipCtrl_Idle;
 		a3hierarchyPoseLerp(ctrlHS->animPose,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
-		ctrlHS = demoMode->ctrl1HS;
-		clipCtrl = demoMode->clipCtrlB;
+		ctrlHS = demoMode->ctrlHS_Walk;
+		clipCtrl = demoMode->clipCtrl_Walk;
 		a3hierarchyPoseLerp(ctrlHS->animPose,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
-		*demoMode->blendParam = 1;
+		ctrlHS = demoMode->ctrlHS_Run;
+		clipCtrl = demoMode->clipCtrl_Run;
+		a3hierarchyPoseLerp(ctrlHS->animPose,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex0,
+			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
+			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
-		// Execute the blend tree
-		a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
+		//*demoMode->blendParam = 1;
 
-		// Copy result to activeHS
+		//// Execute the blend tree
+		//a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
+
+		//// Copy result to activeHS
+		//a3hierarchyPoseCopy(activeHS->animPose, 
+		//	&demoMode->blendNodePool->nodes[0].result, 
+		//	//demoMode->ctrl1HS->animPose,
+		//	demoMode->hierarchy_skel->numNodes);
+
 		a3hierarchyPoseCopy(activeHS->animPose, 
-			&demoMode->blendNodePool->nodes[0].result, 
-			//demoMode->ctrl1HS->animPose,
+			demoMode->ctrlHS_Run->animPose, 
 			demoMode->hierarchy_skel->numNodes);
 
 		// FK pipeline

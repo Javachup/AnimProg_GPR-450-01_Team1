@@ -64,6 +64,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		animationMaxCount_sceneObject = 8,
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
+
+		animationMaxCount_HS = 5,
+		animationMaxCount_ClipCtrl = 4,
 	};
 
 	// scene object rendering program names
@@ -165,7 +168,18 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_HierarchyState sceneGraphState[1];
 
 		// animation controllers
-		a3_ClipController clipCtrl[1], clipCtrlA[1], clipCtrlB[1];
+		union
+		{
+			a3_ClipController clipCtrls[animationMaxCount_ClipCtrl];
+			struct
+			{
+				a3_ClipController
+					clipCtrl[1],
+					clipCtrl_Idle[1],
+					clipCtrl_Walk[1],
+					clipCtrl_Run[1];
+			};
+		};
 		a3_ClipPool clipPool[1];
 
 		// blend tree
@@ -176,14 +190,15 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// skeletal animation
 		union
 		{
-			a3_HierarchyState hierarchyState_skel[4];
+			a3_HierarchyState hierarchyState_skel[animationMaxCount_HS];
 			struct
 			{
 				a3_HierarchyState
 					baseHS[1],
 					outputHS[1],
-					ctrl0HS[1],
-					ctrl1HS[1];
+					ctrlHS_Idle[1],
+					ctrlHS_Walk[1],
+					ctrlHS_Run[1];
 			};
 		};
 
