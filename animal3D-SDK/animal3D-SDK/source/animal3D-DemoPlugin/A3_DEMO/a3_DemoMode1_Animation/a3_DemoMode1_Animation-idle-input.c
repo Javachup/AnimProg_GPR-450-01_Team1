@@ -144,6 +144,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	
 	a3vec2 inputPos = { a3real_zero, a3real_zero };
 	a3vec2 inputRot = { a3real_zero, a3real_zero };
+	a3real scalePos = a3real_two;
+	a3real scaleRot = a3real_fortyfive;
 
 	// choose control target
 	switch (demoMode->ctrl_target)
@@ -161,20 +163,20 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 			// get directly from joysticks
 			a3f64 xinput[2];
 			a3XboxControlGetLeftJoystick(demoState->xcontrol, xinput);
-			inputPos.x = (a3real)xinput[0];
-			inputPos.y = (a3real)xinput[1];
+			inputPos.x = scalePos * (a3real)xinput[0];
+			inputPos.y = scalePos * (a3real)xinput[1];
 
 			a3XboxControlGetRightJoystick(demoState->xcontrol, xinput);
-			inputRot.x = (a3real)xinput[0];
-			inputRot.y = (a3real)xinput[1];
+			inputRot.x = scaleRot * (a3real)xinput[0];
+			inputRot.y = scaleRot * (a3real)xinput[1];
 		}
 		else
 		{
-			inputPos.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-			inputPos.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+			inputPos.x = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+			inputPos.y = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
-			inputRot.x = a3real_oneeighty * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-			inputRot.y = a3real_oneeighty * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+			inputRot.x = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
+			inputRot.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
 		}
 
 		switch (demoMode->ctrl_position)
@@ -203,7 +205,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 				demoMode->velocityNode.rotate.y = inputRot.y;
 
 				demoMode->positionNode.rotate.x += demoMode->velocityNode.rotate.x * (a3real)demoState->dt_timer;
-				demoMode->positionNode.rotate.y += demoMode->velocityNode.rotate.x * (a3real)demoState->dt_timer;
+				demoMode->positionNode.rotate.y += demoMode->velocityNode.rotate.y * (a3real)demoState->dt_timer;
 				break;
 			}
 
