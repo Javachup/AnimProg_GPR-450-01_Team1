@@ -264,6 +264,14 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					break;
 				}
 			}
+
+			// find the magnitude of (x, y) and send it to the branching transformation blend tree
+			/*
+			make a new member variable in demoMode to hold 'x'
+			find the magnitude of the vector in each input
+			the blend tree is a member var of demoMode
+			*/
+			demoMode->branchTransParam = a3sqrt((demoMode->inputNode.translate.x * demoMode->inputNode.translate.x) + (demoMode->inputNode.translate.y * demoMode->inputNode.translate.y));
 		}
 		break;
 	}

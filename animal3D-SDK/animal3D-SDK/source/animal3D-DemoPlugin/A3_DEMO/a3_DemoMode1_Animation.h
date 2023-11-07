@@ -157,6 +157,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		// spatial pose node
 		a3_SpatialPose inputNode;
 
+		// input for branching transition
+		a3real branchTransParam;
+
 		// scene graph
 		a3_Hierarchy sceneGraph[1];
 		a3_HierarchyState sceneGraphState[1];
