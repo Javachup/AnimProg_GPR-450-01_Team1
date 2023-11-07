@@ -143,13 +143,16 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// skeletal
 	if (demoState->updateAnimation)
 	{
+		a3f64 runPB = a3lerp(demoMode->reducedRunSpeed, 1, demoMode->branchTransParam);
+		a3f64 walkPB = a3lerp(1, demoMode->increasedWalkSpeed, demoMode->branchTransParam);
+
 		a3real const dtr = (a3real)dt;
 
 		// update controllers
 		a3clipControllerUpdate(demoMode->clipCtrl, dt);
 		a3clipControllerUpdate(demoMode->clipCtrl_Idle, dt);
-		a3clipControllerUpdate(demoMode->clipCtrl_Walk, dt);
-		a3clipControllerUpdate(demoMode->clipCtrl_Run, dt);
+		a3clipControllerUpdate(demoMode->clipCtrl_Walk, dt * walkPB);
+		a3clipControllerUpdate(demoMode->clipCtrl_Run, dt * runPB);
 
 		// STEP
 	//	a3hierarchyPoseCopy(activeHS->animPose,
