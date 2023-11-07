@@ -165,12 +165,11 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 				case animation_input_direct:
 				{
 					// direct translation assignment
-					demoMode->inputNode.translate.x = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-					demoMode->inputNode.translate.y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+					demoMode->inputNode.translate.x = 5 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
+					demoMode->inputNode.translate.y = 5 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W));
 
 					// direct rotation assignment
-					demoMode->inputNode.rotate.x = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					demoMode->inputNode.rotate.y = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					demoMode->inputNode.rotate.z = 50 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 					break;
 				}
 
@@ -183,41 +182,29 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					demoMode->inputNode.translate.y = fIntegrateEuler(demoMode->inputNode.translate.y, dirY, (a3real)demoState->dt_timer);
 
 					// control velocity rotation
-					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-					demoMode->inputNode.rotate.x = fIntegrateEuler(demoMode->inputNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.y = fIntegrateEuler(demoMode->inputNode.rotate.y, rotY, (a3real)demoState->dt_timer);
+					a3real rotZ = 50 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					demoMode->inputNode.rotate.z = fIntegrateEuler(demoMode->inputNode.rotate.z, rotZ, (a3real)demoState->dt_timer);
 					break;
 				}
 
 				case animation_input_kinematic:
 				{
 					// control acceleration translation
-					a3real dirV_X = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-					a3real dirV_Y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-					a3real dirA_X = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-					a3real dirA_Y = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
+					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 
-					// locomotion vec2 acceleration
-						// integrate current veloctiy and acceleration -> kinematic integration
-						// integrate acceleration into velocity -> euler's integration
-					a3real dirX = fIntegrateKinematics(demoMode->inputNode.translate.x, dirV_X, dirA_X, (a3real)demoState->dt_timer);
-					a3real dirY= fIntegrateKinematics(demoMode->inputNode.translate.y, dirA_Y, dirA_Y, (a3real)demoState->dt_timer);
+					a3real dirX2deriv = 0;
+					a3real dirY2deriv = 0;
+
+					a3real KdirX = fIntegrateKinematics(demoMode->inputNode.translate.x, dirX, dirX2deriv, (a3real)demoState->dt_timer);
+					a3real KdirY = fIntegrateKinematics(demoMode->inputNode.translate.y, dirY, dirY2deriv, (a3real)demoState->dt_timer);
 					demoMode->inputNode.translate.x = fIntegrateEuler(demoMode->inputNode.translate.x, dirX, (a3real)demoState->dt_timer);
 					demoMode->inputNode.translate.y = fIntegrateEuler(demoMode->inputNode.translate.y, dirY, (a3real)demoState->dt_timer);
 						
 					// control acceleration rotation
-
-					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-					// horizontal angular acceleration
-						// integrate current velocity and acceleration -> kinematic integration
-						// integrate angular acceleration -> euler integration
-						// x : ftype, dx_dt : ftype, d2x_dt2 : ftype, dt : float) 
-					demoMode->inputNode.translate.x = fIntegrateKinematics(demoMode->inputNode.translate.x, dirV_X, dirA_X, (a3real)demoState->dt_timer);
-					demoMode->inputNode.translate.y = fIntegrateKinematics(demoMode->inputNode.translate.y, dirA_Y, dirA_Y, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.x = fIntegrateEuler(demoMode->inputNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.y = fIntegrateEuler(demoMode->inputNode.rotate.y, rotY, (a3real)demoState->dt_timer);
+					a3real rotZ = 50 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					demoMode->inputNode.rotate.z = fIntegrateKinematics(demoMode->inputNode.rotate.z, rotZ, rotZ, (a3real)demoState->dt_timer);
+					demoMode->inputNode.rotate.z = fIntegrateEuler(demoMode->inputNode.rotate.y, rotZ, (a3real)demoState->dt_timer);
 					break;
 				}
 
@@ -230,10 +217,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					demoMode->inputNode.translate.y = fIntegrateInterpolated(demoMode->inputNode.translate.y, dirY, (a3real)demoState->dt_timer);
 
 					// fake velocity rotation
-					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-					demoMode->inputNode.rotate.x = (demoMode->inputNode.rotate.y, rotY, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.y = fIntegrateInterpolated(demoMode->inputNode.rotate.x, rotX, (a3real)demoState->dt_timer);
+					a3real rotZ = 50 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+					demoMode->inputNode.rotate.z = fIntegrateInterpolated(demoMode->inputNode.rotate.z, rotZ, (a3real)demoState->dt_timer);
 					break;
 				}
 
@@ -242,25 +227,17 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 					// fake acceleration translation
 					a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 					a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-					// target velocity in world space 
-						// integrate current velocity -> euler
-						// integrate velocity -> interpolation
+
 					demoMode->inputNode.translate.x = fIntegrateEuler(demoMode->inputNode.translate.x, dirX, (a3real)demoState->dt_timer);
 					demoMode->inputNode.translate.y = fIntegrateEuler(demoMode->inputNode.translate.y, dirY, (a3real)demoState->dt_timer);
 					demoMode->inputNode.translate.x = fIntegrateInterpolated(demoMode->inputNode.translate.x, dirX, (a3real)demoState->dt_timer);
 					demoMode->inputNode.translate.y = fIntegrateInterpolated(demoMode->inputNode.translate.y, dirY, (a3real)demoState->dt_timer);
 
 					// fake acceleration rotation
-					a3real rotX = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
-					a3real rotY = a3real_pi * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
-					// target angular velocity
-						// integrate current angular velocity -> euler
-						// integrate angular velocity -> interpolation
+					a3real rotZ = 50 * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 
-					demoMode->inputNode.rotate.x = fIntegrateEuler(demoMode->inputNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.y = fIntegrateEuler(demoMode->inputNode.rotate.y, rotY, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.x = fIntegrateInterpolated(demoMode->inputNode.rotate.x, rotX, (a3real)demoState->dt_timer);
-					demoMode->inputNode.rotate.y = fIntegrateInterpolated(demoMode->inputNode.rotate.y, rotY, (a3real)demoState->dt_timer);
+					demoMode->inputNode.rotate.z = fIntegrateEuler(demoMode->inputNode.rotate.z, rotZ, (a3real)demoState->dt_timer);
+					demoMode->inputNode.rotate.z = fIntegrateInterpolated(demoMode->inputNode.rotate.z, rotZ, (a3real)demoState->dt_timer);
 					break;
 				}
 			}
