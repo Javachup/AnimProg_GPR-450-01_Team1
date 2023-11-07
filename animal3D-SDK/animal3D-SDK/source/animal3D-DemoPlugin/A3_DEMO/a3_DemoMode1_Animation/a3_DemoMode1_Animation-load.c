@@ -237,11 +237,17 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->reducedRunSpeed = demoMode->clipPool->clip[runIndex].duration_sec / demoMode->clipPool->clip[walkIndex].duration_sec;
 		demoMode->increasedWalkSpeed = demoMode->clipPool->clip[walkIndex].duration_sec / demoMode->clipPool->clip[runIndex].duration_sec;
 
-		
+		// Remove root motion from walk and run animations
+		for (a3index i = sampleIndexFirst[walkIndex]; i <= sampleIndexFinal[runIndex]; i++)
+		{
+			a3spatialPoseReset(demoMode->hierarchyPoseGroup_skel->hpose[i].pose);
+		}
 	}
 
 	// Blend Nodes and Tree
 	{
+		*demoMode->blendParam = a3real_zero;
+
 		// Set up the nodes
 		a3blendNodePoolCreate(demoMode->blendNodePool, 2);
 		a3blendNodeCreate(demoMode->blendNodePool->nodes + 0, a3_BlendOpNearest, demoMode->hierarchy_skel->numNodes);
@@ -260,7 +266,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		demoMode->blendNodePool->nodes[1].data[0] = demoMode->ctrlHS_Walk->animPose;
 		demoMode->blendNodePool->nodes[1].data[1] = demoMode->ctrlHS_Run->animPose;
 
-		demoMode->blendNodePool->nodes[0].param[0] = &demoMode->branchTransParamInv;
+		demoMode->blendNodePool->nodes[0].param[0] = demoMode->blendParam;
 		demoMode->blendNodePool->nodes[1].param[0] = &demoMode->branchTransParam;
 
 		a3blendTreePopulate(demoMode->blendTree, demoMode->blendNodePool);

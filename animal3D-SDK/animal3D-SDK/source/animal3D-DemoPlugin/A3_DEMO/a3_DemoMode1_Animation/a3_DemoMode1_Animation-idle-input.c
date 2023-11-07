@@ -186,6 +186,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		{
 		case animation_input_direct:
 		{
+			demoMode->velocityNode.translate.xy = a3vec2_zero;
+
 			// direct translation assignment
 			demoMode->positionNode.translate.xy = inputPos;
 			break;
@@ -215,6 +217,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 
 		case animation_input_interpolate1: //two lines
 		{
+			demoMode->velocityNode.translate.xy = a3vec2_zero;
+
 			// fake velocity translation
 			demoMode->positionNode.translate.x = a3lerp(demoMode->positionNode.translate.x, inputPos.x, fakeVel);
 			demoMode->positionNode.translate.y = a3lerp(demoMode->positionNode.translate.y, inputPos.y, fakeVel);
@@ -284,7 +288,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		find the magnitude of the vector in each input
 		the blend tree is a member var of demoMode
 		*/
-		demoMode->branchTransParam = a3sqrt((inputPos.x * inputPos.x) + (inputPos.y * inputPos.y)) / scalePos;
+		demoMode->branchTransParam = a3sqrt((demoMode->velocityNode.translate.x * demoMode->velocityNode.translate.x) + (demoMode->velocityNode.translate.y * demoMode->velocityNode.translate.y)) / scalePos;
+		*demoMode->blendParam = (a3real)(demoMode->branchTransParam < 0.1f);
 		demoMode->branchTransParamInv = 1 - demoMode->branchTransParam;
 		break;
 	}
