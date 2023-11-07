@@ -175,8 +175,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		}
 		else
 		{
-			inputPos.x = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
-			inputPos.y = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+			inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
+			inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
 
 			//inputRot.x = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_I) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_K));
 			inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
@@ -224,7 +224,13 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// TODO:
 		case animation_input_interpolate2: //three lines
 		{
-			//// fake acceleration translation
+			// fake acceleration translation
+			demoMode->velocityNode.translate.x = a3lerp(demoMode->velocityNode.translate.x, inputPos.x, fakeAcc);
+			demoMode->velocityNode.translate.y = a3lerp(demoMode->velocityNode.translate.y, inputPos.y, fakeAcc);
+
+			demoMode->positionNode.translate.x += demoMode->velocityNode.translate.x * (a3real)demoState->dt_timer;
+			demoMode->positionNode.translate.y += demoMode->velocityNode.translate.y * (a3real)demoState->dt_timer;
+
 			//a3real dirX = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D);
 			//a3real dirY = (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 			//// target velocity in world space 
