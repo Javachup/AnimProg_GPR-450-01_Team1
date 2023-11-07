@@ -231,6 +231,13 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3clipControllerInit(demoMode->clipCtrl_Walk, "xbot_ctrl_walk", demoMode->clipPool, j, rate, fps);
 		j = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
 		a3clipControllerInit(demoMode->clipCtrl_Run, "xbot_ctrl_run", demoMode->clipPool, j, rate, fps);
+
+		a3ui32 walkIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_walk_f");
+		a3ui32 runIndex = a3clipGetIndexInPool(demoMode->clipPool, "xbot_run_f");
+		demoMode->reducedRunSpeed = demoMode->clipPool->clip[runIndex].duration_sec / demoMode->clipPool->clip[walkIndex].duration_sec;
+		demoMode->increasedWalkSpeed = demoMode->clipPool->clip[walkIndex].duration_sec / demoMode->clipPool->clip[runIndex].duration_sec;
+
+		
 	}
 
 	// Blend Nodes and Tree
