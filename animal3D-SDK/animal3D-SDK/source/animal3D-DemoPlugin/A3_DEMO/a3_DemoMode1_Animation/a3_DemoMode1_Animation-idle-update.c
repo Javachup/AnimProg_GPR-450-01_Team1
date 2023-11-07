@@ -181,19 +181,12 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->hierarchyPoseGroup_skel->hpose + demoMode->clipPool->keyframe[clipCtrl->keyframeIndex].sampleIndex1,
 			(a3f32)clipCtrl->keyframeParam, demoMode->hierarchy_skel->numNodes);
 
-		//*demoMode->blendParam = 1;
+		// Execute the blend tree
+		a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
 
-		//// Execute the blend tree
-		//a3blendTreeExecute(demoMode->blendNodePool, demoMode->blendTree);
-
-		//// Copy result to activeHS
-		//a3hierarchyPoseCopy(activeHS->animPose, 
-		//	&demoMode->blendNodePool->nodes[0].result, 
-		//	//demoMode->ctrl1HS->animPose,
-		//	demoMode->hierarchy_skel->numNodes);
-
+		// Copy result to activeHS
 		a3hierarchyPoseCopy(activeHS->animPose, 
-			demoMode->ctrlHS_Run->animPose, 
+			&demoMode->blendNodePool->nodes[0].result, 
 			demoMode->hierarchy_skel->numNodes);
 
 		// FK pipeline

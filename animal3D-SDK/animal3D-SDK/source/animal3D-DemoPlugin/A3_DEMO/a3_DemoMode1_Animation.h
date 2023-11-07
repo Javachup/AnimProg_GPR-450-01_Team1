@@ -162,6 +162,7 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 		// input for branching transition
 		a3real branchTransParam;
+		a3real branchTransParamInv;
 
 		// scene graph
 		a3_Hierarchy sceneGraph[1];
