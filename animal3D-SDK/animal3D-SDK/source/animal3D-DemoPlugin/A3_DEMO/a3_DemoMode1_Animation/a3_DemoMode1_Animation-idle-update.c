@@ -262,6 +262,51 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// 1) check if solution exists
 			//	-> get vector between base and end effector; if it extends max length, straighten limb
 			//	-> position of end effector's target is at the minimum possible distance along this vector
+
+			// For now, I will assume that the positions and orientations are in a spatial pose
+			a3_SpatialPose
+				wristEffector,
+				elbowEffector,
+				wristPos,
+				elbowPos,
+				shoulderPos;
+			a3real upperLength, lowerLength;
+			a3vec3 
+				baseToEnd,
+				baseToConstraint;
+
+			// TODO: Fill these w matrices then pull out the position and orientation out
+			a3spatialPoseOpIdentity(&wristEffector);
+			a3spatialPoseOpIdentity(&elbowEffector);
+			a3spatialPoseOpIdentity(&wristPos);
+			a3spatialPoseOpIdentity(&elbowPos);
+			a3spatialPoseOpIdentity(&shoulderPos);
+
+			a3real3SetReal3(baseToEnd.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
+			a3real3SetReal3(baseToConstraint.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
+
+			upperLength = a3real3Length(a3real3Sub(elbowPos.translate.v, shoulderPos.translate.v));
+			lowerLength = a3real3Length(a3real3Sub(wristPos.translate.v, elbowPos.translate.v));
+
+			if (upperLength + lowerLength >= a3real3Length(baseToEnd.v))
+			{
+				// Set the elbow to be straight towards end effector
+				a3real3SetReal3(elbowPos.translate.v, baseToEnd.v);
+				a3real3Normalize(elbowPos.translate.v);
+				a3real3MulS(elbowPos.translate.v, upperLength);
+				a3real3Add(elbowPos.translate.v, shoulderPos.translate.v);
+
+				// Set the wrist to be straight towards end effector
+				a3real3SetReal3(wristPos.translate.v, baseToEnd.v);
+				a3real3Normalize(wristPos.translate.v);
+				a3real3MulS(wristPos.translate.v, lowerLength);
+				a3real3Add(wristPos.translate.v, elbowPos.translate.v);
+			}
+			else // there is a solution
+			{
+
+			}
+
 			
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
