@@ -304,7 +304,32 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			}
 			else // there is a solution
 			{
+				// Wrist is just where the effector is
+				a3spatialPoseCopy(&wristPos, &wristEffector);
 
+				// Calculate position of the elbow
+				a3real baseLength = a3real3Length(baseToConstraint.v);
+				a3real s = 0.5 * (baseLength + upperLength + lowerLength);
+				a3real area = a3sqrt(s * (s - baseLength) * (s - upperLength) * (s - lowerLength));
+				a3real height = 2 * area / baseLength;
+
+				a3real displacement = a3sqrt(upperLength * upperLength - height * height);
+
+				a3vec3 d, n, h;
+				a3real3SetReal3(d.v, baseToEnd.v);
+				a3real3Normalize(d.v);
+
+				a3real3Cross(n.v, baseToEnd.v, baseToConstraint.v);
+				a3real3Normalize(n.v);
+
+				a3real3Cross(h.v, n.v, d.v);
+
+				a3real3MulS(d.v, displacement);
+				a3real3MulS(h.v, height);
+				a3real3SetReal3(elbowPos.translate.v, a3real3Add(d.v, h.v));
+
+				// TODO: Orientation
+				// That might need to go above before we mess with d, h, and n so that we can use them
 			}
 
 			
