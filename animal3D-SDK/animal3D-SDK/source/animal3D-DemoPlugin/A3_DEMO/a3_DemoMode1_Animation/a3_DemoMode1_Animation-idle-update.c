@@ -309,7 +309,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				// Calculate position of the elbow
 				a3real baseLength = a3real3Length(baseToConstraint.v);
-				a3real s = 0.5 * (baseLength + upperLength + lowerLength);
+				a3real s = 0.5f * (baseLength + upperLength + lowerLength);
 				a3real area = a3sqrt(s * (s - baseLength) * (s - upperLength) * (s - lowerLength));
 				a3real height = 2 * area / baseLength;
 
