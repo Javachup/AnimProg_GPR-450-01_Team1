@@ -132,6 +132,7 @@ a3i32 a3spatialPoseSetScale(a3_SpatialPose* spatialPose, const a3f32 sx, const a
 // translation
 a3i32 a3spatialPoseSetTranslation(a3_SpatialPose* spatialPose, const a3f32 tx, const a3f32 ty, const a3f32 tz);
 
+a3real a3MagVec4(a3vec4 input);
 
 //-----------------------------------------------------------------------------
 
