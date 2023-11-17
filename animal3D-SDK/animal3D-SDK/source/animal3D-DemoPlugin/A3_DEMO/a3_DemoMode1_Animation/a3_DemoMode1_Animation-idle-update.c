@@ -318,6 +318,20 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// resolve local and animation pose for affected joint
 			//	(instead of doing IK for whole skeleton when only one joint has changed)
 
+			// a3kinematicsSolveForward(activeHS->hierarchy);
+
+			a3mat4 lookAtNeckMatrix = {
+				1, 0, 0, fromX,
+				0, 1, 0, fromY,
+				0, 0, 1, fromZ,
+				0, 0, 0, 1
+			};
+
+			jointTransform_neck = lookAtNeckMatrix;
+
+			a3kinematicsSolveForwardPartial(activeHS->hierarchy, j, nodeCount);
+
+
 		}
 
 		// RIGHT ARM REACH
