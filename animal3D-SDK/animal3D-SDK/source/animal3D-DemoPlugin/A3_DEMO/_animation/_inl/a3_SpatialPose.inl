@@ -134,12 +134,62 @@ inline a3i32 a3spatialPoseConvert(a3_SpatialPose* spatialPose, const a3_SpatialP
 	return -1;
 }
 
+inline a3real a3MagVec4(a3vec4 input)
+{
+	//sqr(pow+pow+pow) = abs value
+
+	a3real output;
+
+	output = a3sqrtf((input.x * input.x) + (input.y * input.y) + (input.z * input.z));
+
+	return output;
+}
+
 // restore single node pose from matrix
 inline a3i32 a3spatialPoseRestore(a3_SpatialPose* spatialPose, const a3_SpatialPoseChannel channel, const a3_SpatialPoseEulerOrder order)
 {
 	if (spatialPose)
 	{
+		a3vec4 rotation, translation, scale;
 
+		//Step 1: Take Out Translation
+		translation = spatialPose->transformMat.v3;
+		spatialPose->translate = translation;
+
+		//Step 2: Get Magnitude of Scale 
+		scale.x = a3MagVec4(spatialPose->transformMat.v0);
+		scale.y = a3MagVec4(spatialPose->transformMat.v1);
+		scale.z = a3MagVec4(spatialPose->transformMat.v2);
+
+		//Step 3: Break Down Rotation
+		switch (order)
+		{
+		case a3poseEulerOrder_xyz:
+			/*a3real4x4Product(r.m, rx.m, ry.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, rz.m);*/
+			break;
+		case a3poseEulerOrder_yzx:
+			/*a3real4x4Product(r.m, ry.m, rz.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, rx.m);*/
+			break;
+		case a3poseEulerOrder_zxy:
+			/*a3real4x4Product(r.m, rz.m, rx.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, ry.m);*/
+			break;
+		case a3poseEulerOrder_yxz:
+			/*a3real4x4Product(r.m, ry.m, rx.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, rz.m);*/
+			break;
+		case a3poseEulerOrder_xzy:
+			/*a3real4x4Product(r.m, rx.m, rz.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, ry.m);*/
+			break;
+		case a3poseEulerOrder_zyx:
+			/*a3real4x4Product(r.m, rz.m, ry.m);
+			a3real4x4Product(spatialPose->transformMat.m, r.m, rx.m);*/
+			break;
+		}
+		 
 	}
 	return -1;
 }
