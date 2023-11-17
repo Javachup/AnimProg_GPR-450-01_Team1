@@ -230,15 +230,16 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 			/*
 			struct a3_DemoSceneObject
-	{
-		a3mat4 modelMat;	// model matrix: transform relative to scene
-		a3mat4 modelMatInv;	// inverse model matrix: scene relative to this
-		a3vec3 euler;		// euler angles for direct rotation control
-		a3vec3 position;	// scene position for direct control
-		a3vec3 scale;		// scale (not accounted for in update)
-		a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
-		a3ui32 sceneGraphIndex;	// index in scene graph
-		*/
+			{
+				a3mat4 modelMat;	// model matrix: transform relative to scene
+				a3mat4 modelMatInv;	// inverse model matrix: scene relative to this
+				a3vec3 euler;		// euler angles for direct rotation control
+				a3vec3 position;	// scene position for direct control
+				a3vec3 scale;		// scale (not accounted for in update)
+				a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
+				a3ui32 sceneGraphIndex;	// index in scene graph
+			};
+			*/
 			//^ sceneObject, which is the target for LookAt
 
 			/*
@@ -246,6 +247,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			
 
 			*/
+
+			a3real4 lookAtNeck;
+			a3real4 optional;
+			a3real3 worldUpVec = (0.0, 1.0, 0.0);
+			a3real4x4MakeLookAt(lookAtNeck, optional, eyePos, sceneObject, worldUpVec);
+
+			jointTransform_neck = lookAtNeck;
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
