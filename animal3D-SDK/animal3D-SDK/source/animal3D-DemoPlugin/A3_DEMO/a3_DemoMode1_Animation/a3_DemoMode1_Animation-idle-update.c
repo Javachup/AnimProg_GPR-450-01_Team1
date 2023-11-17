@@ -228,34 +228,31 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// make "look-at" matrix
 			// in this example, +Z is towards locator, +Y is up
 
+			//forward = normalize(from - to)
+			//up = (0,1,0)
+			//right = normalize(cross(up, forward))
+			//up = cross(front, right)
+
+			//mat = 
+			//[right.x, up.x, forward.x, position.x,
+			// right.y, up.y, forward.y, position.y,
+			// right.z, up.z, forward.z, position.z,
+			// 0, 0, 0, 0];
+
+			//[a b c d
+			// e f g h
+			// i j k l
+			// 0 0 0 1]
+			// position = {d h l}
+
+			// his:
+			// [a e i 0
+			// b f j 0
+			// c g k 0
+			// d h l 1
+
+			//a3vec3 from =
 			/*
-			forward = normalize(from - to)
-			up = (0,1,0)
-			right = normalize(cross(up, forward))
-			up = cross(front, right)
-
-			mat = 
-			[right.x, up.x, forward.x, position.x,
-			 right.y, up.y, forward.y, position.y,
-			 right.z, up.z, forward.z, position.z,
-			 0, 0, 0, 0]
-
-
-
-			 [a b c d
-			  e f g h
-			  i j k l
-			  0 0 0 1]
-			  position = {d h l}
-
-			  his:
-			  [a e i 0
-			  b f j 0
-			  c g k 0
-			  d h l 1
-			*/
-
-			a3vec3 from =
 			a3real fromX = jointTransform_neck.x3;
 			a3real fromY = jointTransform_neck.y3;
 			a3real fromZ = jointTransform_neck.z3;
@@ -279,31 +276,35 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real3Normalize(&right);
 
 			a3real3Cross(&up, &forward, &right);
-			/*
+
 			mat = 
 			[right.x, up.x, forward.x, position.x,
 			 right.y, up.y, forward.y, position.y,
 			 right.z, up.z, forward.z, position.z,
-			 0, 0, 0, 0]
+			 0, 0, 0, 0];
 			 
-			 
-			 a3real fromX = jointTransform_neck.x3;
+			a3real fromX = jointTransform_neck.x3;
 			a3real fromY = jointTransform_neck.y3;
 			a3real fromZ = jointTransform_neck.z3;
-			 */
+
 			a3mat4 lookAt = {
 				right[0], up[0], forward[0], fromX,
 				right[1], up[1], forward[1], fromY,
 				right[2], up[2], forward[2], fromZ,
 				0, 0, 0, 0
 			};
+			*/
 
 			a3real4 lookAtNeck;
-			a3real4 optional;
+			a3real4 invLookAt;
 			a3real3 worldUpVec = (0.0, 1.0, 0.0);
-			a3real4x4MakeLookAt(lookAtNeck, optional, eyePos, sceneObject, worldUpVec);
 
-			jointTransform_neck = lookAtNeck;
+			a3real fromX = jointTransform_neck.x3;
+			a3real fromY = jointTransform_neck.y3;
+			a3real fromZ = jointTransform_neck.z3;
+			const a3real eyePos = (a3real)(fromX, fromY, fromZ);
+
+			a3real4x4MakeLookAt(lookAtNeck, invLookAt, &eyePos, sceneObject, worldUpVec);
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
