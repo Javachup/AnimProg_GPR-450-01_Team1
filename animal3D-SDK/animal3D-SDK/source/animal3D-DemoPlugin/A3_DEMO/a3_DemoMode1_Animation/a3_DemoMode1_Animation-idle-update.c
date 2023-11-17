@@ -307,7 +307,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				right[0], up[0], forward[0], fromX,
 				right[1], up[1], forward[1], fromY,
 				right[2], up[2], forward[2], fromZ,
-				0, 0, 0, 0
+				0, 0, 0, 1
 			};
 
 
