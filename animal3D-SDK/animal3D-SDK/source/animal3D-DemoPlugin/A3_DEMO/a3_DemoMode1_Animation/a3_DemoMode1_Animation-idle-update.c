@@ -312,12 +312,41 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			const a3real eyePos = (a3real)(fromX, fromY, fromZ);
 
 			a3real4x4MakeLookAt(lookAtNeck, invLookAt, &eyePos, sceneObject, worldUpVec);
+			a3mat4 lookAt = { lookAtNeck[0], lookAtNeck[1] , lookAtNeck[2] , lookAtNeck[3],
+								lookAtNeck[4], lookAtNeck[5] , lookAtNeck[6] , lookAtNeck[7],
+								lookAtNeck[8], lookAtNeck[9] , lookAtNeck[10] , lookAtNeck[11],
+								lookAtNeck[12], lookAtNeck[13] , lookAtNeck[14] , lookAtNeck[15]};
+
+
+			/*
+			a3mat4 rotXMat = { 1, 0, 0, 0,
+								0, a3cosd(lookAtNeck[0]), -a3sind(lookAtNeck[0]), 0,
+								0, a3sind(lookAtNeck[0]), a3cosd(lookAtNeck[0]), 0,
+								0, 0, 0, 1 };
+			a3mat4 rotYMat = { a3cosd(lookAtNeck[1]), 0, a3sind(lookAtNeck[1]), 0,
+								0, 1, 0, 0,
+								-a3sind(lookAtNeck[1]), 0, a3cosd(lookAtNeck[1]), 0,
+								0, 0, 0, 1 };
+			a3mat4 rotZMat = { a3cosd(lookAtNeck[2]), -a3sind(lookAtNeck[2]), 0, 0,
+								a3sind(lookAtNeck[2]), a3cosd(lookAtNeck[2]), 1, 0,
+								0, 0, 1, 0,
+								0, 0, 0, 1 };
+
+			a3mat4 rotXYMat; //can only multiply 2 matrices at a time
+			a3real4x4Product(rotXYMat.m, rotXMat.m, rotYMat.m);
+			a3mat4 rotMat;
+			a3real4x4Product(rotMat.m, rotXYMat.m, rotZMat.m);
+			
+			*/
+
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// resolve local and animation pose for affected joint
 			//	(instead of doing IK for whole skeleton when only one joint has changed)
 
+
+			activeHS->objectSpace->pose[j].transformMat = lookAt;
 
 
 
