@@ -466,19 +466,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				// TODO: Orientation
 				// That might need to go above before we mess with d, h, and n so that we can use them
-
-				//wristPos = &activeHS->objectSpace->pose[j_wrist]; //wrist pos
-				//elbowPos = &activeHS->objectSpace->pose[j_elbow];
-				//shoulderPos = &activeHS->objectSpace->pose[j_shoulder];
 			}
 
 			
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
 			// work from root to leaf too get correct transformations
-			a3real4x4SetReal4x4(wristPos->transformMat.m, jointTransform_wrist.m);
-			a3real4x4SetReal4x4(elbowPos->transformMat.m, jointTransform_elbow.m);
-			a3real4x4SetReal4x4(shoulderPos->transformMat.m, jointTransform_shoulder.m);
+
 		}
 	}
 }
@@ -528,13 +522,13 @@ void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const 
 
 	// blend FK/IK to final
 	// testing: copy source to final
-	a3hierarchyPoseCopy(activeHS->objectSpace,	// dst: final anim
+	a3hierarchyPoseCopy(activeHS->animPose,	// dst: final anim
 		//activeHS_fk->animPose,	// src: FK anim
-		activeHS_ik->objectSpace,	// src: IK anim
+		activeHS_ik->animPose,	// src: IK anim
 		//baseHS->animPose,	// src: base anim (identity)
 		activeHS->hierarchy->numNodes);
 	// run FK pipeline (skinning optional)
-	//a3animation_update_fk(activeHS, baseHS, poseGroup);
+	a3animation_update_fk(activeHS, baseHS, poseGroup);
 	a3animation_update_skin(activeHS, baseHS);
 }
 
