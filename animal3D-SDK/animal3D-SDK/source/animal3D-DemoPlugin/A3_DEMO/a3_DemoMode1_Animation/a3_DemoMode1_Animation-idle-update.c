@@ -229,24 +229,74 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// in this example, +Z is towards locator, +Y is up
 
 			/*
-			struct a3_DemoSceneObject
-			{
-				a3mat4 modelMat;	// model matrix: transform relative to scene
-				a3mat4 modelMatInv;	// inverse model matrix: scene relative to this
-				a3vec3 euler;		// euler angles for direct rotation control
-				a3vec3 position;	// scene position for direct control
-				a3vec3 scale;		// scale (not accounted for in update)
-				a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
-				a3ui32 sceneGraphIndex;	// index in scene graph
-			};
-			*/
-			//^ sceneObject, which is the target for LookAt
-
-			/*
 			forward = normalize(from - to)
-			
+			up = (0,1,0)
+			right = normalize(cross(up, forward))
+			up = cross(front, right)
 
+			mat = 
+			[right.x, up.x, forward.x, position.x,
+			 right.y, up.y, forward.y, position.y,
+			 right.z, up.z, forward.z, position.z,
+			 0, 0, 0, 0]
+
+
+
+			 [a b c d
+			  e f g h
+			  i j k l
+			  0 0 0 1]
+			  position = {d h l}
+
+			  his:
+			  [a e i 0
+			  b f j 0
+			  c g k 0
+			  d h l 1
 			*/
+
+			a3vec3 from =
+			a3real fromX = jointTransform_neck.x3;
+			a3real fromY = jointTransform_neck.y3;
+			a3real fromZ = jointTransform_neck.z3;
+			a3real from[3] = { fromX, fromY, fromZ };
+
+			a3real toX = sceneObject->modelMat.x3;
+			a3real toY = sceneObject->modelMat.y3;
+			a3real toZ = sceneObject->modelMat.z3;
+			a3real to[3] = { toX, toY, toZ };
+
+			a3real up[3] = { 0, 1, 0 };
+
+			a3real forwardX = fromX - toX;
+			a3real forwardY = fromY - toY;
+			a3real forwardZ = fromZ - toZ;
+			a3real forward[3] = { forwardX, forwardY, forwardZ };
+			a3real3Normalize(&forward);
+
+			a3real right[3];
+			a3real3Cross(&right, &up, &forward);
+			a3real3Normalize(&right);
+
+			a3real3Cross(&up, &forward, &right);
+			/*
+			mat = 
+			[right.x, up.x, forward.x, position.x,
+			 right.y, up.y, forward.y, position.y,
+			 right.z, up.z, forward.z, position.z,
+			 0, 0, 0, 0]
+			 
+			 
+			 a3real fromX = jointTransform_neck.x3;
+			a3real fromY = jointTransform_neck.y3;
+			a3real fromZ = jointTransform_neck.z3;
+			 */
+			a3mat4 lookAt = {
+				right[0], up[0], forward[0], fromX,
+				right[1], up[1], forward[1], fromY,
+				right[2], up[2], forward[2], fromZ,
+				0, 0, 0, 0
+			};
 
 			a3real4 lookAtNeck;
 			a3real4 optional;
@@ -366,6 +416,13 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 		}
 	}
+}
+
+a3vec3 normalize(a3vec3 given)
+{
+	a3real magnitude = sqrt(pow(given.x, 2) + pow(given.y, 2) + pow(given.z, 2));
+	a3vec3 result = { given.x / magnitude, given.y / magnitude, given.z / magnitude };
+	return result;
 }
 
 void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt,
