@@ -183,8 +183,15 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
 		// IK pipeline
-		// ****TO-DO: direct opposite of FK
-
+		a3kinematicsSolveInverse(activeHS); // Solve the local space matrices
+		a3hierarchyPoseRestore(activeHS->localSpace, // Restore the local space to have individual components
+			activeHS->hierarchy->numNodes,
+			poseGroup->channel,
+			poseGroup->order);
+		a3hierarchyPoseDeconcat(activeHS->animPose, // Remove the base pose from the sample pos to get the delta pos
+			activeHS->localSpace,
+			baseHS->localSpace,
+			activeHS->hierarchy->numNodes);
 	}
 }
 
@@ -228,46 +235,31 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// make "look-at" matrix
 			// in this example, +Z is towards locator, +Y is up
 
+			//forward = normalize(from - to)
+			//up = (0,1,0)
+			//right = normalize(cross(up, forward))
+			//up = cross(front, right)
+
+			//mat = 
+			//[right.x, up.x, forward.x, position.x,
+			// right.y, up.y, forward.y, position.y,
+			// right.z, up.z, forward.z, position.z,
+			// 0, 0, 0, 0];
+
+			//[a b c d
+			// e f g h
+			// i j k l
+			// 0 0 0 1]
+			// position = {d h l}
+
+			// his:
+			// [a e i 0
+			// b f j 0
+			// c g k 0
+			// d h l 1
+
+			//a3vec3 from =
 			/*
-			struct a3_DemoSceneObject
-			{
-				a3mat4 modelMat;	// model matrix: transform relative to scene
-				a3mat4 modelMatInv;	// inverse model matrix: scene relative to this
-				a3vec3 euler;		// euler angles for direct rotation control
-				a3vec3 position;	// scene position for direct control
-				a3vec3 scale;		// scale (not accounted for in update)
-				a3ui32 scaleMode;	// 0 = off; 1 = uniform; other = non-uniform (nightmare)
-				a3ui32 sceneGraphIndex;	// index in scene graph
-				*/
-			//^ sceneObject, which is the target for LookAt
-
-			/*
-			forward = normalize(from - to)
-			up = (0,1,0)
-			right = normalize(cross(up, forward))
-			up = cross(front, right)
-
-			mat = 
-			[right.x, up.x, forward.x, position.x,
-			 right.y, up.y, forward.y, position.y,
-			 right.z, up.z, forward.z, position.z,
-			 0, 0, 0, 0]
-
-
-
-			 [a b c d
-			  e f g h
-			  i j k l
-			  0 0 0 1]
-			  position = {d h l}
-
-			  his:
-			  [a e i 0
-			  b f j 0
-			  c g k 0
-			  d h l 1
-			*/
-			//a3vec3 from = 
 			a3real fromX = jointTransform_neck.x3;
 			a3real fromY = jointTransform_neck.y3;
 			a3real fromZ = jointTransform_neck.z3;
@@ -291,26 +283,35 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			a3real3Normalize(&right);
 
 			a3real3Cross(&up, &forward, &right);
-			/*
+
 			mat = 
 			[right.x, up.x, forward.x, position.x,
 			 right.y, up.y, forward.y, position.y,
 			 right.z, up.z, forward.z, position.z,
-			 0, 0, 0, 0]
+			 0, 0, 0, 0];
 			 
-			 
-			 a3real fromX = jointTransform_neck.x3;
+			a3real fromX = jointTransform_neck.x3;
 			a3real fromY = jointTransform_neck.y3;
 			a3real fromZ = jointTransform_neck.z3;
-			 */
+
 			a3mat4 lookAt = {
 				right[0], up[0], forward[0], fromX,
 				right[1], up[1], forward[1], fromY,
 				right[2], up[2], forward[2], fromZ,
 				0, 0, 0, 1
 			};
+			*/
 
+			a3real4 lookAtNeck;
+			a3real4 invLookAt;
+			a3real3 worldUpVec = (0.0, 1.0, 0.0);
 
+			a3real fromX = jointTransform_neck.x3;
+			a3real fromY = jointTransform_neck.y3;
+			a3real fromZ = jointTransform_neck.z3;
+			const a3real eyePos = (a3real)(fromX, fromY, fromZ);
+
+			a3real4x4MakeLookAt(lookAtNeck, invLookAt, &eyePos, sceneObject, worldUpVec);
 
 			// ****TO-DO: 
 			// reassign resolved transforms to OBJECT-SPACE matrices
@@ -352,48 +353,57 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//	-> position of end effector's target is at the minimum possible distance along this vector
 
 			// For now, I will assume that the positions and orientations are in a spatial pose
-			a3_SpatialPose
+			a3_DemoSceneObject*
 				wristEffector,
-				elbowEffector,
-				wristPos,
-				elbowPos,
-				shoulderPos;
+				* wristConstraint;
+
 			a3real upperLength, lowerLength;
 			a3vec3 
 				baseToEnd,
 				baseToConstraint;
 
+			a3_SpatialPose* wristPos, 
+				* elbowPos, 
+				* shoulderPos;
+			
+			//obj_skeleton_wristEffector_r_ctrl
+			// obj_skeleton_wristConstraint_r_ctrl
+
+			wristPos = &activeHS->objectSpace->pose[j_wrist]; //wrist pos
+			elbowPos = &activeHS->objectSpace->pose[j_elbow];
+			shoulderPos = &activeHS->objectSpace->pose[j_shoulder];
+
+			wristEffector = demoMode->obj_skeleton_wristEffector_r_ctrl;
+			wristConstraint = demoMode->obj_skeleton_wristConstraint_r_ctrl;
+
+			//we want the spatial pose to minipulate it
 			// TODO: Fill these w matrices then pull out the position and orientation out
-			a3spatialPoseOpIdentity(&wristEffector);
-			a3spatialPoseOpIdentity(&elbowEffector);
-			a3spatialPoseOpIdentity(&wristPos);
-			a3spatialPoseOpIdentity(&elbowPos);
-			a3spatialPoseOpIdentity(&shoulderPos);
+			a3real3SetReal3(baseToEnd.v, a3real3Sub(wristEffector->position.v, shoulderPos->translate.v));
+			a3real3SetReal3(baseToConstraint.v, a3real3Sub(wristConstraint->position.v, shoulderPos->translate.v));
 
-			a3real3SetReal3(baseToEnd.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
-			a3real3SetReal3(baseToConstraint.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
-
-			upperLength = a3real3Length(a3real3Sub(elbowPos.translate.v, shoulderPos.translate.v));
-			lowerLength = a3real3Length(a3real3Sub(wristPos.translate.v, elbowPos.translate.v));
+			upperLength = a3real3Length(a3real3Sub(elbowPos->translate.v, shoulderPos->translate.v));
+			lowerLength = a3real3Length(a3real3Sub(wristPos->translate.v, elbowPos->translate.v));
 
 			if (upperLength + lowerLength >= a3real3Length(baseToEnd.v))
 			{
 				// Set the elbow to be straight towards end effector
-				a3real3SetReal3(elbowPos.translate.v, baseToEnd.v);
-				a3real3Normalize(elbowPos.translate.v);
-				a3real3MulS(elbowPos.translate.v, upperLength);
-				a3real3Add(elbowPos.translate.v, shoulderPos.translate.v);
+				a3real3SetReal3(elbowPos->translate.v, baseToEnd.v);
+				a3real3Normalize(elbowPos->translate.v);
+				a3real3MulS(elbowPos->translate.v, upperLength);
+				a3real3Add(elbowPos->translate.v, shoulderPos->translate.v);
 
 				// Set the wrist to be straight towards end effector
-				a3real3SetReal3(wristPos.translate.v, baseToEnd.v);
-				a3real3Normalize(wristPos.translate.v);
-				a3real3MulS(wristPos.translate.v, lowerLength);
-				a3real3Add(wristPos.translate.v, elbowPos.translate.v);
+				a3real3SetReal3(wristPos->translate.v, baseToEnd.v);
+				a3real3Normalize(wristPos->translate.v);
+				a3real3MulS(wristPos->translate.v, lowerLength);
+				a3real3Add(wristPos->translate.v, elbowPos->translate.v);
 			}
 			else // there is a solution
 			{
-				// Wrist is just where the effector is
-				a3spatialPoseCopy(&wristPos, &wristEffector);
+				//// Wrist is just where the effector is poopy poo poo poopy poo... poo
+				a3real3SetReal3(wristPos->scale.v, wristEffector->scale.v);
+				a3real3SetReal3(wristPos->rotate.v, wristEffector->euler.v);
+				a3real3SetReal3(wristPos->translate.v, wristEffector->position.v);
 
 				// Calculate position of the elbow
 				a3real baseLength = a3real3Length(baseToConstraint.v);
@@ -414,7 +424,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				a3real3MulS(d.v, displacement);
 				a3real3MulS(h.v, height);
-				a3real3SetReal3(elbowPos.translate.v, a3real3Add(d.v, h.v));
+				a3real3SetReal3(elbowPos->translate.v, a3real3Add(d.v, h.v));
 
 				// TODO: Orientation
 				// That might need to go above before we mess with d, h, and n so that we can use them
