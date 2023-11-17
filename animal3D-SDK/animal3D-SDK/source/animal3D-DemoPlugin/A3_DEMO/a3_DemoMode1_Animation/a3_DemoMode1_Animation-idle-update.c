@@ -317,6 +317,10 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			// resolve local and animation pose for affected joint
 			//	(instead of doing IK for whole skeleton when only one joint has changed)
 
+
+
+
+
 		}
 
 		// RIGHT ARM REACH
@@ -424,14 +428,6 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 		}
 	}
 }
-
-a3vec3 normalize(a3vec3 given)
-{
-	a3real magnitude = sqrt(pow(given.x, 2) + pow(given.y, 2) + pow(given.z, 2));
-	a3vec3 result = { given.x / magnitude, given.y / magnitude, given.z / magnitude };
-	return result;
-}
-
 void a3animation_update_animation(a3_DemoMode1_Animation* demoMode, a3f64 const dt,
 	a3boolean const updateIK)
 {
