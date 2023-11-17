@@ -354,6 +354,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				0, 0, 0, 1
 			};
 
+			//a3real4x4Product(lookAtNeckMatrix.m, lookAtNeckMatrix.m, rotMat.m);
+
 			jointTransform_neck = lookAtNeckMatrix;
 
 			a3kinematicsSolveForwardPartial(activeHS->hierarchy, j, nodeCount);
