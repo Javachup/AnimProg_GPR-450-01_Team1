@@ -344,6 +344,8 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 				a3real3MulS(h.v, height);
 				a3real3SetReal3(elbowPos->translate.v, a3real3Add(d.v, h.v));
 
+				//math is done isolated
+				//need to put in matrix
 				// TODO: Orientation
 				// That might need to go above before we mess with d, h, and n so that we can use them
 
