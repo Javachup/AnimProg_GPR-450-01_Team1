@@ -37,6 +37,10 @@
 #include "_animation/a3_KeyframeAnimationController.h"
 #include "_animation/a3_HierarchyStateBlend.h"
 
+#include "animal3D/a3input/a3_KeyboardInput.h"
+#include "animal3D/a3input/a3_MouseInput.h"
+#include "animal3D/a3input/a3_XboxControllerInput.h"
+
 
 //-----------------------------------------------------------------------------
 
@@ -45,6 +49,7 @@ extern "C"
 {
 #else	// !__cplusplus
 typedef struct a3_DemoMode1_Animation						a3_DemoMode1_Animation;
+typedef struct a3_DemoMode1_Animation_CharCtrlMan			a3_DemoMode1_Animation_CharCtrlMan;
 typedef enum a3_DemoMode1_Animation_RenderProgramName		a3_DemoMode1_Animation_RenderProgramName;
 typedef enum a3_DemoMode1_Animation_DisplayProgramName		a3_DemoMode1_Animation_DisplayProgramName;
 typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_ActiveCameraName;
@@ -144,6 +149,45 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 
 
 //-----------------------------------------------------------------------------
+
+	// data struct to manage input, simulation, and display of a character
+	struct a3_DemoMode1_Animation_CharCtrlMan
+	{
+		//// INPUT: process control methods and buttons
+		////________MOUSE INPUT________//
+		//// when you click the left button, the character reaches out to the mouse's current position
+		//a3boolean CCMclick;
+		//a3i32 CCMmouseX, CCMmouseY;
+
+		////________KEYBOARD INPUT________//
+		//// wherever the keyboard input is, the character looks towards
+		//a3boolean CCMkeyW;	// add 1 to Y
+		//a3boolean CCMkeyA;	// sub 1 from X
+		//a3boolean CCMkeyS;	// sub 1 from Y
+		//a3boolean CCMkeyD;	// add 1 to X
+
+		////________XBOX INPUT________//
+		//// the character looks towards the right joystick movement
+		//// the character reaches towards the left joystick position when the A button is pressed
+		//// xbox joystick (x, y) values
+		//a3f64 CCMleftX;
+		//a3f64 CCMleftY;
+		//a3f64 CCMrightX;
+		//a3f64 CCMrightY;
+		//// xbox a button
+		//a3boolean CCMbuttonA;
+		//// xbox connection
+		//a3boolean CCMxboxConn;
+
+		// SIMULATION: process clip controllers, blending, inputs, and set up
+		a3_ClipController CCMclipCtrl;
+
+		// DISPLAY: display skeleton in the current pose
+		a3ui32 CCMcurrentPose;
+		// enable debugging mode
+		a3boolean CCMdebuggingModeOn;	// onKeyChange
+		a3ui32 CCMinputPose;
+	};
 
 	// demo mode for basic shading
 	struct a3_DemoMode1_Animation
