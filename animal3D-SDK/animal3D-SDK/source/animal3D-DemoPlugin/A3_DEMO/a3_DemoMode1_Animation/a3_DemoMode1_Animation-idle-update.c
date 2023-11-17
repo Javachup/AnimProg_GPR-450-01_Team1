@@ -183,8 +183,15 @@ void a3animation_update_ik(a3_HierarchyState* activeHS,
 		activeHS->hierarchy == poseGroup->hierarchy)
 	{
 		// IK pipeline
-		// ****TO-DO: direct opposite of FK
-
+		a3kinematicsSolveInverse(activeHS); // Solve the local space matrices
+		a3hierarchyPoseRestore(activeHS->localSpace, // Restore the local space to have individual components
+			activeHS->hierarchy->numNodes,
+			poseGroup->channel,
+			poseGroup->order);
+		a3hierarchyPoseDeconcat(activeHS->animPose, // Remove the base pose from the sample pos to get the delta pos
+			activeHS->localSpace,
+			baseHS->localSpace,
+			activeHS->hierarchy->numNodes);
 	}
 }
 
