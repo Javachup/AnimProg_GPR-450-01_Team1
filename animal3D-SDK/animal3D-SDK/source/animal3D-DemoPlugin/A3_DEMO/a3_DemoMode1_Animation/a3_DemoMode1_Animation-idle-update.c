@@ -271,48 +271,57 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			//	-> position of end effector's target is at the minimum possible distance along this vector
 
 			// For now, I will assume that the positions and orientations are in a spatial pose
-			a3_SpatialPose
+			a3_DemoSceneObject*
 				wristEffector,
-				elbowEffector,
-				wristPos,
-				elbowPos,
-				shoulderPos;
+				* wristConstraint;
+
 			a3real upperLength, lowerLength;
 			a3vec3 
 				baseToEnd,
 				baseToConstraint;
 
+			a3_SpatialPose* wristPos, 
+				* elbowPos, 
+				* shoulderPos;
+			
+			//obj_skeleton_wristEffector_r_ctrl
+			// obj_skeleton_wristConstraint_r_ctrl
+
+			wristPos = &activeHS->objectSpace->pose[j_wrist]; //wrist pos
+			elbowPos = &activeHS->objectSpace->pose[j_elbow];
+			shoulderPos = &activeHS->objectSpace->pose[j_shoulder];
+
+			wristEffector = demoMode->obj_skeleton_wristEffector_r_ctrl;
+			wristConstraint = demoMode->obj_skeleton_wristConstraint_r_ctrl;
+
+			//we want the spatial pose to minipulate it
 			// TODO: Fill these w matrices then pull out the position and orientation out
-			a3spatialPoseOpIdentity(&wristEffector);
-			a3spatialPoseOpIdentity(&elbowEffector);
-			a3spatialPoseOpIdentity(&wristPos);
-			a3spatialPoseOpIdentity(&elbowPos);
-			a3spatialPoseOpIdentity(&shoulderPos);
+			a3real3SetReal3(baseToEnd.v, a3real3Sub(wristEffector->position.v, shoulderPos->translate.v));
+			a3real3SetReal3(baseToConstraint.v, a3real3Sub(wristConstraint->position.v, shoulderPos->translate.v));
 
-			a3real3SetReal3(baseToEnd.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
-			a3real3SetReal3(baseToConstraint.v, a3real3Sub(wristPos.translate.v, shoulderPos.translate.v));
-
-			upperLength = a3real3Length(a3real3Sub(elbowPos.translate.v, shoulderPos.translate.v));
-			lowerLength = a3real3Length(a3real3Sub(wristPos.translate.v, elbowPos.translate.v));
+			upperLength = a3real3Length(a3real3Sub(elbowPos->translate.v, shoulderPos->translate.v));
+			lowerLength = a3real3Length(a3real3Sub(wristPos->translate.v, elbowPos->translate.v));
 
 			if (upperLength + lowerLength >= a3real3Length(baseToEnd.v))
 			{
 				// Set the elbow to be straight towards end effector
-				a3real3SetReal3(elbowPos.translate.v, baseToEnd.v);
-				a3real3Normalize(elbowPos.translate.v);
-				a3real3MulS(elbowPos.translate.v, upperLength);
-				a3real3Add(elbowPos.translate.v, shoulderPos.translate.v);
+				a3real3SetReal3(elbowPos->translate.v, baseToEnd.v);
+				a3real3Normalize(elbowPos->translate.v);
+				a3real3MulS(elbowPos->translate.v, upperLength);
+				a3real3Add(elbowPos->translate.v, shoulderPos->translate.v);
 
 				// Set the wrist to be straight towards end effector
-				a3real3SetReal3(wristPos.translate.v, baseToEnd.v);
-				a3real3Normalize(wristPos.translate.v);
-				a3real3MulS(wristPos.translate.v, lowerLength);
-				a3real3Add(wristPos.translate.v, elbowPos.translate.v);
+				a3real3SetReal3(wristPos->translate.v, baseToEnd.v);
+				a3real3Normalize(wristPos->translate.v);
+				a3real3MulS(wristPos->translate.v, lowerLength);
+				a3real3Add(wristPos->translate.v, elbowPos->translate.v);
 			}
 			else // there is a solution
 			{
-				// Wrist is just where the effector is
-				a3spatialPoseCopy(&wristPos, &wristEffector);
+				//// Wrist is just where the effector is poopy poo poo poopy poo... poo
+				a3real3SetReal3(wristPos->scale.v, wristEffector->scale.v);
+				a3real3SetReal3(wristPos->rotate.v, wristEffector->euler.v);
+				a3real3SetReal3(wristPos->translate.v, wristEffector->position.v);
 
 				// Calculate position of the elbow
 				a3real baseLength = a3real3Length(baseToConstraint.v);
@@ -333,7 +342,7 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 
 				a3real3MulS(d.v, displacement);
 				a3real3MulS(h.v, height);
-				a3real3SetReal3(elbowPos.translate.v, a3real3Add(d.v, h.v));
+				a3real3SetReal3(elbowPos->translate.v, a3real3Add(d.v, h.v));
 
 				// TODO: Orientation
 				// That might need to go above before we mess with d, h, and n so that we can use them
