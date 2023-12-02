@@ -36,6 +36,8 @@
 
 #include "../a3_DemoState.h"
 
+#include <stdio.h>
+
 
 //-----------------------------------------------------------------------------
 
@@ -118,22 +120,44 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//demoMode->obj_skeleton[4].position.y += -5.0f;
 	//demoMode->obj_skeleton[4].euler.y += -30.0f;
 
-	// next set up hierarchy poses
-	hierarchy = demoMode->hierarchy_skel;
-	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
-	hierarchyPoseGroup->hierarchy = 0;
+	//// next set up hierarchy poses
+	//hierarchy = demoMode->hierarchy_skel;
+	//hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
+	//hierarchyPoseGroup->hierarchy = 0;
 
-	// load from file
-	/*a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
-		"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");*/
-	
+	//// load from file
+	//a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
+	//	"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
+	//
 
-	// finally set up hierarchy states
-	// Create each base state
-	for (a3index i = 0; i < animationMaxCount_hs; i++)
+	//// finally set up hierarchy states
+	//// Create each base state
+	//for (a3index i = 0; i < animationMaxCount_hs; i++)
+	//{
+	//	demoMode->hierarchyState_skel[i].hierarchy = 0;
+	//	a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
+	//}
+
+	// allocate poses
+	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 1, a3poseEulerOrder_xyz | a3poseEulerOrder_yzx | a3poseEulerOrder_zxy | a3poseEulerOrder_yxz | a3poseEulerOrder_xzy | a3poseEulerOrder_zyx);
+
+	// define "bind pose" or "base pose" or the initial transformation
+	//	description for each joint (not a literal transform)
+	p = 0;
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+	spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
+	//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
+
+	// each joint is 2 units behind the previous one
+	for (int i = 1; i <= 15; ++i)
 	{
-		demoMode->hierarchyState_skel[i].hierarchy = 0;
-		a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
+		char jointName[20];
+		sprintf(jointName, "skel:vert%d", i + 1);
+		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+		a3ui32 xTranslation = i * (a3ui32)2;
+		a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
+		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
 	// Copy base pose to the base hs
@@ -141,32 +165,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);
 	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
-
-	// Set up keyframes
-
-	a3keyframePoolCreate(demoMode->keys, demoMode->hierarchyPoseGroup_skel->poseCount);
-	for (a3index i = 0; i < demoMode->hierarchyPoseGroup_skel->poseCount; i++)
-	{
-		a3keyframeInit(demoMode->keys->keyframe + i, 1, i);
-	}
-
-	// Set up clips
-	// (These keyframes are guesses for the clips based on the HTR animation)
-	a3clipPoolCreate(demoMode->clips, 5);
-	a3clipInit(demoMode->clips->clip + 0, "Clip 0", demoMode->keys, 1, 10);
-	a3clipInit(demoMode->clips->clip + 1, "Clip 1", demoMode->keys, 11, 20);
-	a3clipInit(demoMode->clips->clip + 2, "Clip 2", demoMode->keys, 20, 26);
-	a3clipInit(demoMode->clips->clip + 3, "Clip 3", demoMode->keys, 27, 54);
-	a3clipInit(demoMode->clips->clip + 4, "Clip 4", demoMode->keys, 54, 80);
-
-	for (a3index i = 0; i < 5; i++)
-		a3clipCalculateDuration(demoMode->clips->clip + i);
-
-	// Set up clip controllers
-	a3clipControllerInit(demoMode->clipCtrl1, "ctrl1", demoMode->clips, 0);
-	a3clipControllerInit(demoMode->clipCtrl2, "ctrl2", demoMode->clips, 1);
-	a3clipControllerInit(demoMode->clipCtrl3, "ctrl3", demoMode->clips, 2);
-	a3clipControllerInit(demoMode->clipCtrl4, "ctrl4", demoMode->clips, 3);
 
 	demoMode->currentOp = 0;
 	demoMode->shouldDisplayOp = a3true;
