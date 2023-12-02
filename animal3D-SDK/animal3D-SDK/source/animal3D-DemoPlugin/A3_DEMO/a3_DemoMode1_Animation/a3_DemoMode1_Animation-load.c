@@ -168,7 +168,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
 		hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 
-		for (int i = 0; i < 15; ++i)
+		for (int i = 1; i <= 15; ++i)
 		{
 			char jointName[20];
 			sprintf(jointName, "skel:vert%d", i + 1);
