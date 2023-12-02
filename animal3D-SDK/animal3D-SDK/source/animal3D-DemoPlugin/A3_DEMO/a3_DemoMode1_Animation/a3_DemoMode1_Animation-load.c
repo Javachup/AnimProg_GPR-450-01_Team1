@@ -158,7 +158,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		}
 
 		// allocate poses
-		a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 1);
+		a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 3);
 
 		// define "bind pose" or "base pose" or the initial transformation
 		//	description for each joint (not a literal transform)
@@ -177,44 +177,20 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
 			hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 		}
-
-	/*
-		// load skeletal data from file
-		hierarchyPoseGroup->hierarchy = 0;
-		a3hierarchyPoseGroupLoadHTR(hierarchyPoseGroup, hierarchy,
-			//"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
-			"../../../../resource/animdata/xbot/xbot_loco.htr");
-
-		// edit assets as needed
-		// mixamo assets have the wrong base pose; use first key as base and subtract from all
+		
+		// each remaining pose represents a "delta" from the base
+		// initialize the changes where applicable
+		// (note: the channels describe which pose components can change)
 		p = 1;
-		a3hierarchyPoseCopy(hierarchyPoseGroup->hpose, hierarchyPoseGroup->hpose + p, hierarchy->numNodes);
-		for (; p < hierarchyPoseGroup->hposeCount; ++p)
-			a3hierarchyPoseDeconcat(hierarchyPoseGroup->hpose + p, hierarchyPoseGroup->hpose + p,
-				hierarchyPoseGroup->hpose, hierarchy->numNodes);
+		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+		a3spatialPoseSetRotation(spatialPose, +45.0f, +60.0f, +90.0f);	// rotate whole figure about all axes
 
-		// furthermore, end joints were removed, so they have no animation data; initialize it as identity
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "HeadTop_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "LeftToe_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
-		for (j = a3hierarchyGetNodeIndex(hierarchy, "RightToe_End"), p = 1;
-			p < hierarchyPoseGroup->hposeCount; ++p)
-			a3spatialPoseReset(hierarchyPoseGroup->hpose[p].pose + j);
 
-		// finally, append prefix names to match what is expected for skinning
-		a3hierarchyPrefixNodeNames(demoMode->hierarchy_skel, "mixamorig:");
-
-		// save hierarchy assets
-		a3hierarchySaveBinary(demoMode->sceneGraph, fileStream);
-		a3hierarchySaveBinary(hierarchy, fileStream);
-		a3hierarchyPoseGroupSaveBinary(hierarchyPoseGroup, fileStream);
-
-		// done
-		a3fileStreamClose(fileStream);
-	*/
+		p = 2;
+		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+		a3spatialPoseSetScale(spatialPose, 2.0f, 2.0f, 2.0f);	// uniformly scale whole figure up to 200%
 	}
 
 
