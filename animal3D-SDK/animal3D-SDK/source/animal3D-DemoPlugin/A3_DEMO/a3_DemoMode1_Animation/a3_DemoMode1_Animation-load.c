@@ -138,6 +138,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//	a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
 	//}
 
+	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
+
 	// allocate poses
 	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 1, a3poseEulerOrder_xyz | a3poseEulerOrder_yzx | a3poseEulerOrder_zxy | a3poseEulerOrder_yxz | a3poseEulerOrder_xzy | a3poseEulerOrder_zyx);
 
@@ -150,17 +152,19 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 
 	// each joint is 2 units behind the previous one
-	for (int i = 1; i <= 15; ++i)
+	for (a3index i = 1; i < 16; ++i)
 	{
 		char jointName[20];
 		sprintf(jointName, "skel:vert%d", i + 1);
 		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
-		a3ui32 xTranslation = i * (a3ui32)2;
-		a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
+		a3real xTranslation = 0.1f;
+		a3spatialPoseSetTranslation(spatialPose, xTranslation, 0.0f, 0.0f);
 		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
 	// Copy base pose to the base hs
+	hierarchy = demoMode->hierarchy_skel;
+
 	a3hierarchyPoseCopy(demoMode->hs_base->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);
