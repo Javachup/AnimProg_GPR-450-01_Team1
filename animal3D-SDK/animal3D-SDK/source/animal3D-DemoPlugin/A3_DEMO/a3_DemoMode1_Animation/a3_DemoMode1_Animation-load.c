@@ -150,6 +150,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		// set up joint relationships
 		jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, "skel:root");
 		
+		// create the last 15 joints
 		for (int i = 0; i < 15; ++i)
 		{
 			char jointName[20];
@@ -168,6 +169,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
 		hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 
+		// each joint is 2 units behind the previous one
 		for (int i = 1; i <= 15; ++i)
 		{
 			char jointName[20];
@@ -177,20 +179,40 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
 			hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 		}
-		
-		// each remaining pose represents a "delta" from the base
-		// initialize the changes where applicable
-		// (note: the channels describe which pose components can change)
+
+		// "turning" pose: side to side inputs
+		// left rotates counterclockwise, right rotates clockwise
+		// bend then straighten out
 		p = 1;
 		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
-		a3spatialPoseSetRotation(spatialPose, +45.0f, +60.0f, +90.0f);	// rotate whole figure about all axes
+		a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
 
+		for (int i = 1; i <= 15; ++i)
+		{
+			char jointName[20];
+			sprintf(jointName, "skel:vert%d", i + 1);
+			spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+			a3ui32 xTranslation = i * (a3ui32)2;
+			a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
+		}
 
+		// sin wave "serpentine" pose: forward and backward inputs
+		// heigher speed -> sin wave faster
+		// influence magnitude/frequency??
 		p = 2;
 		j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
 		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
-		a3spatialPoseSetScale(spatialPose, 2.0f, 2.0f, 2.0f);	// uniformly scale whole figure up to 200%
+		a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
+
+		for (int i = 1; i <= 15; ++i)
+		{
+			char jointName[20];
+			sprintf(jointName, "skel:vert%d", i + 1);
+			spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
+			a3ui32 xTranslation = i * (a3ui32)2;
+			a3spatialPoseSetTranslation(spatialPose, (a3f32)xTranslation, 0.0f, 0.0f);
+		}
 	}
 
 
