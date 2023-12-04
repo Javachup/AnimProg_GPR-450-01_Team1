@@ -143,9 +143,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);
 	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
-
-	demoMode->currentOp = 0;
-	demoMode->shouldDisplayOp = a3true;
 }
 
 

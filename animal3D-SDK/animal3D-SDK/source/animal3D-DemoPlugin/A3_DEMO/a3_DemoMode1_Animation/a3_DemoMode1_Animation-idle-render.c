@@ -124,57 +124,18 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
 	*/
 
-	a3byte const* operationNames[animation_op_max] = 
-	{
-		"Invert",
-		"Concat",
-		"Nearest",
-		"Lerp",
-		"Cubic",
-		"Split",
-		"Scale",
-		"Triangular",
-		"Binearest",
-		"Bilinear",
-		//"Bicubic",
-	};
+	// display clip ctrl
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"    CLIP CTRL");
 
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Playback ('m'): %s", demoState->updateAnimation ? "PLAY" : "PAUSED");
-
-	if (demoMode->shouldDisplayOp)
-	{
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    OPERATIONS ('l')");
-
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"        Current Op (%u / %u) ('j' | 'k'): %s", demoMode->currentOp + 1, animation_op_max, operationNames[demoMode->currentOp]);
-
-		for (a3index i = 0; i < demoMode->displayInfo.numParameters; i++)
-		{
-			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"            Paramater %u: %f", i + 1, demoMode->displayInfo.parameters[i]);
-		}
-	}
-	else // display clip ctrl
-	{
-		a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-			"    CLIP CTRL ('l')");
-		
-		a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_clipCtrl);
-		for (a3index i = 0; i < n; i++)
-		{
-			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"    %s:", demoMode->clipCtrls[i].name);
-			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"        Clip Index: %u", demoMode->clipCtrls[i].clipIndex);
-			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"        Key Time: %f    Key Param: %f", demoMode->clipCtrls[i].keyTime, demoMode->clipCtrls[i].keyParameter);
-			a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-				"        Clip Time: %f    Clip Param: %f", demoMode->clipCtrls[i].clipTime, demoMode->clipCtrls[i].clipParameter);
-		}
-
-	}
+		"    %s:", demoMode->clipCtrls[0].name);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"        Clip Index: %u", demoMode->clipCtrls[0].clipIndex);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"        Key Time: %f    Key Param: %f", demoMode->clipCtrls[0].keyTime, demoMode->clipCtrls[0].keyParameter);
+	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
+		"        Clip Time: %f    Clip Param: %f", demoMode->clipCtrls[0].clipTime, demoMode->clipCtrls[0].clipParameter);
 }
 
 
@@ -635,25 +596,18 @@ void a3animation_render(a3_DemoState const* demoState, a3_DemoMode1_Animation co
 			currentHierarchy = demoMode->hierarchy_skel;
 
 			// for each skeleton
-			a3index n = a3minimum(demoMode->displayInfo.numSkelToDraw, animationMaxCount_skeleton - 1) + 1;
-			for (a3index i = 0; i < n; i++)
-			{
-				const a3real* boneColor = i == 0 ?
-					yellow : sky; // output skeleton color : all other skeletons color
+			// draw skeletal joints
+			a3shaderUniformBufferActivate(demoState->ubo_transformMVP, 0);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
+			currentDrawable = demoState->draw_node;
+			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 
-				// draw skeletal joints
-				a3shaderUniformBufferActivate(demoState->ubo_transformMVP + i, 0);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, rose);
-				currentDrawable = demoState->draw_node;
-				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-
-				// draw bones
-				a3shaderProgramActivate(currentDemoProgram->program);
-				a3shaderUniformBufferActivate(demoState->ubo_transformMVPB + i, 0);
-				a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, boneColor);
-				currentDrawable = demoState->draw_link;
-				a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
-			}
+			// draw bones
+			a3shaderProgramActivate(currentDemoProgram->program);
+			a3shaderUniformBufferActivate(demoState->ubo_transformMVPB, 0);
+			a3shaderUniformSendFloat(a3unif_vec4, currentDemoProgram->uColor, 1, sky);
+			currentDrawable = demoState->draw_link;
+			a3vertexDrawableActivateAndRenderInstanced(currentDrawable, currentHierarchy->numNodes);
 
 			// draw skeletal joint orientations
 			if (demoState->displayTangentBases)

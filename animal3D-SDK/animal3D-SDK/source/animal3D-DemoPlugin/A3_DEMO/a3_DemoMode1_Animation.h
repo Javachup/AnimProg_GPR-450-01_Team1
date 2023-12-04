@@ -46,7 +46,6 @@ extern "C"
 {
 #else	// !__cplusplus
 typedef struct a3_DemoMode1_Animation						a3_DemoMode1_Animation;
-typedef struct a3_DemoMode1_Animation_DisplayInfo			a3_DemoMode1_Animation_DisplayInfo;
 typedef enum a3_DemoMode1_Animation_RenderProgramName		a3_DemoMode1_Animation_RenderProgramName;
 typedef enum a3_DemoMode1_Animation_DisplayProgramName		a3_DemoMode1_Animation_DisplayProgramName;
 typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_ActiveCameraName;
@@ -65,10 +64,8 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animationMaxCount_sceneObject = 8,
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
-		animationMaxCount_skeleton = 1,
 		animationMaxCount_hs = 2,
 		animationMaxCount_clipCtrl = 4,
-		animationMaxCount_paramters = 8,
 		animationMaxCount_snakeLength = 16,
 	};
 
@@ -142,13 +139,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animation_op_max = 10 // ignore bicubic
 	};
 
-	struct a3_DemoMode1_Animation_DisplayInfo
-	{
-		a3ui32 numSkelToDraw;
-		a3ui32 numParameters;
-		a3real parameters[animationMaxCount_paramters];
-	};
-
 
 //-----------------------------------------------------------------------------
 
@@ -176,10 +166,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 				a3_HierarchyState
 					hs_base[1],
 					hs_output[1];
-					//hs_control_1[1],
-					//hs_control_2[1],
-					//hs_control_3[1],
-					//hs_control_4[1];
 			};
 		};
 
@@ -201,12 +187,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 
 		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
 		a3dualquat dq_skin[128];
-
-		// for display
-		a3_DemoMode1_Animation_Operation currentOp;
-		a3boolean shouldDisplayOp; // Either display operation info or clip ctrls info
-		a3_DemoMode1_Animation_DisplayInfo displayInfo;
-		a3real displayParam;
 
 		// objects
 		union {

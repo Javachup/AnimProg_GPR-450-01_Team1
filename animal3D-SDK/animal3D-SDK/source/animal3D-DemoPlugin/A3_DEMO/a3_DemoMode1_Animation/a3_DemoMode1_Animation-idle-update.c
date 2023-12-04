@@ -96,11 +96,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	if (demoState->updateAnimation)
-	{
-		i = (a3ui32)(demoState->timer_display->totalTime);
-		demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
-	}
+	//if (demoState->updateAnimation)
+	//{
+	//	i = (a3ui32)(demoState->timer_display->totalTime);
+	//	demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
+	//}
 
 	// Update clipCtrl
 	if (demoState->updateAnimation)
