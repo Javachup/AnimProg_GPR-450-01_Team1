@@ -96,49 +96,14 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3fileStreamClose(fileStream);
 	}
 
+	demoMode->obj_skeleton->position.y = +a3real_four;
+	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
+	demoMode->obj_skeleton->euler.x = -a3real_ninety;
 
-	// scene objects (3 skeleton roots)
-	for (a3ui32 i = 0; i < 3; i++)
-	{
-		demoMode->obj_skeleton[i].position.y = +a3real_four;
-		demoMode->obj_skeleton[i].euler.z = +a3real_oneeighty;
-		demoMode->obj_skeleton[i].euler.x = -a3real_ninety;
-	}
-
-	demoMode->obj_skeleton[2].position.x = -30.0f;
-	demoMode->obj_skeleton[2].position.y += -5.0f;
-	demoMode->obj_skeleton[2].euler.y += -30.0f;
-
-	demoMode->obj_skeleton[0].position.x = +30.0f;
-	demoMode->obj_skeleton[0].position.y += -5.0f;
-	demoMode->obj_skeleton[0].euler.y += +30.0f;
-
-	//demoMode->obj_skeleton[3].position.z = +1.0f;
-
-	//demoMode->obj_skeleton[4].position.z = +1.0f;
-	//demoMode->obj_skeleton[4].position.x = -30.0f;
-	//demoMode->obj_skeleton[4].position.y += -5.0f;
-	//demoMode->obj_skeleton[4].euler.y += -30.0f;
-
-	//// next set up hierarchy poses
-	//hierarchy = demoMode->hierarchy_skel;
-	//hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
-	//hierarchyPoseGroup->hierarchy = 0;
-
-	//// load from file
-	//a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
-	//	"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
-	//
-
-	//// finally set up hierarchy states
-	//// Create each base state
-	//for (a3index i = 0; i < animationMaxCount_hs; i++)
-	//{
-	//	demoMode->hierarchyState_skel[i].hierarchy = 0;
-	//	a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
-	//}
-
+	// next set up hierarchy poses
+	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
+	hierarchyPoseGroup->hierarchy = 0;
 
 	// allocate poses
 	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 1, a3poseEulerOrder_xyz | a3poseEulerOrder_yzx | a3poseEulerOrder_zxy | a3poseEulerOrder_yxz | a3poseEulerOrder_xzy | a3poseEulerOrder_zyx);
@@ -152,19 +117,28 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 
 	// each joint is 2 units behind the previous one
-	for (a3index i = 1; i < 16; ++i)
+	for (a3index i = 1; i < animationMaxCount_snakeLength; ++i)
 	{
 		char jointName[20];
 		sprintf(jointName, "skel:vert%d", i + 1);
-		spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
-		a3real xTranslation = 0.1f;
-		a3spatialPoseSetTranslation(spatialPose, xTranslation, 0.0f, 0.0f);
+		spatialPose = hierarchyPoseGroup->hpose[p].pose + i;
+		a3spatialPoseSetTranslation(spatialPose, 2.0f, 0.0f, 0.0f);
 		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
-	// Copy base pose to the base hs
-	hierarchy = demoMode->hierarchy_skel;
+	//// load from file
+	//a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
+	//	"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
+	//
 
+	// set up hierarchy states
+	for (a3index i = 0; i < animationMaxCount_hs; i++)
+	{
+		demoMode->hierarchyState_skel[i].hierarchy = 0;
+		a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
+	}
+
+	// Copy base pose to the base hs
 	a3hierarchyPoseCopy(demoMode->hs_base->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);

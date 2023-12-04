@@ -65,10 +65,11 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animationMaxCount_sceneObject = 8,
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
-		animationMaxCount_skeleton = 3,
-		animationMaxCount_hs = 6,
+		animationMaxCount_skeleton = 1,
+		animationMaxCount_hs = 2,
 		animationMaxCount_clipCtrl = 4,
 		animationMaxCount_paramters = 8,
+		animationMaxCount_snakeLength = 16,
 	};
 
 	// scene object rendering program names
@@ -174,11 +175,11 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 			{
 				a3_HierarchyState
 					hs_base[1],
-					hs_output[1],
-					hs_control_1[1],
-					hs_control_2[1],
-					hs_control_3[1],
-					hs_control_4[1];
+					hs_output[1];
+					//hs_control_1[1],
+					//hs_control_2[1],
+					//hs_control_3[1],
+					//hs_control_4[1];
 			};
 		};
 
@@ -214,7 +215,7 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 				a3_DemoSceneObject
 					obj_skybox[1];
 				a3_DemoSceneObject
-					obj_skeleton[animationMaxCount_skeleton];
+					obj_skeleton[1];
 			};
 		};
 		union {

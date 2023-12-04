@@ -288,8 +288,8 @@ struct a3_DemoState
 		a3_UniformBuffer uniformBuffer[demoStateMaxCount_uniformBuffer];
 		struct {
 			a3_UniformBuffer
-				ubo_transformMVPB[animationMaxCount_skeleton], // one for each skeleton
-				ubo_transformMVP[animationMaxCount_skeleton], // one for each skeleton
+				ubo_transformMVPB[1],
+				ubo_transformMVP[1],
 				ubo_transformBlend[1],
 				ubo_transformStack[1];
 		};
