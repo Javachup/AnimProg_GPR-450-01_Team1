@@ -162,6 +162,10 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_SpatialPose positionNode;
 		a3_SpatialPose velocityNode;
 
+		// scene graph 
+		a3_Hierarchy sceneGraph[1];
+		a3_HierarchyState sceneGraphState[1];
+
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
 		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];

@@ -69,6 +69,18 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// not streaming or stream doesn't exist
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
+		// set up scenegraph - describes objects in the scene
+		a3hierarchyCreate(demoMode->sceneGraph,
+			(animationMaxCount_sceneObject + animationMaxCount_cameraObject + 1), 0);
+		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
+		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
+		// locomotion - parent of animation
+		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_skeleton_ctrl");
+
+		// spatial pose for positioning the character
+		a3spatialPoseReset(&demoMode->positionNode);
+		a3spatialPoseReset(&demoMode->velocityNode);
+
 		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
 		const a3ui32 jointCount = 16;
@@ -99,6 +111,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->obj_skeleton->position.y = +a3real_four;
 	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
 	demoMode->obj_skeleton->euler.x = -a3real_ninety;
+
+	// control node
+	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
 
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
