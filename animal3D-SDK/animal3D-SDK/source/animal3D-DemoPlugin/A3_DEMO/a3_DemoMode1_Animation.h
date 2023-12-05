@@ -52,7 +52,6 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
-typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operation;
 #endif	// __cplusplus
 
 
@@ -120,23 +119,6 @@ typedef enum a3_DemoMode1_Animation_Operation				a3_DemoMode1_Animation_Operatio
 		animation_scene_fragdepth,		// fragment depth
 	
 		animation_target_scene_max,
-	};
-
-	enum a3_DemoMode1_Animation_Operation
-	{
-		animation_op_invert,
-		animation_op_concat,
-		animation_op_nearest,
-		animation_op_lerp,
-		animation_op_cubic,
-		animation_op_split,
-		animation_op_scale,
-		animation_op_triangular,
-		animation_op_binearest,
-		animation_op_bilinear,
-		animation_op_bicubic,
-
-		animation_op_max = 10 // ignore bicubic
 	};
 
 
