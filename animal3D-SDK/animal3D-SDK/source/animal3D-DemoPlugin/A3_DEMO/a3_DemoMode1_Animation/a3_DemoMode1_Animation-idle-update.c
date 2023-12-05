@@ -50,6 +50,31 @@ inline a3real4r a3demo_mat2quat_safe(a3real4 q, a3real4x4 const m)
 }
 
 
+//Takes in Object Space Position of Snake
+a3real SnakeWaveFunction(a3real x)
+{
+	if (0 > x && x >= animationMaxCount_snakeLength)
+		return -1;
+
+	a3real amp = .25; //Amplitude
+	a3real freq = 150; //frequency
+
+	//Wave Function
+	a3real radians = x * freq;
+	a3real wave = amp * a3sinr(radians);
+
+	//Parabola 
+	a3real snakeLength = animationMaxCount_snakeLength;
+	a3real xSq = powf(x, 2);
+
+	a3real parabola = -(2 / animationMaxCount_snakeLength) * (xSq)+(2 * x);
+
+	//SnakeWave
+	a3real snakeWave = wave * parabola;
+
+	return snakeWave;
+}
+
 //-----------------------------------------------------------------------------
 // UPDATE
 
