@@ -53,6 +53,7 @@ typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_Pipeli
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
 typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_ControlTarget;
+typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMode;
 #endif	// __cplusplus
 
 
@@ -131,6 +132,18 @@ typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_Contr
 		animation_ctrlmode_max
 	};
 
+	// input modes
+	enum a3_DemoMode1_Animation_InputMode
+	{
+		animation_input_direct,
+		animation_input_euler,
+		animation_input_kinematic,
+		animation_input_interpolate1,
+		animation_input_interpolate2,
+
+		animation_inputmode_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -170,6 +183,7 @@ typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_Contr
 
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;
+		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
 
 		a3f64 axis_l[2], axis_r[2];
 		a3vec2 pos, vel, acc;
