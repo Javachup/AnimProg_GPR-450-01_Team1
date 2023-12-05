@@ -155,6 +155,8 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	demoMode->hierarchy_skel->numNodes);
 
 	// MOVE THE JOINTS HERE
+	//hs->localSpace->pose[1].translation.y = 10;
+	a3spatialPoseSetTranslation(hs->localSpace->pose + 1, 2, 4, 0);
 
 	a3hierarchyPoseConvert(hs->localSpace,
 		demoMode->hierarchy_skel->numNodes,
@@ -179,7 +181,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 		//a3index i, currSkel;
 		a3i32 p;
 
-		const a3_HierarchyState* currentHS = demoMode->hs_base;
+		const a3_HierarchyState* currentHS = demoMode->hs_output;
 		
 		{
 			mvp_obj = matrixStack[skeletonIndex].modelViewProjectionMat;

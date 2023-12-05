@@ -98,7 +98,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	demoMode->obj_skeleton->position.y = +a3real_four;
 	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
-	demoMode->obj_skeleton->euler.x = -a3real_ninety;
+	//demoMode->obj_skeleton->euler.x = -a3real_ninety;
 
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
