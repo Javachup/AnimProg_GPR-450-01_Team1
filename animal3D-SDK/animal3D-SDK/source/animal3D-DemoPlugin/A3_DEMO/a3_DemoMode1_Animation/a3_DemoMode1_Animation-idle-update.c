@@ -148,7 +148,13 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//}
 
 	// Set up base pose to be displayed on the screen
-	a3_HierarchyState* hs = demoMode->hs_base;
+	a3_HierarchyState* hs = demoMode->hs_output;
+
+	a3hierarchyPoseCopy(hs->localSpace, // goal to calculate
+	baseHS->localSpace, // holds base pose
+	demoMode->hierarchy_skel->numNodes);
+
+	// MOVE THE JOINTS HERE
 
 	a3hierarchyPoseConvert(hs->localSpace,
 		demoMode->hierarchy_skel->numNodes,
