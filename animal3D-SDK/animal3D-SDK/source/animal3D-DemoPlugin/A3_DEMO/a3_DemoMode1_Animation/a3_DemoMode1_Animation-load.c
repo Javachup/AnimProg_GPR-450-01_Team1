@@ -107,6 +107,10 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
+	// scene graph state
+	demoMode->sceneGraphState->hierarchy = 0;
+	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
+
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
