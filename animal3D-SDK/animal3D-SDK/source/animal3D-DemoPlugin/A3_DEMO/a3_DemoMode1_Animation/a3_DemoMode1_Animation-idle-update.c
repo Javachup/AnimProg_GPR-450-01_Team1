@@ -156,7 +156,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// MOVE THE JOINTS HERE
 	//hs->localSpace->pose[1].translation.y = 10;
-	a3spatialPoseSetTranslation(hs->localSpace->pose + 1, 2, 4, 0);
+	for (a3index i = 1; i < animationMaxCount_snakeLength; i++)
+	{
+		a3spatialPoseSetTranslation(hs->localSpace->pose + i, 2, 4 * sinf((a3real)i - 1), 0);
+	}
 
 	a3hierarchyPoseConvert(hs->localSpace,
 		demoMode->hierarchy_skel->numNodes,

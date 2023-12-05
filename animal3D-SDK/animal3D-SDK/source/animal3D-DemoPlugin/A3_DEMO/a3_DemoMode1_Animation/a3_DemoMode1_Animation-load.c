@@ -124,7 +124,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		char jointName[20];
 		sprintf(jointName, "skel:vert%d", i + 1);
 		spatialPose = hierarchyPoseGroup->hpose[p].pose + i;
-		a3spatialPoseSetTranslation(spatialPose, 2.0f, 0.0f, 0.0f);
+		a3spatialPoseSetTranslation(spatialPose, demoMode->boneLength, 0.0f, 0.0f);
 		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
@@ -177,6 +177,8 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	// animation
 	demoMode->hierarchyState_skel->hierarchy = demoMode->hierarchy_skel;
 	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel;
+
+	demoMode->boneLength = 2;
 }
 
 
