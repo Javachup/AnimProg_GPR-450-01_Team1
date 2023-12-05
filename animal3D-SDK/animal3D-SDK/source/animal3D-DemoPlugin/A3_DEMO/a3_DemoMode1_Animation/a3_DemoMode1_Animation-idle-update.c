@@ -77,13 +77,18 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3demo_update_objects(demoState, dt,
 		demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
 	a3demo_update_objects(demoState, dt,
+		demoMode->object_scene_ctrl, animationMaxCount_sceneObject, 0, 0);
+	a3demo_update_objects(demoState, dt,
 		demoMode->object_camera, animationMaxCount_cameraObject, 1, 0);
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
 	// apply scales to objects
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
+	{
 		a3demo_applyScale_internal(demoMode->object_scene + i, scaleMat.m);
+		a3demo_applyScale_internal(demoMode->object_scene_ctrl + i, scaleMat.m);
+	}
 
 	// update skybox
 	a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
@@ -96,11 +101,14 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
 	}
 
-	//if (demoState->updateAnimation)
-	//{
-	//	i = (a3ui32)(demoState->timer_display->totalTime);
-	//	demoMode->displayParam = (a3real)(demoState->timer_display->totalTime - (a3f64)i);
-	//}
+	if (demoState->updateAnimation)
+	{
+		demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.orientation.z;
+		demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translation.x;
+		demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translation.y;
+		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.orientation.x;
+		demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.orientation.y;
+	}
 
 	// Update clipCtrl
 	if (demoState->updateAnimation)
