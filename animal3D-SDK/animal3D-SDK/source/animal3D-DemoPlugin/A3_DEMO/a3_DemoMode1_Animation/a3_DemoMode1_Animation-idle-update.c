@@ -49,30 +49,53 @@ inline a3real4r a3demo_mat2quat_safe(a3real4 q, a3real4x4 const m)
 	return q;
 }
 
-
 //Takes in Object Space Position of Snake
-a3real SnakeWaveFunction(a3real x)
+a3real SnakeWaveFunction(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
 {
-	if (0 > x && x >= animationMaxCount_snakeLength)
+	if (0 > x && x >= numBones * boneLength)
 		return -1;
-
-	a3real amp = .25; //Amplitude
-	a3real freq = 150; //frequency
 
 	//Wave Function
 	a3real radians = x * freq;
 	a3real wave = amp * a3sinr(radians);
 
 	//Parabola 
-	a3real snakeLength = animationMaxCount_snakeLength;
-	a3real xSq = powf(x, 2);
+	a3real snakeLength = numBones * boneLength;
+	a3real xSq = x * x;
 
-	a3real parabola = -(2 / animationMaxCount_snakeLength) * (xSq)+(2 * x);
+	a3real parabola = -(2 / snakeLength) * (xSq) + (2 * x);
 
 	//SnakeWave
 	a3real snakeWave = wave * parabola;
 
 	return snakeWave;
+}
+
+a3real SnakeWaveFunctionDerivative(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+{
+	if (0 > x && x >= numBones * boneLength)
+		return -1;
+
+	//Wave Function
+	a3real radians = x * freq;
+	a3real wave = amp * a3sinr(radians);
+
+	//Wave Derivative
+	a3real waveDer = amp * freq * a3cosr(radians);
+
+	//Parabola 
+	a3real snakeLength = numBones * boneLength;
+	a3real xSq = x * x;
+
+	a3real parabola = -(2 / snakeLength) * (xSq)+(2 * x);
+
+	//Parabola Derivative
+	a3real parabolaDer = -(4 / snakeLength) * x + 2;
+
+	//SnakeWave Derivative (Product Rule)
+	a3real snakeWaveDer = waveDer * parabola + wave * parabolaDer;
+
+	return snakeWaveDer;
 }
 
 //-----------------------------------------------------------------------------
