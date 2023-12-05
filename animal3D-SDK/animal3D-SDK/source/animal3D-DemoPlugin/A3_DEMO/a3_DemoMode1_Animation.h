@@ -147,6 +147,7 @@ typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_Contr
 
 		// spatial pose node 
 		a3_SpatialPose positionNode;
+		a3_SpatialPose velocityNode;
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];

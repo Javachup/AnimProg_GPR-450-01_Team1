@@ -63,6 +63,9 @@ void a3animation_input_keyCharPress(a3_DemoState const* demoState, a3_DemoMode1_
 		// toggle pass to display
 		a3demoCtrlCasesLoop(demoMode->pass, animation_pass_max, ')', '(');
 		*/
+
+		// toggle control target
+		a3demoCtrlCasesLoop(demoMode->ctrl_target, animation_ctrlmode_max, '\'', ';');
 	}
 }
 
@@ -105,10 +108,38 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		// transform to world space
 		a3real4Real4x4Mul(projector->sceneObject->modelMat.m, coord.v);
 	}
-	
-	// move camera
-	a3demo_input_controlProjector(demoState, projector,
-		dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
+
+	a3vec2 inputPos = { a3real_zero, a3real_zero };
+	a3real inputRot = a3real_zero;
+	a3real scalePos = a3real_two;
+	a3real scaleRot = a3real_oneeighty;
+	a3real fakeVel = 0.5f;
+	a3real fakeAcc = 0.5f;
+
+	switch (demoMode->ctrl_target)
+	{
+	case animation_ctrl_camera:
+		// move camera
+		a3demo_input_controlProjector(demoState, projector,
+			dt, projector->ctrlMoveSpeed, projector->ctrlRotateSpeed, projector->ctrlZoomSpeed);
+		break;
+	case animation_ctrl_character:
+	{
+		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
+		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
+
+		inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+
+		// fake acceleration translation
+		demoMode->velocityNode.translation.x = a3lerp(demoMode->velocityNode.translation.x, inputPos.x, fakeAcc);
+		demoMode->velocityNode.translation.y = a3lerp(demoMode->velocityNode.translation.y, inputPos.y, fakeAcc);
+
+		demoMode->positionNode.translation.x += demoMode->velocityNode.translation.x * (a3real)demoState->dt_timer;
+		demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
+		break;
+	}
+
+	}
 }
 
 
