@@ -69,7 +69,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// not streaming or stream doesn't exist
 	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
 	{
-		// manually set up a skeleton
+		// SnakeSkeleton
+		//**********************************************************************
 		// first is the hierarchy: the general non-spatial relationship between bones
 		const a3ui32 jointCount = 16;
 
@@ -94,6 +95,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 		// done
 		a3fileStreamClose(fileStream);
+		//******************************************************************************8
 	}
 
 	demoMode->obj_skeleton->position.y = +a3real_four;
