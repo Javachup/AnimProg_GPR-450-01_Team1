@@ -190,6 +190,27 @@ inline a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const 
 
 
 //-----------------------------------------------------------------------------
+// finding snake bone position along function wave
+inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3real boneLength)
+{
+
+	//a3real x = pose_out->pose->translation.x;
+	a3real y0 = spatialPose_0->translation.y;
+	a3real x0 = spatialPose_0->translation.x;
+
+	a3real dx = boneLength / (a3sqrt(1 + (a3cosd(x0) * a3cosd(x0)))); //derivative of wave formula in place of cosd
+	a3real y = a3sind(x0 + dx); //wave formula in place of sin
+	a3real dy = y - y0;
+
+
+	spatialPose_out->translation.y = dy;
+	spatialPose_out->translation.x = dx;
+
+
+	return -1;
+
+}
+
 
 
 #endif	// !__ANIMAL3D_SPATIALPOSE_INL

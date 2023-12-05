@@ -168,7 +168,11 @@ a3i32 a3hierarchyPoseGroupSaveBVH(const a3_HierarchyPoseGroup* poseGroup_in, con
 
 
 //-----------------------------------------------------------------------------
+//finds each bone's location on the function wave
+a3i32 a3hierarchySnakePosition(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_prev, a3real boneLength);
 
+
+//-----------------------------------------------------------------------------
 
 #ifdef __cplusplus
 }

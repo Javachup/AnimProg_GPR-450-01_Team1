@@ -107,6 +107,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 	hierarchyPoseGroup->hierarchy = 0;
 
+	//demoMode->boneLength
+
 	// allocate poses
 	a3hierarchyPoseGroupCreate(hierarchyPoseGroup, hierarchy, 1, a3poseEulerOrder_xyz | a3poseEulerOrder_yzx | a3poseEulerOrder_zxy | a3poseEulerOrder_yxz | a3poseEulerOrder_xzy | a3poseEulerOrder_zyx);
 

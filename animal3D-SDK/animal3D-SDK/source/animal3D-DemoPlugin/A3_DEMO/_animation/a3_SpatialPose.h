@@ -145,6 +145,8 @@ a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_Spat
 
 //-----------------------------------------------------------------------------
 
+// finding snake bone position along function wave
+a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3real boneLength);
 
 #ifdef __cplusplus
 }

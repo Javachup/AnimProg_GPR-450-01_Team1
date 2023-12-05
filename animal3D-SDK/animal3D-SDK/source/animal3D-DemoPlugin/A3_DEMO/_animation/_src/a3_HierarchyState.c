@@ -468,3 +468,26 @@ a3i32 a3hierarchyPoseGroupSaveBVH(const a3_HierarchyPoseGroup* poseGroup_in, con
 
 
 //-----------------------------------------------------------------------------
+
+//finds each bone's location on the function wave
+/*
+a3i32 a3hierarchySnakePosition(a3_HierarchyPose* pose_out, a3_HierarchyPose* pose_prev, a3real boneLength)
+{
+	//a3real x = pose_out->pose->translation.x;
+	a3real y0 = pose_prev->pose->translation.y;
+	a3real x0 = pose_prev->pose->translation.x;
+
+	a3real dx = boneLength/(a3sqrt(1 + (a3cosd(x0) * a3cosd(x0)))); //derivative of wave formula in place of cosd
+	a3real y = a3sind(x0 + dx); //wave formula in place of sin
+	a3real dy = y - y0;
+	
+
+	pose_out->pose->translation.y = dy;
+	pose_out->pose->translation.x = dx;
+
+
+	return -1;
+}
+*/
+
+//----------------------------------------------------------------------------
