@@ -60,8 +60,12 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			(animationMaxCount_sceneObject + animationMaxCount_cameraObject + 1), 0);
 		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
 		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
+		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
 		// locomotion - parent of animation
-		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
+		// animation, controlled through this
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
 
 		// spatial pose for positioning the character
 		a3spatialPoseReset(&demoMode->positionNode);
@@ -102,10 +106,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// map relevant objects to scene graph
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
 	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
-
-	// scene graph state
-	demoMode->sceneGraphState->hierarchy = 0;
-	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
+	demoMode->obj_skybox->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skybox");
 
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
@@ -149,6 +150,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);
 	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	
 }
 
 

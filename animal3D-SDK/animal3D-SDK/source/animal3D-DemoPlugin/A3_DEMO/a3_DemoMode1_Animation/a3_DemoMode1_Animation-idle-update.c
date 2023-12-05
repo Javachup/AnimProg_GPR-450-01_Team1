@@ -64,7 +64,7 @@ void a3demo_applyScale_internal(a3_DemoSceneObject* sceneObject, a3real4x4p s);
 
 void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
-	a3ui32 i;
+	a3ui32 i, j;
 	a3_DemoModelMatrixStack matrixStack[animationMaxCount_sceneObject];
 
 	// active camera
@@ -93,12 +93,26 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	// update skybox
 	a3demo_update_bindSkybox(demoMode->obj_camera_main, demoMode->obj_skybox);
 
+	j = 0;
+	demoMode->sceneGraphState->localSpace->pose[j++].transform = a3mat4_identity;
+	demoMode->sceneGraphState->localSpace->pose[j++].transform = demoMode->object_camera->modelMat;
+	demoMode->sceneGraphState->localSpace->pose[j++].transform = a3mat4_identity;
+	demoMode->sceneGraphState->localSpace->pose[j++].transform = demoMode->obj_skeleton_ctrl->modelMat;
+	// start of scene objects
+	demoMode->sceneGraphState->localSpace->pose[j + 0].transform = demoMode->obj_skybox->modelMat;
+	demoMode->sceneGraphState->localSpace->pose[j + 1].transform = demoMode->obj_skeleton->modelMat;
+	a3kinematicsSolveForward(demoMode->sceneGraphState);
+	a3hierarchyStateUpdateObjectInverse(demoMode->sceneGraphState);
+
 	// update matrix stack data
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 	{
 		a3demo_updateModelMatrixStack(matrixStack + i,
-			activeCamera->projectionMat.m, activeCameraObject->modelMat.m, activeCameraObject->modelMatInv.m,
-			demoMode->object_scene[i].modelMat.m, a3mat4_identity.m);
+			activeCamera->projectionMat.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_camera_main->sceneGraphIndex].transform.m,
+			demoMode->sceneGraphState->objectSpaceInv->pose[demoMode->obj_camera_main->sceneGraphIndex].transform.m,
+			demoMode->sceneGraphState->objectSpace->pose[demoMode->obj_skeleton->sceneGraphIndex].transform.m,
+			a3mat4_identity.m);
 	}
 
 	if (demoState->updateAnimation)
@@ -124,36 +138,6 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	a3_HierarchyState* outputHS = demoMode->hs_output;
 
 	a3_ClipController* clipCtrl1 = demoMode->clipCtrl1;
-
-	//for (a3index i = 0; i < animationMaxCount_clipCtrl; i++)
-	//{
-	//	// Copy current ctrl poses to each of the control poses
-	//	a3hierarchyPoseLerp((ctrl1HS + i)->objectSpace,
-	//		demoMode->hierarchyPoseGroup_skel->hpose + getCurrentKeyframe(clipCtrl1 + i)->data,
-	//		demoMode->hierarchyPoseGroup_skel->hpose + getNextKeyframe(clipCtrl1 + i)->data,
-	//		(a3real)(clipCtrl1 + i)->keyParameter,
-	//		demoMode->hierarchy_skel->numNodes);
-	//}
-
-	//// Add these poses to the base pose for display
-	//for (a3index i = 0; i < animationMaxCount_skeleton; i++)
-	//{
-	//	a3_HierarchyState* hs = demoMode->hierarchyState_skel + i + 1;
-
-	//	a3hierarchyPoseConcat(hs->localSpace,	// goal to calculate
-	//		baseHS->localSpace, // holds base pose
-	//		hs->objectSpace, // temp storage
-	//		demoMode->hierarchy_skel->numNodes);
-
-	//	a3hierarchyPoseConvert(hs->localSpace,
-	//		demoMode->hierarchy_skel->numNodes,
-	//		demoMode->hierarchyPoseGroup_skel->channel,
-	//		demoMode->hierarchyPoseGroup_skel->order);
-
-	//	a3kinematicsSolveForward(hs);
-	//	a3hierarchyStateUpdateObjectInverse(hs);
-	//	a3hierarchyStateUpdateObjectBindToCurrent(hs, baseHS);
-	//}
 
 	// Set up base pose to be displayed on the screen
 	a3_HierarchyState* hs = demoMode->hs_output;
