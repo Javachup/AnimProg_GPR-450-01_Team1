@@ -165,7 +165,19 @@ inline a3i32 a3hierarchyStateUpdateObjectBindToCurrent(const a3_HierarchyState* 
 
 //-----------------------------------------------------------------------------
 
+inline a3i32 a3hierarchyPoseSnakePosition(a3_HierarchyPose* pose_inout, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+{
 
+	if (pose_inout)
+	{
+		a3index i;
+		for (i = 1; i < numBones; ++i)
+			a3SpatialPoseSnakeWave(pose_inout->pose + i, pose_inout->pose + i - 1, amp, freq, boneLength, numBones);
+		return i;
+	}
+
+	return -1;
+}
 
 //-----------------------------------------------------------------------------
 

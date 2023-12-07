@@ -188,27 +188,75 @@ inline a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const 
 	return spatialPose_out;
 }
 
-
 //-----------------------------------------------------------------------------
-// finding snake bone position along function wave
-inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3real boneLength)
-{
 
+inline a3real SnakeWaveFunction(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+{
+	if (0 > x && x >= numBones * boneLength)
+		return -1;
+
+	//Wave Function
+	a3real radians =  x * freq;
+	a3real wave = amp * a3sinr(a3trigValid_sinr(radians));
+
+	//Parabola 
+	a3real snakeLength = numBones * boneLength;
+	a3real xSq = x * x;
+
+	a3real parabola = -(2 / snakeLength) * (xSq)+(2 * x);
+
+	//SnakeWave
+	a3real snakeWave = wave * parabola;
+
+	return snakeWave;
+}
+
+inline a3real SnakeWaveFunctionDerivative(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+{
+	if (0 > x && x >= numBones * boneLength)
+		return -1;
+
+	//Wave Function
+	a3real radians = x * freq;
+	a3real wave = amp * a3sinr(a3trigValid_sinr(radians));
+
+	//Wave Derivative
+	a3real waveDer = amp * freq * a3cosr(a3trigValid_sinr(radians));
+
+	//Parabola 
+	a3real snakeLength = numBones * boneLength;
+	a3real xSq = x * x;
+
+	a3real parabola = -(2 / snakeLength) * (xSq)+(2 * x);
+
+	//Parabola Derivative
+	a3real parabolaDer = -(4 / snakeLength) * x + 2;
+
+	//SnakeWave Derivative (Product Rule)
+	a3real snakeWaveDer = waveDer * parabola + wave * parabolaDer;
+
+	return snakeWaveDer;
+}
+
+// finding snake bone position along function wave
+inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, 
+	const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+{
 	//a3real x = pose_out->pose->translation.x;
 	a3real y0 = spatialPose_0->translation.y;
 	a3real x0 = spatialPose_0->translation.x;
 
-	a3real dx = boneLength / (a3sqrt(1 + (a3cosd(x0) * a3cosd(x0)))); //derivative of wave formula in place of cosd
-	a3real y = a3sind(x0 + dx); //wave formula in place of sin
+	a3real der = SnakeWaveFunctionDerivative(x0, amp, freq, boneLength, numBones);
+	a3real dx = boneLength / (a3sqrt(1 + (der * der)));
+
+	a3real y = SnakeWaveFunction(x0 + dx, amp, freq, boneLength, numBones);
 	a3real dy = y - y0;
 
 
 	spatialPose_out->translation.y = dy;
 	spatialPose_out->translation.x = dx;
 
-
-	return -1;
-
+	return 0;
 }
 
 

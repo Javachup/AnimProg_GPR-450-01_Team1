@@ -145,8 +145,14 @@ a3_SpatialPose* a3spatialPoseLerp(a3_SpatialPose* spatialPose_out, const a3_Spat
 
 //-----------------------------------------------------------------------------
 
+//Takes in Object Space Position of Snake
+a3real SnakeWaveFunction(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones);
+
+a3real SnakeWaveFunctionDerivative(a3real x, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones);
+
 // finding snake bone position along function wave
-a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, const a3real boneLength);
+a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0,
+	const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones);
 
 #ifdef __cplusplus
 }
