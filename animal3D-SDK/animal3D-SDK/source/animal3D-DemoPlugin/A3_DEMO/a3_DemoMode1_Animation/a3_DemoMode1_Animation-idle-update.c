@@ -117,11 +117,31 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	if (demoState->updateAnimation)
 	{
-		demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.orientation.z;
-		demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translation.x;
-		demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translation.y;
-		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.orientation.x;
-		demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.orientation.y;
+		//demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.orientation.x;
+		//demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.orientation.y;
+		//demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.orientation.z;
+		//demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translation.x;
+		//demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translation.y;
+
+		//demoMode->obj_skeleton->position.x = demoMode->positionNode.translation.x;
+		//demoMode->obj_skeleton->position.y = demoMode->positionNode.translation.y;
+		//demoMode->obj_skeleton->position.x = demoMode->hierarchyState_skel->hierarchy->nodes->index;
+
+		demoMode->obj_skeleton->position.x = demoMode->hierarchyState_skel->objectSpace->pose[0].translation.x;
+		demoMode->obj_skeleton->position.y = demoMode->hierarchyState_skel->objectSpace->pose[0].translation.y;
+
+		//demoMode->obj_skeleton->position.m;
+		//demoMode->obj_skeleton->euler.m;
+		//demoMode->obj_skeleton->scale.m;
+		//demoMode->obj_skeleton->modelMat.m;
+
+		//a3kinematicsSolveInversePartial
+
+		//a3ui32 j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "skel:root");
+		//a3_SpatialPose* spatialPose = demoMode->hierarchyPoseGroup_skel->hpose[0].pose + j;
+		//a3_Hierarchy worldToLocal = demoMode->obj_skeleton_ctrl.
+		//a3kinematicsSolveInverse(demoMode->obj_skeleton_ctrl);
+		//a3spatialPoseSetTranslation(spatialPose, demoMode->obj_skeleton_ctrl->position.x, demoMode->obj_skeleton_ctrl->position.y, 0.0f);
 	}
 
 	// Update clipCtrl
