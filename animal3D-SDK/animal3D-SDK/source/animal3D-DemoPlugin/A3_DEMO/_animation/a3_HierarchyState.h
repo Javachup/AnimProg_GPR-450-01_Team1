@@ -170,7 +170,7 @@ a3i32 a3hierarchyPoseGroupSaveBVH(const a3_HierarchyPoseGroup* poseGroup_in, con
 //-----------------------------------------------------------------------------
 
 //finds each bone's location on the function wave
-a3i32 a3hierarchyPoseSnakePosition(a3_HierarchyPose* pose_inout, const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones);
+a3i32 a3hierarchyPoseSnakePosition(a3_HierarchyPose* pose_inout, const a3real amp, const a3real freq, const a3f64 deltaTime, const a3real boneLength, const a3ui32 numBones);
 
 //-----------------------------------------------------------------------------
 

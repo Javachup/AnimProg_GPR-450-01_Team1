@@ -49,6 +49,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 
 	// object pointers
 	a3_Hierarchy* hierarchy = 0;
+	//a3_Hierarchy* hierarchy = 0;
 	a3_HierarchyState* hierarchyState = 0;
 	a3_HierarchyPoseGroup* hierarchyPoseGroup = 0;
 	a3_SpatialPose* spatialPose = 0;

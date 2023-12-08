@@ -240,19 +240,27 @@ inline a3real SnakeWaveFunctionDerivative(a3real x, const a3real amp, const a3re
 
 // finding snake bone position along function wave
 inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, const a3_SpatialPose* spatialPose_0, 
-	const a3real amp, const a3real freq, const a3real boneLength, const a3ui32 numBones)
+	const a3real amp, const a3real freq, const a3f64 deltaTime, const a3real boneLength, const a3ui32 numBones)
 {
 	//a3real x = pose_out->pose->translation.x;
 	a3real y0 = spatialPose_0->translation.y;
-	a3real x0 = spatialPose_0->translation.x;
-
+	a3real x0 = spatialPose_0->translation.x + (a3real)deltaTime;
+	
+	
 	a3real der = SnakeWaveFunctionDerivative(x0, amp, freq, boneLength, numBones);
 	a3real dx = boneLength / (a3sqrt(1 + (der * der)));
 
 	a3real y = SnakeWaveFunction(x0 + dx, amp, freq, boneLength, numBones);
 	a3real dy = y - y0;
-
-
+	
+	/*
+	a3real der = a3cosr(a3trigValid_sinr(x0));
+	a3real dx = boneLength / (a3sqrt(1 + (der * der)));
+	//a3trigValid_sinr()
+	a3real y = a3sinr(a3trigValid_sinr(x0 + dx));
+	a3real dy = y - y0;
+	*/
+	//should be lerp
 	spatialPose_out->translation.y = dy;
 	spatialPose_out->translation.x = dx;
 

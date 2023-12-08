@@ -155,8 +155,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	// MOVE THE JOINTS HERE
 	//hs->localSpace->pose[1].translation.y = 10;
+	//a3hierarchyPoseSnakePosition(hs->localSpace,
+	//.25f, 150, demoState->timer_display->totalTime, demoMode->boneLength, animationMaxCount_snakeLength);
 	a3hierarchyPoseSnakePosition(hs->localSpace,
-		.25f, 150, demoMode->boneLength, animationMaxCount_snakeLength);
+		.15f, 5, demoState->timer_display->totalTime, demoMode->boneLength, animationMaxCount_snakeLength);
 
 	a3hierarchyPoseConvert(hs->localSpace,
 		demoMode->hierarchy_skel->numNodes,
