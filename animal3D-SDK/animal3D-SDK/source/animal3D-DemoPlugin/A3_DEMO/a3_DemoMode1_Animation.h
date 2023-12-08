@@ -34,9 +34,8 @@
 
 #include "_a3_demo_utilities/a3_DemoSceneObject.h"
 
-#include "_animation/a3_HierarchyStateBlend.h"
-
 #include "_animation/a3_KeyframeAnimationController.h"
+#include "_animation/a3_HierarchyStateBlend.h"
 
 
 //-----------------------------------------------------------------------------
@@ -66,7 +65,6 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		animationMaxCount_cameraObject = 1,
 		animationMaxCount_projector = 1,
 		animationMaxCount_hs = 2,
-		animationMaxCount_clipCtrl = 4,
 		animationMaxCount_snakeLength = 16,
 	};
 
@@ -128,6 +126,9 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 	{
 		animation_ctrl_camera,
 		animation_ctrl_character,
+		animation_ctrl_head_effector,
+		animation_ctrl_body_effector,
+		//animation_ctrl_body_constraint,
 
 		animation_ctrlmode_max
 	};
@@ -159,78 +160,59 @@ typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMod
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
 
 		// spatial pose node 
-		a3_SpatialPose positionNode;
-		a3_SpatialPose velocityNode;
+		/*a3_SpatialPose positionNode;
+		a3_SpatialPose velocityNode;*/
 
 		// scene graph 
 		a3_Hierarchy sceneGraph[1];
 		a3_HierarchyState sceneGraphState[1];
 
 		// skeletal animation
-		a3_Hierarchy hierarchy_skel[1];
-		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
-
-		// 4 hierarchy states for base, output, and 2 controls
 		union
 		{
 			a3_HierarchyState hierarchyState_skel[animationMaxCount_hs];
 			struct
 			{
 				a3_HierarchyState
-					hs_base[1],
-					hs_output[1];
+					hierarchyState_skel_ik[1],
+					hierarchyState_skel_fk[1],
+					hierarchyState_skel_final[1],
+					hierarchyState_skel_base[1];
 			};
 		};
-
-		a3_ClipPool clips[1];
-		a3_KeyframePool keys[1];
+		a3_Hierarchy hierarchy_skel[1];
+		a3_HierarchyPoseGroup hierarchyPoseGroup_skel[1];
+		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
+		a3dualquat dq_skin[128];
 
 		// control modes
 		a3_DemoMode1_Animation_ControlTarget ctrl_target;
 		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
 
+		// input axes & integration variables
 		a3f64 axis_l[2], axis_r[2];
 		a3vec2 pos, vel, acc;
 		a3real rot, velr, accr;
-
-		union
-		{
-			a3_ClipController clipCtrls[animationMaxCount_clipCtrl];
-			struct
-			{
-				a3_ClipController
-					clipCtrl1[1],
-					clipCtrl2[1],
-					clipCtrl3[1],
-					clipCtrl4[1];
-			};
-		};
-
-		a3mat4 mvp_joint[128], mvp_bone[128], t_skin[128];
-		a3dualquat dq_skin[128];
 
 		// objects
 		union {
 			a3_DemoSceneObject object_scene[animationMaxCount_sceneObject];
 			struct {
 				a3_DemoSceneObject
-					obj_skybox[1];
-				a3_DemoSceneObject
-					obj_skeleton[1];
-			};
-		};
-		union {
-			a3_DemoSceneObject object_scene_ctrl[animationMaxCount_sceneObject];
-			struct {
-				a3_DemoSceneObject
-					obj_skeleton_ctrl[1];
-			};
-		};
-		union {
-			a3_DemoSceneObject object_camera[animationMaxCount_cameraObject];
-			struct {
+					obj_world_root[1];
 				a3_DemoSceneObject
 					obj_camera_main[1];
+				a3_DemoSceneObject
+					obj_light_main[1];
+				a3_DemoSceneObject
+					obj_skybox[1];
+				a3_DemoSceneObject
+					obj_skeleton_ctrl[1];
+				a3_DemoSceneObject
+					obj_skeleton_headEffector_ctrl[1],
+					obj_skeleton_bodyEffector_ctrl[15],
+					//obj_skeleton_bodyConstraint_r_ctrl[1],
+					obj_skeleton[1];
 			};
 		};
 		union {

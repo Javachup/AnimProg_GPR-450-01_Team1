@@ -41,6 +41,46 @@
 
 //-----------------------------------------------------------------------------
 
+void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
+	a3_HierarchyState* hierarchyState, a3_HierarchyPoseGroup const* poseGroup)
+{
+	a3_DemoSceneObject* sceneObject = demoMode->obj_skeleton;
+	a3ui32 j = sceneObject->sceneGraphIndex;
+
+	// need to properly transform joints to their parent frame
+	a3mat4 const skeletonToControl = demoMode->sceneGraphState->localSpace->pose[j].transform;
+	a3vec4 controlLocator;
+
+	// snake head effector
+	// position in front of head
+	j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, "skel:head");
+	sceneObject = demoMode->obj_skeleton_headEffector_ctrl;
+	a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+		hierarchyState->objectSpace->pose[j].transform.v3.v);
+	sceneObject->position.x = controlLocator.x;
+	sceneObject->position.y = controlLocator.y + a3real_four;
+	sceneObject->position.z = controlLocator.z;
+	sceneObject->scale.x = a3real_third;
+	sceneObject->scaleMode = 1;
+
+	// body effector
+	// position on vert
+	for (int i = 0; i < 15; ++i)
+	{
+		char jointName[20];
+		sprintf(jointName, "skel:vert%d", i + 1);
+		j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, jointName);
+		sceneObject = &demoMode->obj_skeleton_bodyEffector_ctrl[i];
+		a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
+			hierarchyState->objectSpace->pose[j].transform.v3.v);
+		sceneObject->position.x = controlLocator.x;
+		sceneObject->position.y = controlLocator.y;
+		sceneObject->position.z = controlLocator.z;
+		sceneObject->scale.x = a3real_third;
+		sceneObject->scaleMode = 1;
+	}
+}
+
 // utility to load animation
 void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Animation* demoMode)
 {
@@ -61,15 +101,21 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
 		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
 		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
+		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skybox");
 		// locomotion - parent of animation
-		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
-		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
+		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 0, "obj_skeleton_headEffector_ctrl");
+
+		for (a3index i = 0; i < 15; ++i)
+		{
+			int index = i + 6;
+			char jointName[100];
+			sprintf(jointName, "obj_skeleton_bodyEffector_ctrl_%d", i);
+			a3hierarchySetNode(demoMode->sceneGraph, 5, 0, jointName);
+		}
+		
 		// animation, controlled through this
 		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
-
-		// spatial pose for positioning the character
-		a3spatialPoseReset(&demoMode->positionNode);
-		a3spatialPoseReset(&demoMode->velocityNode);
 
 		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
@@ -84,7 +130,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchyCreate(hierarchy, jointCount, 0);
 
 		// set up joint relationships
-		jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, "skel:root");
+		jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, "skel:head");
 
 		// create the last 15 joints
 		for (int i = 0; i < 15; ++i)
@@ -123,7 +169,7 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	// define "bind pose" or "base pose" or the initial transformation
 	//	description for each joint (not a literal transform)
 	p = 0;
-	j = a3hierarchyGetNodeIndex(hierarchy, "skel:root");
+	j = a3hierarchyGetNodeIndex(hierarchy, "skel:head");
 	spatialPose = hierarchyPoseGroup->hpose[p].pose + j;
 	a3spatialPoseSetTranslation(spatialPose, 0.0f, 0.0f, 0.0f);
 	//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
@@ -132,10 +178,9 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	for (a3index i = 1; i < animationMaxCount_snakeLength; ++i)
 	{
 		char jointName[20];
-		sprintf(jointName, "skel:vert%d", i + 1);
+		sprintf(jointName, "skel:vert%d", i);
 		spatialPose = hierarchyPoseGroup->hpose[p].pose + i;
 		a3spatialPoseSetTranslation(spatialPose, 2.0f, 0.0f, 0.0f);
-		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
 	// set up hierarchy states
