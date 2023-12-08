@@ -125,8 +125,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		break;
 	case animation_ctrl_character:
 	{
-		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
-		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
+		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
+		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
 		inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 
