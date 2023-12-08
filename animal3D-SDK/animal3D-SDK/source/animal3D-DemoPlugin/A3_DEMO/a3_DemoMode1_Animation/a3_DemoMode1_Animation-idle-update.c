@@ -158,7 +158,7 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 	//a3hierarchyPoseSnakePosition(hs->localSpace,
 	//.25f, 150, demoState->timer_display->totalTime, demoMode->boneLength, animationMaxCount_snakeLength);
 	a3hierarchyPoseSnakePosition(hs->localSpace,
-		.15f, 5, demoState->timer_display->totalTime, demoMode->boneLength, animationMaxCount_snakeLength);
+		.25f, 150, demoState->timer_display->totalTime, demoMode->boneLength, animationMaxCount_snakeLength);
 
 	a3hierarchyPoseConvert(hs->localSpace,
 		demoMode->hierarchy_skel->numNodes,
