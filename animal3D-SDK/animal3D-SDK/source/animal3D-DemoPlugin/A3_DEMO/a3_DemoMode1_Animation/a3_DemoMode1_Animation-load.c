@@ -104,18 +104,18 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skybox");
 		// locomotion - parent of animation
 		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skeleton_ctrl");
-		a3hierarchySetNode(demoMode->sceneGraph, 5, 0, "obj_skeleton_headEffector_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 0, "scene_skeleton_headEffector_ctrl");
 
-		for (a3index i = 0; i < 15; ++i)
+		for (a3index i = 1; i < animationMaxCount_snakeLength; ++i)
 		{
-			int index = i + 6;
+			int index = i + 5;
 			char jointName[100];
-			sprintf(jointName, "obj_skeleton_bodyEffector_ctrl_%d", i);
-			a3hierarchySetNode(demoMode->sceneGraph, 5, 0, jointName);
+			sprintf(jointName, "scene_skeleton_bodyEffector_ctrl_%d", i);
+			a3hierarchySetNode(demoMode->sceneGraph, index, 0, jointName);
 		}
 		
 		// animation, controlled through this
-		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
+		a3hierarchySetNode(demoMode->sceneGraph, 21, 3, "scene_skeleton");
 
 		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
@@ -133,32 +133,36 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, "skel:head");
 
 		// create the last 15 joints
-		for (int i = 0; i < 15; ++i)
+		for (int i = 1; i < animationMaxCount_snakeLength; ++i)
 		{
 			char jointName[20];
-			sprintf(jointName, "skel:vert%d", i + 1);
+			sprintf(jointName, "skel:vert%d", i);
 			jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, jointName);
 		}
 	}
 
-	demoMode->obj_skeleton->position.y = +a3real_four;
-	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
-	demoMode->obj_skeleton->euler.x = -a3real_ninety;
-
-	// control node
-	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
-	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
-
 	// map relevant objects to scene graph
+	demoMode->obj_world_root->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_world_root");
 	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
-	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	demoMode->obj_light_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_light_main");
 	demoMode->obj_skybox->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skybox");
-
+	demoMode->obj_skeleton_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton_ctrl");
+	demoMode->obj_skeleton_headEffector_ctrl->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "obj_skeleton_headEffector_ctrl");
+	for (a3index i = 1; i < animationMaxCount_snakeLength; ++i)
+	{
+		int obj_index = i - 1;
+		int index = i + 5;
+		char jointName[100];
+		sprintf(jointName, "scene_skeleton_bodyEffector_ctrl_ %d", i);
+		demoMode->obj_skeleton_bodyEffector_ctrl[obj_index].sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, jointName);
+	}
+	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	
 	// scene graph state
 	demoMode->sceneGraphState->hierarchy = 0;
 	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
-	// next set up hierarchy poses
+	// set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
 	hierarchyPoseGroup = demoMode->hierarchyPoseGroup_skel;
 	hierarchyPoseGroup->hierarchy = 0;
@@ -184,19 +188,49 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	}
 
 	// set up hierarchy states
-	for (a3index i = 0; i < animationMaxCount_hs; i++)
-	{
-		demoMode->hierarchyState_skel[i].hierarchy = 0;
-		a3hierarchyStateCreate(demoMode->hierarchyState_skel + i, hierarchy);
-	}
-
-	// Copy base pose to the base hs
-	a3hierarchyPoseCopy(demoMode->hs_base->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
-	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
-	a3kinematicsSolveForward(demoMode->hs_base);
-	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
 	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	a3hierarchyPoseCopy(hierarchyState->localSpace, hierarchyPoseGroup->hpose, hierarchy->numNodes);
+	a3hierarchyPoseConvert(hierarchyState->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
+	a3kinematicsSolveForward(hierarchyState);
+	a3hierarchyStateUpdateLocalInverse(hierarchyState);
+	a3hierarchyStateUpdateObjectInverse(hierarchyState);
+
+	// FK state
+	hierarchyState = demoMode->hierarchyState_skel_fk;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// IK state
+	hierarchyState = demoMode->hierarchyState_skel_ik;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// final blend state
+	hierarchyState = demoMode->hierarchyState_skel_final;
+	hierarchyState->hierarchy = 0;
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+
+	// snake
+	demoMode->obj_skeleton->position.y = +a3real_four;
+	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
+	demoMode->obj_skeleton->euler.x = -a3real_ninety;
+
+	// control node
+	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
 	
+	// effectors
+	// do one update to get first pose for target IK frame
+	{
+		void a3animation_update_animation(a3_DemoMode1_Animation * demoMode, a3f64 const dt, a3boolean const updateIK);
+		void a3animation_update_sceneGraph(a3_DemoMode1_Animation * demoMode, a3f64 const dt);
+		for (p = 0; p < 3; ++p)
+		{
+			a3animation_update_animation(demoMode, 0.0, 0);
+			a3animation_update_sceneGraph(demoMode, 0.0);
+			a3animation_load_resetEffectors(demoMode, demoMode->hierarchyState_skel_fk, hierarchyPoseGroup);
+		}
+	}
 }
 
 
@@ -210,6 +244,8 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode)
 {
+	a3ui32 i, j;
+
 	// initialize callbacks
 	a3_DemoModeCallbacks* const callbacks = demoState->demoModeCallbacks + demoState_modeAnimation;
 	callbacks->demoMode = demoMode;
@@ -227,8 +263,10 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	// initialize cameras not dependent on viewport
 
 	// animation
-	demoMode->hierarchyState_skel->hierarchy = demoMode->hierarchy_skel;
+	demoMode->sceneGraphState->hierarchy = demoMode->sceneGraph;
 	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel;
+	for (i = 0, j = sizeof(demoMode->hierarchyState_skel) / sizeof(a3_HierarchyState); i < j; ++i)
+		demoMode->hierarchyState_skel[i].hierarchy = demoMode->hierarchy_skel;
 }
 
 
@@ -244,14 +282,14 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// we want the exact same view in either case
 	const a3real sceneCameraAxisPos = 20.0f;
 	const a3vec3 sceneCameraStartPos = {
-		+0.0f,
-		-70.0f,
-		+20.0f,
+		+sceneCameraAxisPos,
+		-sceneCameraAxisPos,
+		+sceneCameraAxisPos + 5.0f,
 	};
 	const a3vec3 sceneCameraStartEuler = {
-		+80.0f,
+		+55.0f,
 		+0.0f,
-		+0.0f,
+		+45.0f,
 	};
 	const a3f32 sceneObjectDistance = 8.0f;
 	const a3f32 sceneObjectHeight = 2.0f;
@@ -260,8 +298,6 @@ void a3animation_load(a3_DemoState const* demoState, a3_DemoMode1_Animation* dem
 	// all objects
 	for (i = 0; i < animationMaxCount_sceneObject; ++i)
 		a3demo_initSceneObject(demoMode->object_scene + i);
-	for (i = 0; i < animationMaxCount_cameraObject; ++i)
-		a3demo_initSceneObject(demoMode->object_camera + i);
 	for (i = 0; i < animationMaxCount_projector; ++i)
 		a3demo_initProjector(demoMode->projector + i);
 
