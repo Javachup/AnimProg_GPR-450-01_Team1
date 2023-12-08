@@ -117,6 +117,19 @@ inline a3i32 a3hierarchyPoseConcat(const a3_HierarchyPose* pose_out, const a3_Hi
 	return -1;
 }
 
+// deconcat full hierarchy pose
+inline a3i32 a3hierarchyPoseDeconcat(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_lhs, const a3_HierarchyPose* pose_rhs, const a3ui32 nodeCount)
+{
+	if (pose_out && pose_lhs && pose_rhs && nodeCount)
+	{
+		a3index i;
+		for (i = 0; i < nodeCount; ++i)
+			a3spatialPoseDeconcat(pose_out->pose + i, pose_lhs->pose + i, pose_rhs->pose + i);
+		return i;
+	}
+	return -1;
+}
+
 // lerp full hierarchy pose
 inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_HierarchyPose* pose_0, const a3_HierarchyPose* pose_1, const a3real u, const a3ui32 nodeCount)
 {
@@ -132,6 +145,22 @@ inline a3i32 a3hierarchyPoseLerp(const a3_HierarchyPose* pose_out, const a3_Hier
 
 
 //-----------------------------------------------------------------------------
+
+// update inverse local-space matrices
+inline a3i32 a3hierarchyStateUpdateLocalInverse(const a3_HierarchyState* state)
+{
+	if (state && state->hierarchy)
+	{
+		a3index i;
+		for (i = 0; i < state->hierarchy->numNodes; ++i)
+			a3real4x4TransformInverse(state->localSpaceInv->pose[i].transformMat.m,
+				state->localSpace->pose[i].transform.m);
+		return i;
+
+	}
+	return -1;
+}
+
 
 // update inverse object-space matrices
 inline a3i32 a3hierarchyStateUpdateObjectInverse(const a3_HierarchyState *state)
