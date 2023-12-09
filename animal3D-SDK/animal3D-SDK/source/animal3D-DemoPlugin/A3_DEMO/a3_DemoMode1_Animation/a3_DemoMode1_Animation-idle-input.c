@@ -79,6 +79,9 @@ void a3animation_input_keyCharHold(a3_DemoState const* demoState, a3_DemoMode1_A
 
 
 //-----------------------------------------------------------------------------
+void a3demo_input_controlObject(
+	a3_DemoState* demoState, a3_DemoSceneObject* object,
+	a3f64 const dt, a3real ctrlMoveSpeed, a3real ctrlRotateSpeed);
 
 void a3demo_input_controlProjector(
 	a3_DemoState* demoState, a3_DemoProjector* projector,
@@ -128,19 +131,19 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	{
 		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
 		a3demo_input_controlObject(demoState, sceneObject, dt, a3real_one, a3real_zero);
-		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
-		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
+	//	inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
+	//	inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
-		inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+	//	inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 
-		// fake acceleration translation
-		demoMode->velocityNode.translation.x = a3lerp(demoMode->velocityNode.translation.x, inputPos.x, fakeAcc);
-		demoMode->velocityNode.translation.y = a3lerp(demoMode->velocityNode.translation.y, inputPos.y, fakeAcc);
+	//	// fake acceleration translation
+	//	demoMode->velocityNode.translation.x = a3lerp(demoMode->velocityNode.translation.x, inputPos.x, fakeAcc);
+	//	demoMode->velocityNode.translation.y = a3lerp(demoMode->velocityNode.translation.y, inputPos.y, fakeAcc);
 
-		demoMode->positionNode.translation.x += demoMode->velocityNode.translation.x * (a3real)demoState->dt_timer;
-		demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
-		break;
-	}
+	//	demoMode->positionNode.translation.x += demoMode->velocityNode.translation.x * (a3real)demoState->dt_timer;
+	//	demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
+	//	break;
+	//}
 
 	}
 }

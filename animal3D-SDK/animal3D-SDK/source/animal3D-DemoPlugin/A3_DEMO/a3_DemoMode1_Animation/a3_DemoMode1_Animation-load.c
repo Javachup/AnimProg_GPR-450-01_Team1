@@ -65,12 +65,13 @@ void a3animation_load_resetEffectors(a3_DemoMode1_Animation* demoMode,
 
 	// body effector
 	// position on vert
-	for (int i = 0; i < 15; ++i)
+	for (a3index i = 1; i < animationMaxCount_snakeLength; ++i)
 	{
+		int obj_index = i - 1;
 		char jointName[20];
-		sprintf(jointName, "skel:vert%d", i + 1);
+		sprintf(jointName, "skel:vert%d", i);
 		j = a3hierarchyGetNodeIndex(demoMode->hierarchy_skel, jointName);
-		sceneObject = &demoMode->obj_skeleton_bodyEffector_ctrl[i];
+		sceneObject = &demoMode->obj_skeleton_bodyEffector_ctrl[obj_index];
 		a3real4Real4x4Product(controlLocator.v, skeletonToControl.m,
 			hierarchyState->objectSpace->pose[j].transform.v3.v);
 		sceneObject->position.x = controlLocator.x;
