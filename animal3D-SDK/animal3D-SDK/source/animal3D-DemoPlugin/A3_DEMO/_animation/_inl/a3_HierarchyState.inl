@@ -153,7 +153,7 @@ inline a3i32 a3hierarchyStateUpdateLocalInverse(const a3_HierarchyState* state)
 	{
 		a3index i;
 		for (i = 0; i < state->hierarchy->numNodes; ++i)
-			a3real4x4TransformInverse(state->localSpaceInv->pose[i].transformMat.m,
+			a3real4x4TransformInverse(state->localSpaceInv->pose[i].transform.m,
 				state->localSpace->pose[i].transform.m);
 		return i;
 

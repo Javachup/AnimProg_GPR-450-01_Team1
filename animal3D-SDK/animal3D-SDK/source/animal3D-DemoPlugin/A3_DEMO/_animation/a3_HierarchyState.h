@@ -87,17 +87,29 @@ struct a3_HierarchyState
 	// pointer to hierarcy
 	const a3_Hierarchy* hierarchy;
 
-	// local-space pose
-	a3_HierarchyPose localSpace[1];
+	// collection of poses
+	union {
+		a3_HierarchyPose hpose[6];
+		struct {
+			// active animation pose
+			a3_HierarchyPose animPose[1];
 
-	// object-space pose
-	a3_HierarchyPose objectSpace[1];
+			// local-space pose (node relative to parent's space)
+			a3_HierarchyPose localSpace[1];
 
-	// object-space inverse pose
-	a3_HierarchyPose objectSpaceInv[1];
+			// object-space pose (node relative to root-parent's space)
+			a3_HierarchyPose objectSpace[1];
 
-	// object-space bind-to-current pose
-	a3_HierarchyPose objectSpaceBindToCurrent[1];
+			// local-space inverse pose (parent relative to node's space)
+			a3_HierarchyPose localSpaceInv[1];
+
+			// object-space inverse pose (root-parent relative to node's space)
+			a3_HierarchyPose objectSpaceInv[1];
+
+			// object-space bind-to-current pose
+			a3_HierarchyPose objectSpaceBindToCurrent[1];
+		};
+	};
 };
 	
 

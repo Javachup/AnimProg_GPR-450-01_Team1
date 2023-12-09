@@ -87,6 +87,7 @@ void a3demo_input_controlProjector(
 void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode, a3f64 const dt)
 {
 	a3_DemoProjector* projector = demoMode->projector + demoMode->activeCamera;
+	a3_DemoSceneObject* sceneObject;
 
 	// right click to ray pick
 	if (a3mouseGetState(demoState->mouse, a3mouse_right) == a3input_down)
@@ -125,6 +126,8 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		break;
 	case animation_ctrl_character:
 	{
+		sceneObject = demoMode->obj_skeleton_ctrl + demoMode->ctrl_target - animation_ctrl_character;
+		a3demo_input_controlObject(demoState, sceneObject, dt, a3real_one, a3real_zero);
 		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
 		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
