@@ -58,8 +58,8 @@ inline a3real4x2r a3demo_mat2dquat_safe(a3real4x2 Q, a3real4x4 const m)
 //-----------------------------------------------------------------------------
 // UPDATE
 
-void a3demo_update_objects(a3_DemoState* demoState, a3f64 const dt,
-	a3_DemoSceneObject* sceneObjectBase, a3ui32 count, a3boolean useZYX, a3boolean applyScale);
+void a3demo_update_objects(a3f64 const dt, a3_DemoSceneObject* sceneObjectBase,
+	a3ui32 count, a3boolean useZYX, a3boolean applyScale);
 void a3demo_update_defaultAnimation(a3_DemoState* demoState, a3f64 const dt,
 	a3_DemoSceneObject* sceneObjectBase, a3ui32 count, a3ui32 axis);
 void a3demo_update_bindSkybox(a3_DemoSceneObject* obj_camera, a3_DemoSceneObject* obj_skybox);
@@ -317,8 +317,8 @@ void a3animation_update_sceneGraph(a3_DemoMode1_Animation* demoMode, a3f64 const
 	a3ui32 i;
 	a3mat4 scaleMat = a3mat4_identity;
 
-	a3demo_update_objects(demoMode->object_scene, dt, animationMaxCount_sceneObject, 0, 0);
-	a3demo_update_objects(demoMode->obj_camera_main, dt, 1, 1, 0);
+	a3demo_update_objects(dt, demoMode->object_scene, animationMaxCount_sceneObject, 0, 0);
+	a3demo_update_objects(dt, demoMode->obj_camera_main, 1, 1, 0);
 
 	a3demo_updateProjectorViewProjectionMat(demoMode->proj_camera_main);
 
