@@ -128,7 +128,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		//inputPos.x = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 		//inputPos.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
-		a3real forwardMag = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+		a3real forwardMag = -scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
 		a3real rotDir = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
 
