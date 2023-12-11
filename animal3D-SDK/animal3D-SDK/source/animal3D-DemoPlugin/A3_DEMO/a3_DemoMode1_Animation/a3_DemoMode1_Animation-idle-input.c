@@ -112,7 +112,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	a3vec2 inputPos = { a3real_zero, a3real_zero };
 	a3real inputRot = a3real_zero;
 	a3real scalePos = a3real_four;
-	a3real scaleRot = a3real_oneeighty;
+	a3real scaleRot = a3real_oneeighty / 2;
 	a3real fakeVel = 0.5f;
 	a3real fakeAcc = 0.5f;
 
