@@ -171,8 +171,14 @@ inline a3i32 a3hierarchyPoseSnakePosition(a3_HierarchyPose* pose_inout, const a3
 	if (pose_inout)
 	{
 		a3index i;
+		a3vec2 pos = a3vec2_zero;
 		for (i = 1; i < numBones; ++i)
-			a3SpatialPoseSnakeWave(pose_inout->pose + i, pose_inout->pose + i - 1, amp, freq, deltaTime, boneLength, numBones);
+		{
+			// pos represents the object space position of the previous bone
+			// It gets updated every time a3SpatialPoseSnakeWave gets called
+			// When it is updated, it adds the calculated dx and dy to pos->x and pos->y
+			a3SpatialPoseSnakeWave(pose_inout->pose + i, &pos, amp, freq, deltaTime, boneLength, numBones);
+		}
 		return i;
 	}
 

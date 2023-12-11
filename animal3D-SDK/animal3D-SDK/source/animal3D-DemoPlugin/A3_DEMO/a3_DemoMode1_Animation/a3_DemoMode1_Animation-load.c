@@ -181,7 +181,7 @@ void a3animation_loadValidate(a3_DemoState* demoState, a3_DemoMode1_Animation* d
 	demoMode->hierarchyState_skel->hierarchy = demoMode->hierarchy_skel;
 	demoMode->hierarchyPoseGroup_skel->hierarchy = demoMode->hierarchy_skel;
 
-	demoMode->boneLength = 2;
+	demoMode->boneLength = 1;
 }
 
 
