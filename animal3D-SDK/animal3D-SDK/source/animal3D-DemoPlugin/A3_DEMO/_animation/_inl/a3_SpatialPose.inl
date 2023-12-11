@@ -244,10 +244,10 @@ inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, a3vec2* pre
 {
 	//a3real x = pose_out->pose->translation.x;
 	a3real y0 = previousPos_inout->y;
-	a3real x0 = previousPos_inout->x /*+ (a3real)deltaTime*/;
+	a3real x0 = previousPos_inout->x + (a3real)deltaTime * 0.01f;
 	
 	
-	a3real der = SnakeWaveFunctionDerivative(x0, amp, freq, boneLength, numBones);
+	//a3real der = SnakeWaveFunctionDerivative(x0, amp, freq, boneLength, numBones);
 	a3real dx = boneLength;//boneLength / (a3sqrt(1 + (der * der)));
 
 	a3real y = SnakeWaveFunction(x0 + dx, amp, freq, boneLength, numBones);
