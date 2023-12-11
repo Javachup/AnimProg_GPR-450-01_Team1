@@ -52,50 +52,11 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_TextRenderer const* text, a3vec4 const col,
 	a3f32 const textAlign, a3f32 const textDepth, a3f32 const textOffsetDelta, a3f32 textOffset)
 {
-	/*
-	// display mode info
-	a3byte const* pipelineText[animation_pipeline_max] = {
-		"Forward rendering",
-	};
 
-	// forward pipeline names
-	a3byte const* renderProgramName[animation_render_max] = {
-		"Solid color",
-		"Texture",
-		"Lambert shading",
-		"Phong shading",
-	};
-
-	// forward display names
-	a3byte const* displayProgramName[animation_display_max] = {
-		"Texture",
-	};
-
-	// active camera name
-	a3byte const* cameraText[animation_camera_max] = {
-		"animation scene camera",
-	};
-
-	// constant color target names
-	a3byte const colorBufferText[] = "Color target 0: FINAL DISPLAY COLOR";
-	// constant depth target name
-	a3byte const depthBufferText[] = "Depth buffer";
-
-	// pass names
-	a3byte const* passName[animation_pass_max] = {
-		"Pass: Render scene objects",
-		"Pass: Composite",
-	};
-	a3byte const* targetText_scene[animation_target_scene_max] = {
-		colorBufferText,
-		depthBufferText,
-	};
-	a3byte const* targetText_composite[animation_target_scene_max] = {
-		colorBufferText,
-	};
-	a3byte const* const* targetText[animation_pass_max] = {
-		targetText_scene,
-		targetText_composite,
+	// controls
+	a3byte const* ctrlTargetName[animation_ctrlmode_max] = {
+		"CAMERA",
+		"CHARACTER",
 	};
 
 	// pipeline and target
@@ -106,36 +67,13 @@ void a3animation_render_controls(a3_DemoState const* demoState, a3_DemoMode1_Ani
 	a3_DemoMode1_Animation_PassName const pass = demoMode->pass;
 	a3_DemoMode1_Animation_TargetName const targetIndex = demoMode->targetIndex[pass];
 	a3_DemoMode1_Animation_TargetName const targetCount = demoMode->targetCount[pass];
+	a3_DemoMode1_Animation_ControlTarget const ctrlTarget = demoMode->ctrl_target;
+	a3_DemoMode1_Animation_InputMode const inputPos = demoMode->ctrl_position;
+	a3_DemoMode1_Animation_InputMode const inputRot = demoMode->ctrl_rotation;
 
-	// demo modes
+		// control and input modes
 	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Pipeline (%u / %u) ('[' | ']'): %s", pipeline + 1, animation_pipeline_max, pipelineText[pipeline]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display pass (%u / %u) ('(' | ')'): %s", pass + 1, animation_pass_max, passName[pass]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"        Target (%u / %u) ('{' | '}'): %s", targetIndex + 1, targetCount, targetText[pass][targetIndex]);
-
-	// lighting modes
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Rendering mode (%u / %u) ('j' | 'k'): %s", render + 1, animation_render_max, renderProgramName[render]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Display mode (%u / %u) ('J' | 'K'): %s", display + 1, animation_display_max, displayProgramName[display]);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    Active camera (%u / %u) ('c' prev | next 'v'): %s", activeCamera + 1, animation_camera_max, cameraText[activeCamera]);
-	*/
-
-	// display clip ctrl
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    CLIP CTRL");
-
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"    %s:", demoMode->clipCtrls[0].name);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"        Clip Index: %u", demoMode->clipCtrls[0].clipIndex);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"        Key Time: %f    Key Param: %f", demoMode->clipCtrls[0].keyTime, demoMode->clipCtrls[0].keyParameter);
-	a3textDraw(text, textAlign, textOffset += textOffsetDelta, textDepth, col.r, col.g, col.b, col.a,
-		"        Clip Time: %f    Clip Param: %f", demoMode->clipCtrls[0].clipTime, demoMode->clipCtrls[0].clipParameter);
+		"    Control target (%u / %u) (';'/Dpad L | '\''/Dpad R): %s", ctrlTarget + 1, animation_ctrlmode_max, ctrlTargetName[ctrlTarget]);
 }
 
 

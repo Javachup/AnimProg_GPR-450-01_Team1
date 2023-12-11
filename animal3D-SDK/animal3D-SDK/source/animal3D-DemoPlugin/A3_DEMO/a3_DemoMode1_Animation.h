@@ -52,6 +52,8 @@ typedef enum a3_DemoMode1_Animation_ActiveCameraName		a3_DemoMode1_Animation_Act
 typedef enum a3_DemoMode1_Animation_PipelineName			a3_DemoMode1_Animation_PipelineName;
 typedef enum a3_DemoMode1_Animation_PassName				a3_DemoMode1_Animation_PassName;
 typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetName;
+typedef enum a3_DemoMode1_Animation_ControlTarget			a3_DemoMode1_Animation_ControlTarget;
+typedef enum a3_DemoMode1_Animation_InputMode				a3_DemoMode1_Animation_InputMode;
 #endif	// __cplusplus
 
 
@@ -121,6 +123,27 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		animation_target_scene_max,
 	};
 
+	// control targets
+	enum a3_DemoMode1_Animation_ControlTarget
+	{
+		animation_ctrl_camera,
+		animation_ctrl_character,
+
+		animation_ctrlmode_max
+	};
+
+	// input modes
+	enum a3_DemoMode1_Animation_InputMode
+	{
+		animation_input_direct,
+		animation_input_euler,
+		animation_input_kinematic,
+		animation_input_interpolate1,
+		animation_input_interpolate2,
+
+		animation_inputmode_max
+	};
+
 
 //-----------------------------------------------------------------------------
 
@@ -134,6 +157,14 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 		a3_DemoMode1_Animation_PipelineName pipeline;
 		a3_DemoMode1_Animation_PassName pass;
 		a3_DemoMode1_Animation_TargetName targetIndex[animation_pass_max], targetCount[animation_pass_max];
+
+		// spatial pose node 
+		a3_SpatialPose positionNode;
+		a3_SpatialPose velocityNode;
+
+		// scene graph 
+		a3_Hierarchy sceneGraph[1];
+		a3_HierarchyState sceneGraphState[1];
 
 		// skeletal animation
 		a3_Hierarchy hierarchy_skel[1];
@@ -153,6 +184,14 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 
 		a3_ClipPool clips[1];
 		a3_KeyframePool keys[1];
+
+		// control modes
+		a3_DemoMode1_Animation_ControlTarget ctrl_target;
+		a3_DemoMode1_Animation_InputMode ctrl_position, ctrl_rotation;
+
+		a3f64 axis_l[2], axis_r[2];
+		a3vec2 pos, vel, acc;
+		a3real rot, velr, accr;
 
 		union
 		{
@@ -182,6 +221,13 @@ typedef enum a3_DemoMode1_Animation_TargetName				a3_DemoMode1_Animation_TargetN
 					obj_skybox[1];
 				a3_DemoSceneObject
 					obj_skeleton[1];
+			};
+		};
+		union {
+			a3_DemoSceneObject object_scene_ctrl[animationMaxCount_sceneObject];
+			struct {
+				a3_DemoSceneObject
+					obj_skeleton_ctrl[1];
 			};
 		};
 		union {

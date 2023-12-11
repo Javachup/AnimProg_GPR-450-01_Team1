@@ -54,24 +54,25 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3_HierarchyPoseGroup* hierarchyPoseGroup = 0;
 	a3_SpatialPose* spatialPose = 0;
 
-	a3_FileStream fileStream[1] = { 0 };
-	const a3byte* const geometryStream = "./data/anim_data_gpro_base.dat";
-
-	// stream animation assets
-	if (demoState->streaming && a3fileStreamOpenRead(fileStream, geometryStream))
+	if (!demoState->streaming)
 	{
-		// load hierarchy assets
-		hierarchy = demoMode->hierarchy_skel;
-		a3hierarchyLoadBinary(hierarchy, fileStream);
+		// set up scenegraph - describes objects in the scene
+		a3hierarchyCreate(demoMode->sceneGraph,
+			(animationMaxCount_sceneObject + animationMaxCount_cameraObject + 1), 0);
+		a3hierarchySetNode(demoMode->sceneGraph, 0, -1, "scene_world_root");
+		a3hierarchySetNode(demoMode->sceneGraph, 1, 0, "scene_camera_main");
+		a3hierarchySetNode(demoMode->sceneGraph, 2, 0, "scene_light_main");
+		// locomotion - parent of animation
+		a3hierarchySetNode(demoMode->sceneGraph, 3, 0, "scene_skeleton_ctrl");
+		a3hierarchySetNode(demoMode->sceneGraph, 4, 0, "scene_skybox");
+		// animation, controlled through this
+		a3hierarchySetNode(demoMode->sceneGraph, 5, 3, "scene_skeleton");
 
-		// done
-		a3fileStreamClose(fileStream);
-	}
-	// not streaming or stream doesn't exist
-	else if (!demoState->streaming || a3fileStreamOpenWrite(fileStream, geometryStream))
-	{
-		// SnakeSkeleton
-		//**********************************************************************
+		// spatial pose for positioning the character
+		a3spatialPoseReset(&demoMode->positionNode);
+		a3spatialPoseReset(&demoMode->velocityNode);
+
+		// manually set up a skeleton
 		// first is the hierarchy: the general non-spatial relationship between bones
 		const a3ui32 jointCount = 16;
 
@@ -93,15 +94,24 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 			sprintf(jointName, "skel:vert%d", i + 1);
 			jointParentIndex = a3hierarchySetNode(hierarchy, jointIndex++, jointParentIndex, jointName);
 		}
-
-		// done
-		a3fileStreamClose(fileStream);
-		//******************************************************************************8
 	}
 
 	demoMode->obj_skeleton->position.y = +a3real_four;
 	demoMode->obj_skeleton->euler.z = +a3real_oneeighty;
 	//demoMode->obj_skeleton->euler.x = -a3real_ninety;
+
+	// control node
+	demoMode->obj_skeleton_ctrl->position.y = +a3real_four;
+	demoMode->obj_skeleton_ctrl->euler.z = a3real_oneeighty;
+
+	// map relevant objects to scene graph
+	demoMode->obj_camera_main->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_camera_main");
+	demoMode->obj_skeleton->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skeleton");
+	demoMode->obj_skybox->sceneGraphIndex = a3hierarchyGetNodeIndex(demoMode->sceneGraph, "scene_skybox");
+
+	// scene graph state
+	demoMode->sceneGraphState->hierarchy = 0;
+	a3hierarchyStateCreate(demoMode->sceneGraphState, demoMode->sceneGraph);
 
 	// next set up hierarchy poses
 	hierarchy = demoMode->hierarchy_skel;
@@ -131,11 +141,6 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 		//hierarchyPoseGroup->channel[j] = a3poseChannel_rotate_xyz;
 	}
 
-	//// load from file
-	//a3hierarchyPoseGroupLoadHTR(demoMode->hierarchyPoseGroup_skel, demoMode->hierarchy_skel,
-	//	"../../../../resource/animdata/egnaro/egnaro_skel_anim.htr");
-	//
-
 	// set up hierarchy states
 	for (a3index i = 0; i < animationMaxCount_hs; i++)
 	{
@@ -148,6 +153,8 @@ void a3animation_init_animation(a3_DemoState const* demoState, a3_DemoMode1_Anim
 	a3hierarchyPoseConvert(demoMode->hs_base->localSpace, hierarchy->numNodes, hierarchyPoseGroup->channel, hierarchyPoseGroup->order);
 	a3kinematicsSolveForward(demoMode->hs_base);
 	a3hierarchyStateUpdateObjectInverse(demoMode->hs_base);
+	a3hierarchyStateCreate(hierarchyState, hierarchy);
+	
 }
 
 
