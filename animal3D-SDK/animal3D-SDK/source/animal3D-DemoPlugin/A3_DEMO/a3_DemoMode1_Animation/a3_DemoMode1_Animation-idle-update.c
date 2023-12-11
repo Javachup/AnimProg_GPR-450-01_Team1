@@ -302,20 +302,19 @@ void a3animation_update_applyEffectors(a3_DemoMode1_Animation* demoMode,
 			};
 			*/
 
-			a3real4 lookAtNeck;
+			a3real4x4 lookAtNeck;
 			a3real4 invLookAt;
-			a3real3 worldUpVec = (0.0, 1.0, 0.0);
+			a3real3 worldUpVec = { 0.0, 1.0, 0.0 };
 
 			a3real fromX = jointTransform_neck.x3;
 			a3real fromY = jointTransform_neck.y3;
 			a3real fromZ = jointTransform_neck.z3;
 			const a3real eyePos = (a3real)(fromX, fromY, fromZ);
+			const a3real targetPos = (a3real)(sceneObject->position.x, sceneObject->position.y, sceneObject->position.z);
 
-			a3real4x4MakeLookAt(lookAtNeck, invLookAt, &eyePos, sceneObject, worldUpVec);
-			a3mat4 lookAt = { lookAtNeck[0], lookAtNeck[1] , lookAtNeck[2] , lookAtNeck[3],
-								lookAtNeck[4], lookAtNeck[5] , lookAtNeck[6] , lookAtNeck[7],
-								lookAtNeck[8], lookAtNeck[9] , lookAtNeck[10] , lookAtNeck[11],
-								lookAtNeck[12], lookAtNeck[13] , lookAtNeck[14] , lookAtNeck[15]};
+			a3real4x4MakeLookAt(&lookAtNeck, &invLookAt, &eyePos, &targetPos, worldUpVec);
+
+			//a3mat4 lookAt = lookAtNeck;
 
 
 			/*
