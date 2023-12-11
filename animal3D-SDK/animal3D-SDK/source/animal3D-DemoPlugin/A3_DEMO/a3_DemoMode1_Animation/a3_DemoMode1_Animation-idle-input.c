@@ -126,7 +126,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 	case animation_ctrl_character:
 	{
 		inputPos.x = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_S));
-		inputPos.y = scalePos * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
+		inputPos.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
 		inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
 
@@ -135,7 +135,9 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		demoMode->velocityNode.translation.y = a3lerp(demoMode->velocityNode.translation.y, inputPos.y, fakeAcc);
 
 		demoMode->positionNode.translation.x += demoMode->velocityNode.translation.x * (a3real)demoState->dt_timer;
-		demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
+		//demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
+
+		demoMode->positionNode.angles.z = a3trigValid_sind(demoMode->positionNode.angles.z + inputPos.y * (a3real)demoState->dt_timer);
 		break;
 	}
 

@@ -116,9 +116,9 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	if (demoState->updateAnimation)
 	{
-		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.orientation.x;
-		demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.orientation.y;
-		demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.orientation.z;
+		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.angles.x;
+		demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.angles.y;
+		demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.angles.z;
 		demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translation.x;
 		demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translation.y;
 	}
