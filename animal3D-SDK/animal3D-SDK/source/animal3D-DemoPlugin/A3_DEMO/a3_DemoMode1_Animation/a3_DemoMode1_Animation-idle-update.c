@@ -131,7 +131,10 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 			a3clipControllerUpdate(demoMode->clipCtrls + i, dt);
 		}
 
-		demoMode->wiggleOffset += dt * 0.01; // Multiply by speed here
+		a3real2 dir = { demoMode->velocityNode.translation.x, demoMode->velocityNode.translation.y };
+		a3real speed = a3real2Length(dir);
+
+		demoMode->wiggleOffset += dt * speed * 0.01; // Multiply by speed here
 	}
 
 	// skeletal
