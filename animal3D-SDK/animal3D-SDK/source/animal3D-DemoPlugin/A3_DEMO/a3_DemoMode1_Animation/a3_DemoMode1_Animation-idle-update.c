@@ -116,11 +116,11 @@ void a3animation_update(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMod
 
 	if (demoState->updateAnimation)
 	{
-		demoMode->obj_skeleton_ctrl->euler.x = demoMode->positionNode.angles.x;
-		demoMode->obj_skeleton_ctrl->euler.y = demoMode->positionNode.angles.y;
-		demoMode->obj_skeleton_ctrl->euler.z = demoMode->positionNode.angles.z;
-		demoMode->obj_skeleton_ctrl->position.x = demoMode->positionNode.translation.x;
-		demoMode->obj_skeleton_ctrl->position.y = demoMode->positionNode.translation.y;
+		demoMode->obj_skeleton->euler.x = demoMode->positionNode.angles.x;
+		demoMode->obj_skeleton->euler.y = demoMode->positionNode.angles.y;
+		demoMode->obj_skeleton->euler.z = demoMode->positionNode.angles.z;
+		demoMode->obj_skeleton->position.x = demoMode->positionNode.translation.x;
+		demoMode->obj_skeleton->position.y = demoMode->positionNode.translation.y;
 	}
 
 	// Update clipCtrl
