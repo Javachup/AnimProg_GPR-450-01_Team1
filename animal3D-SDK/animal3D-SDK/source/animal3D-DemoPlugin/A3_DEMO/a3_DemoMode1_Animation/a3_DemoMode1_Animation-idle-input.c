@@ -149,7 +149,7 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		demoMode->velocityNode.translation.y = a3lerp(demoMode->velocityNode.translation.y, inputPos.y, fakeAcc);
 
 		demoMode->positionNode.translation.x += demoMode->velocityNode.translation.x * (a3real)demoState->dt_timer;
-		//demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
+		demoMode->positionNode.translation.y += demoMode->velocityNode.translation.y * (a3real)demoState->dt_timer;
 
 		break;
 	}
