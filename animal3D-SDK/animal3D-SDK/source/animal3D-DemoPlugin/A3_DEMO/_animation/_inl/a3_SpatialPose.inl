@@ -260,6 +260,7 @@ inline a3i32 a3SpatialPoseSnakeWave(a3_SpatialPose* spatialPose_out, a3vec2* pre
 	a3real y = a3sinr(a3trigValid_sinr(x0 + dx));
 	a3real dy = y - y0;
 	*/
+
 	//should be lerp
 	spatialPose_out->translation.y = dy;
 	spatialPose_out->translation.x = dx;

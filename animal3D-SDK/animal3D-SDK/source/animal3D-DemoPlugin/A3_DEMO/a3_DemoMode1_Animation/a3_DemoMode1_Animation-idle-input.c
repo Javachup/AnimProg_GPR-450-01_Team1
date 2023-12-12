@@ -125,22 +125,14 @@ void a3animation_input(a3_DemoState* demoState, a3_DemoMode1_Animation* demoMode
 		break;
 	case animation_ctrl_character:
 	{
-		//inputPos.x = scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-		//inputPos.y = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
-
-		a3real forwardMag = -scalePos * (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
-		a3real rotDir = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
-
-
-		//inputRot = scaleRot * ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_J) - (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_L));
+		a3real forwardMag = -scalePos 
+							* (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_W);
+		a3real rotDir = scaleRot 
+							* ((a3real)a3keyboardIsHeld(demoState->keyboard, a3key_A) 
+							- (a3real)a3keyboardIsHeld(demoState->keyboard, a3key_D));
 
 		demoMode->positionNode.angles.z = a3trigValid_sind(demoMode->positionNode.angles.z + rotDir * (a3real)demoState->dt_timer);
-		/*
-		We have the hypotenuse (forwardMag) and the angle (...angles.z), now we need to get translation.x and .y
-		x = h * cos(angle)
-		y = h * sin(angle)
-		
-		*/
+	
 		inputPos.x = forwardMag * a3cosd(demoMode->positionNode.angles.z);
 		inputPos.y = forwardMag * a3sind(demoMode->positionNode.angles.z);
 
